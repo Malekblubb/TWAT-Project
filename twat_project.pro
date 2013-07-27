@@ -15,10 +15,16 @@ TEMPLATE = app
 SOURCES += src/core/main.cpp\
 	src/windows/mainwindow.cpp \
     src/core/client.cpp \
-    src/core/shared/config.cpp
+    src/core/shared/config.cpp \
+    src/base/system.cpp
+
 
 HEADERS  += src/windows/mainwindow.h \
     src/core/client.h \
-    src/core/shared/config.h
+    src/core/shared/config.h \
+    src/core/shared/config_vars.h \
+    src/base/app_info.h \
+    src/base/sys_lookup.h \
+    src/base/system.h
 
 FORMS    += src/ui_layouts/mainwindow.ui
