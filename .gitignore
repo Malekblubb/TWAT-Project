@@ -1,0 +1,7 @@
+#Linux
+*.directory
+
+#QT
+*.autosave
+*.pro.user
+*.pro.user*
