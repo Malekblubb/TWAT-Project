@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2013 Christoph Malek
+ * See LICENSE for more information.
+ */
+
 #include "system.h"
 
 #include "sys_lookup.h"

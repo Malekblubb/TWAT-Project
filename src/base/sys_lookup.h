@@ -1,7 +1,14 @@
+/*
+ * Copyright (c) 2013 Christoph Malek
+ * See LICENSE for more information.
+ */
+
 #ifndef SYS_LOOKUP_H
 #define SYS_LOOKUP_H
 
 
+namespace TWAT
+{
 // main family, platform
 
 #if defined(_WIN64) || defined(WIN64)
@@ -29,7 +36,7 @@
 #if defined(__amd64) || defined(__amd64__) || defined(__x86_64) || defined(__x86_64__) || defined(_M_X64) || defined(__ia64__) || defined(_M_IA64)
 	#define ARCH "64"
 #endif
-
+}
 
 
 #endif // SYS_LOOKUP_H

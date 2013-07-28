@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2013 Christoph Malek
+ * See LICENSE for more information.
+ */
+
 #ifndef IO_FILE_H
 #define IO_FILE_H
 

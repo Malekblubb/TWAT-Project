@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2013 Christoph Malek
+ * See LICENSE for more information.
+ */
+
 #ifndef CLIENT_H
 #define CLIENT_H
 
