@@ -14,17 +14,17 @@ namespace TWAT
 		std::map<std::string, std::string> m_Default;
 
 	public:
-		CConfig(std::string configPath);
+		CConfig(const std::string &configPath);
 
 		int CreateConfig();
-		int ReadFull();
+		void ReadFull();
 		bool CheckVar();
-		std::string GetValue(std::string var);
+		std::string GetValue(const std::string &var);
 		bool Save();
 
 	private:
 		void FillDefault();
-		void RestoreVar(std::string var);
+		void RestoreVar(const std::string &var);
 	};
 }
 

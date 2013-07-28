@@ -14,6 +14,7 @@ namespace TWAT
 
 	public:
 		CClient();
+		void OnInit();
 
 
 	};
