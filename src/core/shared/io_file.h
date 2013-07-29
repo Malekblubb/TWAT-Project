@@ -13,10 +13,15 @@
 
 namespace TWAT
 {
-	enum WriteModes
+	enum Modes
 	{
+		// writemodes
 		APPEND = 0,
-		OVERWRITE
+		OVERWRITE,
+
+		// openmodes (text only)
+		READ = 0,
+		WRITE
 	};
 
 
@@ -26,13 +31,16 @@ namespace TWAT
 		std::fstream m_Stream;
 
 	public:
-		CIOFile(const std::string &path);
+		// open a file, mode WRITE will append if possible
+		CIOFile(const std::string &path, int mode);
+		~CIOFile();
+		void Close();
 
-		bool Exists();
-		bool Delete();
+		bool Exists() const;
+		bool Delete() const;
 
 		// read and write only for TEXT files
-		void WriteLine(const std::string &line, int mode);
+		void Write(const std::string &buf, int mode);
 		void ReadLine(std::string *buf);
 		void Read(int from, int to, std::string *buf);
 	};
