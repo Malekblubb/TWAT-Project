@@ -9,13 +9,33 @@
 
 TWAT::CIOFile::CIOFile(const std::string &path, int mode)
 {
-	m_Path = path;
-	mode ? m_Stream.open(m_Path, std::ios::out | std::ios::app) : m_Stream.open(m_Path, std::ios::in); // open for read or write
+	this->Open(path, mode);
 }
 
 TWAT::CIOFile::~CIOFile()
 {
 	m_Stream.close();
+}
+
+void TWAT::CIOFile::Open(const std::string &path, int mode)
+{
+	m_Path = path;
+	m_Mode = mode;
+
+	switch(m_Mode)
+	{
+		case READ:
+			m_Stream.open(m_Path, std::ios::in);
+			break;
+		case WRITE:
+			m_Stream.open(m_Path, std::ios::out | std::ios::app);
+			break;
+		case NEW:
+			m_Stream.open(m_Path, std::ios::out);
+			break;
+		default:
+			break;
+	}
 }
 
 void TWAT::CIOFile::Close()
@@ -39,6 +59,19 @@ bool TWAT::CIOFile::Delete() const
 	return false;
 }
 
+void TWAT::CIOFile::Create()
+{
+	m_Stream.close();
+	m_Stream.open(m_Path, std::ios::out);
+
+	if(m_Mode == READ)
+	{
+		// open again for read access
+		m_Stream.close();
+		m_Stream.open(m_Path, std::ios::in);
+	}
+}
+
 void TWAT::CIOFile::Write(const std::string &buf, int mode)
 {
 	if(mode == OVERWRITE)
@@ -51,9 +84,12 @@ void TWAT::CIOFile::Write(const std::string &buf, int mode)
 	m_Stream << buf;
 }
 
-void TWAT::CIOFile::ReadLine(std::string *buf)
+bool TWAT::CIOFile::ReadLine(std::string *buf)
 {
-	std::getline(m_Stream, *buf);
+	if(std::getline(m_Stream, *buf) == 0)
+		return false;
+
+	return true;
 }
 
 void TWAT::CIOFile::Read(int from, int to, std::string *buf)

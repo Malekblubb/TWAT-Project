@@ -5,7 +5,6 @@
 
 #include "system.h"
 
-#include "sys_lookup.h"
 #include <chrono>
 #include <ctime>
 #include <iostream>
@@ -17,6 +16,10 @@ std::string TWAT::System::TimeStr()
 	std::time_t timeNow = std::chrono::system_clock::to_time_t(timePoint);
 	std::string tmpTime = std::ctime(&timeNow);
 
+	// cut away \n, don't know why it is there
+	if(tmpTime.find('\n') != std::string::npos)
+		tmpTime = tmpTime.erase(tmpTime.find('\n'));
+
 	return tmpTime;
 }
 
@@ -26,10 +29,10 @@ std::string TWAT::System::WorkDir()
 
 #if defined(OS_LINUX) || defined(OS_MAC)
 	tmp = std::getenv("HOME");
-	tmp += "/twat/";
+	tmp += "/.twat/";
 #else
 	tmp = std::getenv("APPDATA");
-	tmp += "\\twat\\";
+	tmp += "\\.twat\\";
 #endif
 
 	return tmp;
@@ -61,16 +64,3 @@ void TWAT::System::DbgLine(const char *format)
 	std::cout << format;
 }
 
-template<typename T, typename ... Args> void TWAT::System::DbgLine(const char *format, T val, Args ... args)
-{
-	for (; *format != '\0'; format++)
-	{
-		if (*format == '%')
-		{
-			std::cout << val;
-			DbgLine(format + 1, args...); // recursive call
-			return;
-		}
-		std::cout << *format;
-	}
-}

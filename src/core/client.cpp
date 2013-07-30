@@ -9,15 +9,17 @@
 #include <iostream>
 
 
-
 TWAT::CClient::CClient()
 {
-	// setup
-	m_Config = new CConfig(APP_CONF_PATH);
+
 }
 
-void TWAT::CClient::OnInit()
+void TWAT::CClient::Init()
 {
-	// check first start and other
+	// start log
+	System::DbgLine("%: TWAT version % started. Timestamp: %", FUNC, APP_VERSION, System::TimeStr());
 
+
+	m_Config = new CConfig(APP_CONF_PATH);
+	m_Config->Init();
 }

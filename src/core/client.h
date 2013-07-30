@@ -15,11 +15,12 @@ namespace TWAT
 {
 	class CClient
 	{
+	public:
+		CClient();
 		CConfig *m_Config;
 
 	public:
-		CClient();
-		void OnInit();
+		void Init();
 
 
 	};

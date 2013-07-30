@@ -9,7 +9,6 @@
 #include <QMainWindow>
 #include "../core/client.h"
 
-using namespace TWAT;
 
 namespace Ui {
 	class MainWindow;
@@ -25,7 +24,7 @@ public:
 	
 private:
 	Ui::MainWindow *ui;
-	CClient *client;
+	TWAT::CClient *client;
 };
 
 #endif // MAINWINDOW_H

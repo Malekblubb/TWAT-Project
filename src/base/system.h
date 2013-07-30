@@ -6,7 +6,10 @@
 #ifndef SYSTEM_H
 #define SYSTEM_H
 
+
+#include "sys_lookup.h"
 #include <string>
+#include <iostream>
 
 
 namespace TWAT
@@ -20,7 +23,30 @@ namespace TWAT
 
 		// stdout-log
 		void DbgLine(const char *format);
-		template<typename T, typename ... Args> void DbgLine(const char *format, T val, Args ... args);
+		template<typename T, typename ... Args> void DbgLine(const char *format, T val, Args ... args)
+		{
+			std::string tmp = (std::string)format;
+
+			if(tmp.find('\n') == std::string::npos)
+			{
+				tmp.append("\n");
+				format = tmp.c_str();
+			}
+
+			for (; *format != '\0'; format++)
+			{
+//				if(*format == '\n')
+//					return;
+
+				if(*format == '%')
+				{
+					std::cout << val;
+					DbgLine(format + 1, args... ); // recursive call
+					return;
+				}
+				std::cout << *format;
+			}
+		}
 	}
 }
 
