@@ -10,6 +10,7 @@ TARGET = twat_project
 OBJECTS_DIR = ./obj
 TEMPLATE = app
 QMAKE_CXXFLAGS += -std=c++0x
+INCLUDEPATH += src
 
 
 SOURCES += src/core/main.cpp\
@@ -17,7 +18,9 @@ SOURCES += src/core/main.cpp\
     src/core/client.cpp \
     src/core/shared/config.cpp \
     src/base/system.cpp \
-    src/core/shared/io_file.cpp
+    src/core/shared/io_file.cpp \
+    src/windows/ui_elements.cpp \
+    src/ui/ui_elements/menubutton.cpp
 
 
 HEADERS  += src/windows/mainwindow.h \
@@ -27,6 +30,10 @@ HEADERS  += src/windows/mainwindow.h \
     src/base/app_info.h \
     src/base/sys_lookup.h \
     src/base/system.h \
-    src/core/shared/io_file.h
+    src/core/shared/io_file.h \
+    src/ui/ui_elements/menubutton.h
 
-FORMS    += src/ui_layouts/mainwindow.ui
+FORMS    += src/ui/ui_layouts/mainwindow.ui
+
+RESOURCES += \
+    data/ressources.qrc

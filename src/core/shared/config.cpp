@@ -7,7 +7,6 @@
 
 #include "io_file.h"
 #include "../../base/system.h"
-#include <vector>
 
 
 TWAT::CConfig::CConfig(const std::string &configPath)
@@ -32,16 +31,13 @@ void TWAT::CConfig::Init()
 	ReadFull();
 }
 
-bool TWAT::CConfig::Save()
+void TWAT::CConfig::Save()
 {
-	std::vector<std::string> tmpVec;
-
 	m_ConfFile->Open(m_Path, NEW);
+
 	for(std::map<std::string, int>::iterator i = m_Conf.begin(); i != m_Conf.end(); i++)
-	{
-		tmpVec.push_back(i->first);
-		m_ConfFile->Write(i->first + " " + std::to_string(m_Conf[i->first]) + "\n", APPEND);
-	}
+		if(i->first != "INVALID") // check for an invalid setting
+			m_ConfFile->Write(i->first + " " + std::to_string(i->second) + "\n", APPEND);
 
 	m_ConfFile->Close();
 }
@@ -92,26 +88,32 @@ void TWAT::CConfig::FillDefault()
 
 void TWAT::CConfig::WriteDefault()
 {
-	std::vector<std::string> tmpVec;
-
 	m_ConfFile->Open(m_Path, WRITE);
+
 	for(std::map<std::string, int>::iterator i = m_Default.begin(); i != m_Default.end(); i++)
-	{
-		tmpVec.push_back(i->first);
-		m_ConfFile->Write(i->first + " " + std::to_string(m_Default[i->first]) + "\n", APPEND);
-	}
+		m_ConfFile->Write(i->first + " " + std::to_string(i->second) + "\n", APPEND);
 
 	m_ConfFile->Close();
 }
 
 std::string TWAT::CConfig::GetVar(const std::string &line) const
 {
-	return line.substr(0, line.find(" "));
+	int space = line.find(" ");
+
+	if(space != -1)
+		return line.substr(0, space);
+
+	return "INVALID";
 }
 
 int TWAT::CConfig::GetVal(const std::string &line) const
 {
 	int space = line.find(" ");
 	int length = line.length();
-	return std::stoi(line.substr(space, length - space));
+
+	// TODO: check if value is a digit
+	if(space != -1)
+		return std::stoi(line.substr(space, length - space));
+
+	return std::stoi("-1");
 }

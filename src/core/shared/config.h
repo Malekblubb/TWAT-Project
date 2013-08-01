@@ -25,7 +25,7 @@ namespace TWAT
 		CConfig(const std::string &configPath);
 
 		void Init();
-		bool Save();
+		void Save();
 
 	private:
 		bool CreateConfig();
