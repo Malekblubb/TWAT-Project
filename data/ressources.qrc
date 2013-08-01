@@ -1,0 +1,28 @@
+<RCC>
+    <qresource prefix="/">
+        <file>img/logos/twat100a.png</file>
+        <file>img/icons/pbMenuPlayDemo_def.png</file>
+        <file>img/icons/pbMenuPlayDemo_active.png</file>
+        <file>img/icons/pbMenuTwatServer_active.png</file>
+        <file>img/icons/pbMenuTwatServer_def.png</file>
+        <file>img/icons/pbMenuModifyMap_def.png</file>
+        <file>img/icons/pbMenuModifyMap_active.png</file>
+        <file>img/icons/pbMenuConvertDemo_active.png</file>
+        <file>img/icons/pbMenuConvertDemo_def.png</file>
+        <file>img/icons/pbMenuCreate247_active.png</file>
+        <file>img/icons/pbMenuCreate247_def.png</file>
+        <file>img/icons/pbMenuCreateLan_active.png</file>
+        <file>img/icons/pbMenuCreateLan_def.png</file>
+        <file>img/icons/pbMenuExtractImages_active.png</file>
+        <file>img/icons/pbMenuExtractImages_def.png</file>
+        <file>img/icons/pbMenuMasterServer_active.png</file>
+        <file>img/icons/pbMenuMasterServer_def.png</file>
+        <file>img/icons/right-controls/close.png</file>
+        <file>img/icons/right-controls/maximize.png</file>
+        <file>img/icons/right-controls/minimize.png</file>
+        <file>img/icons/bottom-menu/download.png</file>
+        <file>img/icons/bottom-menu/home.png</file>
+        <file>img/icons/bottom-menu/info.png</file>
+        <file>img/icons/bottom-menu/settings.png</file>
+    </qresource>
+</RCC>
