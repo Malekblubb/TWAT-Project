@@ -4,44 +4,54 @@
  */
 
 #include "menubutton.h"
+#include <QDebug>
 
 
 MenuButton::MenuButton(QWidget *parent) : QPushButton(parent)
 {
-	m_Toggled = false;
+	m_Active = false;
+}
+
+void MenuButton::Hover()
+{
+	if(!this->isActive())
+		this->SetColor(NO_BORDER);
+}
+
+void MenuButton::Leave()
+{
+	if(!this->isActive())
+		this->ResetColor();
+}
+
+void MenuButton::SetColor(int border)
+{
+	if(border)
+		this->setStyleSheet(this->styleSheet() + "border-right:4px solid #50aefa;color:#50aefa;");
+	else
+		this->setStyleSheet(this->styleSheet() + "color:#50aefa;");
+
+	this->setIcon(QIcon(ActivePath()));
+}
+
+void MenuButton::ResetColor()
+{
+	this->setStyleSheet(this->styleSheet() + "border-right:none;color:#7b7b7b;");
+	this->setIcon(QIcon(DefPath()));
 }
 
 void MenuButton::enterEvent(QEvent *)
 {
-	if(this->isChecked() || m_Toggled)
-		return;
-
-	this->setIcon((QIcon)ActivePath());
-	this->setStyleSheet(this->styleSheet() + "color:#50aefa;");
+	this->Hover();
 }
 
 void MenuButton::leaveEvent(QEvent *)
 {
-	if(this->isChecked() || m_Toggled)
-		return;
-
-	this->setIcon((QIcon)DefPath());
-	this->setStyleSheet(this->styleSheet() + "color:#7b7b7b;");
+	this->Leave();
 }
 
 void MenuButton::mousePressEvent(QMouseEvent *e)
 {
 	if(e->button() == Qt::LeftButton)
-	{
-		if(!m_Toggled)
-		{
-			this->setStyleSheet(this->styleSheet() + "border-right:4px solid #50aefa;color:#50aefa;");
-			m_Toggled = true;
-		}
-		else
-		{
-			this->setStyleSheet(this->styleSheet() + "border-right:none;color:#7b7b7b;");
-			m_Toggled = false;
-		}
-	}
+		emit clicked();
 }

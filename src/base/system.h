@@ -11,6 +11,10 @@
 #include <string>
 #include <iostream>
 
+#if defined(OS_WIN)
+#include <windows.h>
+#endif
+
 
 namespace TWAT
 {
@@ -18,8 +22,8 @@ namespace TWAT
 	{
 		// systemside funcs
 		std::string TimeStr(); // returns current timestamp as std::string
-		std::string WorkDir(); // return the path of the main wotking-directory like /home/user/twat
-		std::string Locale(); // returns
+		std::string WorkDir(); // returns the path of the main wotking-directory like /home/user/.twat
+		std::string Locale(); // returns the locale like "de"
 
 		// stdout-log
 		void DbgLine(const char *format);

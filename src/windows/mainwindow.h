@@ -25,10 +25,12 @@ class MainWindow : public QMainWindow
 public:
 	explicit MainWindow(QWidget *parent = 0);
 	~MainWindow();
+
+private:
 	void OnExit();
+	void ResetMenuButtons();
 	
 protected:
-	// move window without border
 	void mousePressEvent(QMouseEvent *event);
 	void mouseMoveEvent(QMouseEvent *event);
 
@@ -38,6 +40,24 @@ private slots:
 	void on_pbMainMaximize_clicked();
 
 	void on_pbMainMinimize_clicked();
+
+	void on_widgetMainStacked_currentChanged(int arg1);
+
+	void on_pbMenuPlayDemo_clicked();
+
+	void on_pbMenuConvertDemo_clicked();
+
+	void on_pbMenuExtractImages_clicked();
+
+	void on_pbMenuModifyMap_clicked();
+
+	void on_pbMenuCreateLan_clicked();
+
+	void on_pbMenuCreate247_clicked();
+
+	void on_pbMenuMasterServer_clicked();
+
+	void on_pbMenuTwatServer_clicked();
 
 private:
 	Ui::MainWindow *ui;

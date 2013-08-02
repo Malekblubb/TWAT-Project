@@ -11,17 +11,32 @@
 
 class MenuButton : public QPushButton
 {
-	bool m_Toggled;
+	bool m_Active;
 
 public:
+	enum
+	{
+		NO_BORDER = 0,
+		BORDER
+	};
+
 	MenuButton(QWidget *parent = 0);
 
+	void SetColor(int border);
+	void ResetColor();
+
+	bool isActive() const {return m_Active;}
+	void setActive(bool active) {m_Active = active;}
+
 private:
-	QString ActivePath() {return ":/img/icons/" + objectName() + "_active.png";}
-	QString DefPath() {return ":/img/icons/" + objectName() + "_def.png";}
+	QString ActivePath() const {return ":/img/icons/" + objectName() + "_active.png";}
+	QString DefPath() const {return ":/img/icons/" + objectName() + "_def.png";}
+
+	void Hover();
+	void Leave();
 
 
-protected:
+public:
 	virtual void enterEvent(QEvent *);
 	virtual void leaveEvent(QEvent *);
 	virtual void mousePressEvent(QMouseEvent *e);
