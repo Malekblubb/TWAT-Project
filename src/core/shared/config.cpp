@@ -6,7 +6,7 @@
 #include "config.h"
 
 #include "io_file.h"
-#include "../../base/system.h"
+#include <base/system.h>
 
 
 TWAT::CConfig::CConfig(const std::string &configPath)

@@ -24,5 +24,8 @@
         <file>img/icons/bottom-menu/home.png</file>
         <file>img/icons/bottom-menu/info.png</file>
         <file>img/icons/bottom-menu/settings.png</file>
+        <file>img/icons/image-extract/all.png</file>
+        <file>img/icons/image-extract/camera.png</file>
+        <file>img/icons/image-extract/selected.png</file>
     </qresource>
 </RCC>

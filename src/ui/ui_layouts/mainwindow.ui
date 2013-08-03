@@ -6,12 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1009</width>
-    <height>639</height>
+    <width>1160</width>
+    <height>661</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>TWAT</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true"/>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout_2">
@@ -181,13 +184,21 @@ color:#7b7b7b;</string>
                        <height>16</height>
                       </size>
                      </property>
+                     <property name="font">
+                      <font>
+                       <family>Open Sans Regular</family>
+                       <weight>50</weight>
+                       <bold>false</bold>
+                       <kerning>true</kerning>
+                      </font>
+                     </property>
                      <property name="cursor">
                       <cursorShape>PointingHandCursor</cursorShape>
                      </property>
                      <property name="styleSheet">
                       <string notr="true">border:none;
 font-family: &quot;Open Sans Regular&quot;;
-font-size:16;
+font-size:14;
 font-weight:400;
 color:#7b7b7b;
 text-align:left;</string>
@@ -224,7 +235,7 @@ text-align:left;</string>
                      <property name="styleSheet">
                       <string notr="true">border:none;
 font-family: &quot;Open Sans Regular&quot;;
-font-size:16;
+font-size:14;
 font-weight:400;
 color:#7b7b7b;
 text-align:left;</string>
@@ -820,31 +831,9 @@ text-align:left;</string>
              </layout>
             </item>
            </layout>
-           <zorder></zorder>
           </widget>
          </item>
         </layout>
-        <zorder>lbMenuDemo</zorder>
-        <zorder>pbMenuPlayDemo</zorder>
-        <zorder>pbMenuConvertDemo</zorder>
-        <zorder>pbMenuExtractImages</zorder>
-        <zorder>pbMenuModifyMap</zorder>
-        <zorder>pbMenuCreateLan</zorder>
-        <zorder>pbMenuCreate247</zorder>
-        <zorder>pbMenuMasterServer</zorder>
-        <zorder>pbMenuTwatServer</zorder>
-        <zorder>lbMenuMap</zorder>
-        <zorder>lbMenuServer</zorder>
-        <zorder>lbMenuStats</zorder>
-        <zorder>widgetBottomMenu</zorder>
-        <zorder>horizontalSpacer</zorder>
-        <zorder>horizontalSpacer_2</zorder>
-        <zorder>horizontalSpacer_3</zorder>
-        <zorder>horizontalSpacer_4</zorder>
-        <zorder>horizontalSpacer_5</zorder>
-        <zorder>verticalSpacer</zorder>
-        <zorder>verticalSpacer</zorder>
-        <zorder>verticalSpacer_2</zorder>
        </widget>
       </item>
       <item row="0" column="2">
@@ -886,6 +875,9 @@ background-color:#f4f4f4;</string>
           </property>
           <item>
            <widget class="QPushButton" name="pbMainMinimize">
+            <property name="cursor">
+             <cursorShape>PointingHandCursor</cursorShape>
+            </property>
             <property name="styleSheet">
              <string notr="true">border:none;</string>
             </property>
@@ -903,6 +895,9 @@ background-color:#f4f4f4;</string>
           </item>
           <item>
            <widget class="QPushButton" name="pbMainMaximize">
+            <property name="cursor">
+             <cursorShape>PointingHandCursor</cursorShape>
+            </property>
             <property name="styleSheet">
              <string notr="true">border:none;</string>
             </property>
@@ -920,6 +915,9 @@ background-color:#f4f4f4;</string>
           </item>
           <item>
            <widget class="QPushButton" name="pbMainClose">
+            <property name="cursor">
+             <cursorShape>PointingHandCursor</cursorShape>
+            </property>
             <property name="styleSheet">
              <string notr="true">border:none;</string>
             </property>
@@ -989,7 +987,7 @@ background-image: url(:/img/logos/twat100a.png);</string>
          <item row="0" column="0">
           <widget class="QStackedWidget" name="widgetMainStacked">
            <property name="currentIndex">
-            <number>8</number>
+            <number>2</number>
            </property>
            <widget class="QWidget" name="pagePlayDemo">
             <widget class="QTabWidget" name="tabWidget">
@@ -1028,7 +1026,170 @@ background-image: url(:/img/logos/twat100a.png);</string>
              </property>
             </widget>
            </widget>
-           <widget class="QWidget" name="pageExtractImages"/>
+           <widget class="QWidget" name="pageExtractImages">
+            <widget class="QWidget" name="widgetEIBottom" native="true">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>541</y>
+               <width>961</width>
+               <height>41</height>
+              </rect>
+             </property>
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="font">
+              <font>
+               <family>Open Sans Regular</family>
+               <weight>50</weight>
+               <bold>false</bold>
+              </font>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">background-color:#f4f4f4;
+
+color:#7b7b7b;
+font-family: &quot;Open Sans Regular&quot;;
+font-size:16;</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_11">
+              <item row="0" column="0">
+               <spacer name="horizontalSpacer_6">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>342</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="0" column="1">
+               <layout class="QHBoxLayout" name="horizontalLayout_7">
+                <property name="spacing">
+                 <number>30</number>
+                </property>
+                <item>
+                 <widget class="QPushButton" name="pbEIAll">
+                  <property name="cursor">
+                   <cursorShape>PointingHandCursor</cursorShape>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">border:none;</string>
+                  </property>
+                  <property name="text">
+                   <string>All</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="../../../data/ressources.qrc">
+                    <normaloff>:/img/icons/image-extract/all.png</normaloff>:/img/icons/image-extract/all.png</iconset>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>14</width>
+                    <height>14</height>
+                   </size>
+                  </property>
+                  <property name="flat">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="pbEISelected">
+                  <property name="cursor">
+                   <cursorShape>PointingHandCursor</cursorShape>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">border:none;</string>
+                  </property>
+                  <property name="text">
+                   <string>Selected</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="../../../data/ressources.qrc">
+                    <normaloff>:/img/icons/image-extract/selected.png</normaloff>:/img/icons/image-extract/selected.png</iconset>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>14</width>
+                    <height>14</height>
+                   </size>
+                  </property>
+                  <property name="flat">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="pbEIPreview">
+                  <property name="cursor">
+                   <cursorShape>PointingHandCursor</cursorShape>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">border:none;</string>
+                  </property>
+                  <property name="text">
+                   <string>Preview</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="../../../data/ressources.qrc">
+                    <normaloff>:/img/icons/image-extract/camera.png</normaloff>:/img/icons/image-extract/camera.png</iconset>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>14</width>
+                    <height>14</height>
+                   </size>
+                  </property>
+                  <property name="flat">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item row="0" column="2">
+               <spacer name="horizontalSpacer_7">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>341</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QGraphicsView" name="graphicsView">
+             <property name="geometry">
+              <rect>
+               <x>370</x>
+               <y>190</y>
+               <width>281</width>
+               <height>192</height>
+              </rect>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">border:1px solid #7b7b7b</string>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::NoFrame</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Plain</enum>
+             </property>
+            </widget>
+           </widget>
            <widget class="QWidget" name="pageModifyMap"/>
            <widget class="QWidget" name="pageCreateLan"/>
            <widget class="QWidget" name="pagCreate247"/>
@@ -1044,6 +1205,7 @@ background-image: url(:/img/logos/twat100a.png);</string>
     </item>
    </layout>
   </widget>
+  <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>

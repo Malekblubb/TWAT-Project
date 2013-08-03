@@ -10,7 +10,8 @@ TARGET = twat_project
 OBJECTS_DIR = ./obj
 TEMPLATE = app
 QMAKE_CXXFLAGS += -std=c++0x
-INCLUDEPATH += src
+INCLUDEPATH += src \
+    include
 
 
 SOURCES += src/core/main.cpp\
@@ -20,7 +21,10 @@ SOURCES += src/core/main.cpp\
     src/base/system.cpp \
     src/core/shared/io_file.cpp \
     src/windows/ui_elements.cpp \
-    src/ui/ui_elements/menubutton.cpp
+    src/ui/ui_elements/menubutton.cpp \
+    src/core/shared/datafile.cpp \
+    src/ui/ui_elements/flatprogressbar.cpp \
+    include/twlib/datafiles/map.cpp
 
 
 HEADERS  += src/windows/mainwindow.h \
@@ -31,7 +35,10 @@ HEADERS  += src/windows/mainwindow.h \
     src/base/sys_lookup.h \
     src/base/system.h \
     src/core/shared/io_file.h \
-    src/ui/ui_elements/menubutton.h
+    src/ui/ui_elements/menubutton.h \
+    src/core/shared/datafile.h \
+    src/ui/ui_elements/flatprogressbar.h \
+    include/twlib/datafiles/map.h
 
 FORMS    += src/ui/ui_layouts/mainwindow.ui
 

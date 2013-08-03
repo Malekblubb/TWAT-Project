@@ -41,7 +41,7 @@ private slots:
 
 	void on_pbMainMinimize_clicked();
 
-	void on_widgetMainStacked_currentChanged(int arg1);
+	void on_widgetMainStacked_currentChanged();
 
 	void on_pbMenuPlayDemo_clicked();
 

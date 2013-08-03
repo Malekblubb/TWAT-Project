@@ -3,6 +3,10 @@
  * See LICENSE for more information.
  */
 
+
+#ifndef APP_INFO_H
+#define APP_INFO_H
+
 #include "system.h"
 
 
@@ -17,3 +21,6 @@ namespace TWAT
 #define APP_BIN_PATH APP_WORK_PATH + "bin"
 #define APP_HTTP_PATH ""
 }
+
+
+#endif // APP_INFO_H

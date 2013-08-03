@@ -5,7 +5,7 @@
 
 #include "client.h"
 
-#include "../base/app_info.h"
+#include <base/app_info.h>
 #include <iostream>
 #include <QDir>
 

@@ -5,7 +5,6 @@
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <QSizeGrip>
 
 using namespace TWAT;
 
@@ -88,8 +87,6 @@ void MainWindow::ResetMenuButtons()
 
 	if(ui->pbMenuCreateLan->isActive()) {ui->pbMenuCreateLan->ResetColor(); ui->pbMenuCreateLan->setActive(false);}
 
-	if(ui->pbMenuCreate247->isActive()) { ui->pbMenuCreate247->ResetColor(); ui->pbMenuCreate247->setActive(false);}
-
 	if(ui->pbMenuCreate247->isActive()) {ui->pbMenuCreate247->ResetColor(); ui->pbMenuCreate247->setActive(false);}
 
 	if(ui->pbMenuMasterServer->isActive()) {ui->pbMenuMasterServer->ResetColor(); ui->pbMenuMasterServer->setActive(false);}
@@ -97,7 +94,7 @@ void MainWindow::ResetMenuButtons()
 	if(ui->pbMenuTwatServer->isActive()) {ui->pbMenuTwatServer->ResetColor(); ui->pbMenuTwatServer->setActive(false);}
 }
 
-void MainWindow::on_widgetMainStacked_currentChanged(int arg1)
+void MainWindow::on_widgetMainStacked_currentChanged()
 {
 	ResetMenuButtons();
 }
