@@ -1031,7 +1031,7 @@ background-image: url(:/img/logos/twat100a.png);</string>
              <property name="geometry">
               <rect>
                <x>0</x>
-               <y>541</y>
+               <y>561</y>
                <width>961</width>
                <height>41</height>
               </rect>
@@ -1170,25 +1170,6 @@ font-size:16;</string>
               </item>
              </layout>
             </widget>
-            <widget class="QGraphicsView" name="graphicsView">
-             <property name="geometry">
-              <rect>
-               <x>370</x>
-               <y>190</y>
-               <width>281</width>
-               <height>192</height>
-              </rect>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">border:1px solid #7b7b7b</string>
-             </property>
-             <property name="frameShape">
-              <enum>QFrame::NoFrame</enum>
-             </property>
-             <property name="frameShadow">
-              <enum>QFrame::Plain</enum>
-             </property>
-            </widget>
            </widget>
            <widget class="QWidget" name="pageModifyMap"/>
            <widget class="QWidget" name="pageCreateLan"/>
@@ -1205,7 +1186,6 @@ font-size:16;</string>
     </item>
    </layout>
   </widget>
-  <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
