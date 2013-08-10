@@ -5,7 +5,7 @@
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <twlib/datafiles/map.h>
+//#include <twlib/datafiles/map.h>
 #include <iostream>
 
 using namespace TWAT;
@@ -22,9 +22,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent, Qt::FramelessWindo
 	m_Client = new CClient();
 	m_Client->Init();
 
-	TwLib::Map::CMapReader reader;
+//	TwLib::Map::CMapReader reader;
 
-	std::cout << reader.Open("/home/hax/.teeworlds/maps/testmap.map");
+//	std::cout << reader.Open("/home/hax/.teeworlds/maps/testmap.map");
 }
 
 MainWindow::~MainWindow()

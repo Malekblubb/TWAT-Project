@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1160</width>
+    <width>1181</width>
     <height>661</height>
    </rect>
   </property>
@@ -865,8 +865,8 @@ background-color:#f4f4f4;</string>
           <rect>
            <x>29</x>
            <y>29</y>
-           <width>84</width>
-           <height>18</height>
+           <width>108</width>
+           <height>26</height>
           </rect>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout">

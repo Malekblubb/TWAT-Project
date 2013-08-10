@@ -15,7 +15,7 @@ namespace TWAT
 	#define OS_WIN 1
 #elif defined(WIN32) || defined(_WIN32) || defined(__CYGWIN32__) || defined(__MINGW32__)
 	#define OS_WIN 1
-	#define WIN32
+	#define WIN_32 1
 #endif
 
 #if defined(__LINUX__) || defined(__linux__)
@@ -23,13 +23,13 @@ namespace TWAT
 #endif
 
 #if defined(MACOSX) || defined(__DARWIN__) || defined(__APPLE__)
-	#define OS_MAC
+	#define OS_MAC 1
 #endif
 
 
 // arch
 
-#if defined(WIN32) || defined(__i386__) || defined(i386) || defined(__x86__)
+#if defined(WIN_32) || defined(__i386__) || defined(i386) || defined(__x86__)
 	#define ARCH "32"
 #endif
 
