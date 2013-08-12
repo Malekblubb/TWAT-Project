@@ -25,6 +25,6 @@ void TWAT::CClient::Init()
 	if(!confDir.exists())
 		confDir.mkdir(APP_WORK_PATH.c_str());
 
-	m_Config = new CConfig(APP_CONF_PATH);
-	m_Config->Init();
+	m_config = new CConfig(APP_CONF_PATH);
+	m_config->Init();
 }

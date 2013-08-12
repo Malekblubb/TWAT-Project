@@ -705,6 +705,8 @@ font-size:16;</string>
               </item>
              </layout>
             </widget>
+            <zorder>widgetEIBottom</zorder>
+            <zorder></zorder>
            </widget>
            <widget class="QWidget" name="pageModifyMap"/>
            <widget class="QWidget" name="pageCreateLan"/>

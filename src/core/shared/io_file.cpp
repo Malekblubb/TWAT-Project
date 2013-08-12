@@ -14,24 +14,24 @@ TWAT::CIOFile::CIOFile(const std::string &path, int mode)
 
 TWAT::CIOFile::~CIOFile()
 {
-	m_Stream.close();
+	m_stream.close();
 }
 
 void TWAT::CIOFile::Open(const std::string &path, int mode)
 {
-	m_Path = path;
-	m_Mode = mode;
+	m_path = path;
+	m_mode = mode;
 
-	switch(m_Mode)
+	switch(m_mode)
 	{
 		case READ:
-			m_Stream.open(m_Path, std::ios::in);
+			m_stream.open(m_path, std::ios::in);
 			break;
 		case WRITE:
-			m_Stream.open(m_Path, std::ios::out | std::ios::app);
+			m_stream.open(m_path, std::ios::out | std::ios::app);
 			break;
 		case NEW:
-			m_Stream.open(m_Path, std::ios::out);
+			m_stream.open(m_path, std::ios::out);
 			break;
 		default:
 			break;
@@ -40,12 +40,12 @@ void TWAT::CIOFile::Open(const std::string &path, int mode)
 
 void TWAT::CIOFile::Close()
 {
-	m_Stream.close();
+	m_stream.close();
 }
 
 bool TWAT::CIOFile::Exists() const
 {
-	if(m_Stream.is_open())
+	if(m_stream.is_open())
 		return true;
 
 	return false;
@@ -53,7 +53,7 @@ bool TWAT::CIOFile::Exists() const
 
 bool TWAT::CIOFile::Delete() const
 {
-	if(std::remove(m_Path.c_str()) == 0)
+	if(std::remove(m_path.c_str()) == 0)
 		return true;
 
 	return false;
@@ -61,14 +61,14 @@ bool TWAT::CIOFile::Delete() const
 
 void TWAT::CIOFile::Create()
 {
-	m_Stream.close();
-	m_Stream.open(m_Path, std::ios::out);
+	m_stream.close();
+	m_stream.open(m_path, std::ios::out);
 
-	if(m_Mode == READ)
+	if(m_mode == READ)
 	{
 		// open again for read access
-		m_Stream.close();
-		m_Stream.open(m_Path, std::ios::in);
+		m_stream.close();
+		m_stream.open(m_path, std::ios::in);
 	}
 }
 
@@ -77,16 +77,16 @@ void TWAT::CIOFile::Write(const std::string &buf, int mode)
 	if(mode == OVERWRITE)
 	{
 		// open new for overwrite
-		m_Stream.close();
-		m_Stream.open(m_Path, std::ios::out | std::ios::trunc);
+		m_stream.close();
+		m_stream.open(m_path, std::ios::out | std::ios::trunc);
 	}
 
-	m_Stream << buf;
+	m_stream << buf;
 }
 
 bool TWAT::CIOFile::ReadLine(std::string *buf)
 {
-	if(std::getline(m_Stream, *buf) == 0)
+	if(std::getline(m_stream, *buf) == 0)
 		return false;
 
 	return true;
@@ -97,11 +97,11 @@ void TWAT::CIOFile::Read(int from, int to, std::string *buf)
 	int length = to - from;
 	char *tmp = (char *)std::malloc(1);
 
-	m_Stream.seekg(from);
+	m_stream.seekg(from);
 
 	while(length--)
 	{
-		m_Stream.read(tmp, 1);
+		m_stream.read(tmp, 1);
 		*buf += (std::string)tmp;
 	}
 

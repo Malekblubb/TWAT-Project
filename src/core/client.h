@@ -17,7 +17,7 @@ namespace TWAT
 	{
 	public:
 		CClient();
-		CConfig *m_Config;
+		CConfig *m_config;
 
 	public:
 		void Init();

@@ -15,8 +15,8 @@ namespace TWAT
 {
 	class CDataFileReader
 	{
-		std::string m_Path;
-		std::ifstream m_Stream;
+		std::string m_path;
+		std::ifstream m_stream;
 
 	public:
 		CDataFileReader() {}

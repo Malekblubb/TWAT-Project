@@ -11,10 +11,6 @@
 #include <string>
 #include <iostream>
 
-#if defined(OS_WIN)
-#include <windows.h>
-#endif
-
 
 namespace TWAT
 {
@@ -24,6 +20,27 @@ namespace TWAT
 		std::string TimeStr(); // returns current timestamp as std::string
 		std::string WorkDir(); // returns the path of the main wotking-directory like /home/user/.twat
 		std::string Locale(); // returns the locale like "de"
+
+
+		// network communication
+		class Ip4Addr
+		{
+		public:
+			Ip4Addr(const std::string &addr);
+
+			std::string Ip() const {return m_ip;}
+			unsigned short Port() const {return m_port;}
+
+		private:
+			std::string m_ip;
+			unsigned short m_port;
+		};
+
+		int UdpSock();
+		int UdpSend(int sock, unsigned char *data, size_t dataLen, Ip4Addr target);
+		int UdpRecv(int sock, unsigned char *buf, size_t bufLen);
+
+
 
 		// stdout-log
 		void DbgLine(const char *format);
@@ -39,9 +56,6 @@ namespace TWAT
 
 			for (; *format != '\0'; format++)
 			{
-//				if(*format == '\n')
-//					return;
-
 				if(*format == '%')
 				{
 					std::cout << val;

@@ -13,9 +13,9 @@ TWAT::CDataFileReader::CDataFileReader(const std::string &path)
 
 bool TWAT::CDataFileReader::Open(const std::string &path)
 {
-	m_Stream.open(path, std::ios::in | std::ios::binary);
+	m_stream.open(path, std::ios::in | std::ios::binary);
 
-	if(!m_Stream.is_open())
+	if(!m_stream.is_open())
 		return false;
 
 	return true;
@@ -23,15 +23,15 @@ bool TWAT::CDataFileReader::Open(const std::string &path)
 
 void TWAT::CDataFileReader::Close()
 {
-	m_Stream.close();
+	m_stream.close();
 }
 
 int TWAT::CDataFileReader::Read(int from, int to, unsigned char *buf)
 {
 	int length = to - from;
 
-	m_Stream.seekg(from);
-	m_Stream.read(reinterpret_cast<char *>(buf), length);
+	m_stream.seekg(from);
+	m_stream.read(reinterpret_cast<char *>(buf), length);
 
-	return m_Stream.tellg();
+	return m_stream.tellg();
 }

@@ -11,5 +11,5 @@ void CustomUIElements::ToggleSwitch(QPushButton *btn, std::string settingKey)
 	else
 		btn->setIcon(QIcon(":/img/ui_elements/switch_off.png"));
 
-	m_Client->m_Config->m_Conf[settingKey] = btn->isChecked();
+//	m_client->m_config->m_conf[settingKey] = btn->isChecked();
 }

@@ -11,8 +11,8 @@
 
 TWAT::CConfig::CConfig(const std::string &configPath)
 {
-	m_Path = configPath;
-	m_ConfFile = new CIOFile(m_Path, READ);
+	m_path = configPath;
+	m_confFile = new CIOFile(m_path, READ);
 }
 
 void TWAT::CConfig::Init()
@@ -33,28 +33,28 @@ void TWAT::CConfig::Init()
 
 void TWAT::CConfig::Save()
 {
-	m_ConfFile->Open(m_Path, NEW);
+	m_confFile->Open(m_path, NEW);
 
-	for(std::map<std::string, int>::iterator i = m_Conf.begin(); i != m_Conf.end(); i++)
-		if(i->first != "INVALID") // check for an invalid setting
-			m_ConfFile->Write(i->first + " " + std::to_string(i->second) + "\n", APPEND);
+//	for(std::map<std::string, std::string>::iterator i = m_conf.begin(); i != m_conf.end(); i++)
+//		if(i->first != "INVALID") // check for an invalid setting
+//			m_confFile->Write(i->first + " " + i->second + "\n", APPEND);
 
-	m_ConfFile->Close();
+	m_confFile->Close();
 }
 
 bool TWAT::CConfig::CreateConfig()
 {
-	if(!m_ConfFile->Exists())
+	if(!m_confFile->Exists())
 	{
 		System::DbgLine("%: creating default config file", FUNC);
 
-		m_ConfFile->Create();
-		m_ConfFile->Close();
+		m_confFile->Create();
+		m_confFile->Close();
 		return false;
 	}
 
 	System::DbgLine("%: config file found", FUNC);
-	m_ConfFile->Close();
+	m_confFile->Close();
 	return true;
 }
 
@@ -62,38 +62,40 @@ void TWAT::CConfig::ReadFull()
 {
 	std::string buf;
 
-	m_ConfFile->Open(m_Path, READ);
-	while(m_ConfFile->ReadLine(&buf))
+	m_confFile->Open(m_path, READ);
+	while(m_confFile->ReadLine(&buf))
 	{
 		if(!buf.empty())
 		{
-			m_Conf[GetVar(buf)] = GetVal(buf);
+			m_conf.SetVar<std::string>(this->GetVar(buf), this->GetVal(buf));
 		}
 	}
 
-	m_ConfFile->Close();
+	m_confFile->Close();
 }
 
 void TWAT::CConfig::FillDefault()
 {
 	// set default values
-	m_Default["app_language"] = 0;
+	m_default.SetVar<int>("APP_LANGUAGE", 0);
 
-	m_Default["gra_maximized"] = 0;
-	m_Default["gra_fullscreen"] = 0;
+	m_default.SetVar<int>("GRA_MAXIMIZED", 0);
+	m_default.SetVar<int>("GRA_FULLSCREEN", 0);
 
-	m_Default["ntw_check_for_updates"] = 1;
-	m_Default["ntw_auto_refresh_translations"] = 1;
+	m_default.SetVar<int>("NTW_CHECK_FOR_UPDATES", 1);
+	m_default.SetVar<int>("NTW_AUTO_REFRESH_TRANSLATIONS", 1);
+
+	m_default.SetVar<int>("UI_MENU_EXPANDED", 1);
 }
 
 void TWAT::CConfig::WriteDefault()
 {
-	m_ConfFile->Open(m_Path, WRITE);
+	m_confFile->Open(m_path, WRITE);
 
-	for(std::map<std::string, int>::iterator i = m_Default.begin(); i != m_Default.end(); i++)
-		m_ConfFile->Write(i->first + " " + std::to_string(i->second) + "\n", APPEND);
+//	for(std::map<std::string, std::string>::iterator i = m_default.begin(); i != m_default.end(); i++)
+//		m_confFile->Write(i->first + " " + i->second + "\n", APPEND);
 
-	m_ConfFile->Close();
+	m_confFile->Close();
 }
 
 std::string TWAT::CConfig::GetVar(const std::string &line) const

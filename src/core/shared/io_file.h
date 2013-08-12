@@ -28,9 +28,9 @@ namespace TWAT
 
 	class CIOFile
 	{
-		std::string m_Path;
-		int m_Mode;
-		std::fstream m_Stream;
+		std::string m_path;
+		int m_mode;
+		std::fstream m_stream;
 
 	public:
 		// open a file, mode WRITE will append if possible

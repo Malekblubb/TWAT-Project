@@ -11,7 +11,8 @@
 #include <QMainWindow>
 #include <QMouseEvent>
 #include <QWidget>
-#include "../core/client.h"
+#include <QTreeWidget>
+#include <core/client.h>
 
 
 namespace Ui {
@@ -27,44 +28,18 @@ public:
 	~MainWindow();
 
 private:
+	void OnInit();
 	void OnExit();
-	void ResetMenuButtons();
-	
-protected:
-	void mousePressEvent(QMouseEvent *event);
-	void mouseMoveEvent(QMouseEvent *event);
 
 private slots:
-	void on_pbMainClose_clicked();
 
-	void on_pbMainMaximize_clicked();
-
-	void on_pbMainMinimize_clicked();
-
-	void on_widgetMainStacked_currentChanged();
-
-	void on_pbMenuPlayDemo_clicked();
-
-	void on_pbMenuConvertDemo_clicked();
-
-	void on_pbMenuExtractImages_clicked();
-
-	void on_pbMenuModifyMap_clicked();
-
-	void on_pbMenuCreateLan_clicked();
-
-	void on_pbMenuCreate247_clicked();
-
-	void on_pbMenuMasterServer_clicked();
-
-	void on_pbMenuTwatServer_clicked();
+	void on_m_twMainMenu_clicked(const QModelIndex &index);
 
 private:
-	Ui::MainWindow *ui;
-	QPoint m_DragPoint;
+	Ui::MainWindow *m_ui;
 
 protected:
-	TWAT::CClient *m_Client;
+	TWAT::CClient *m_client;
 };
 
 
