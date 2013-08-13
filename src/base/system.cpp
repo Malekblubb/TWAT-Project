@@ -89,7 +89,7 @@ int TWAT::System::UdpSock()
 	return socket(AF_INET, SOCK_DGRAM, 0);
 }
 
-int TWAT::System::UdpSend(int sock, unsigned char *data, size_t dataLen, Ip4Addr target)
+ssize_t TWAT::System::UdpSend(int sock, unsigned char *data, size_t dataLen, Ip4Addr target)
 {
 	sockaddr_in tmpAddr;
 
@@ -101,7 +101,7 @@ int TWAT::System::UdpSend(int sock, unsigned char *data, size_t dataLen, Ip4Addr
 	return sendto(sock, data, dataLen, 0, (sockaddr *)&tmpAddr, sizeof tmpAddr);
 }
 
-int TWAT::System::UdpRecv(int sock, unsigned char *buf, size_t bufLen)
+ssize_t TWAT::System::UdpRecv(int sock, unsigned char *buf, size_t bufLen)
 {
 	return recvfrom(sock, buf, bufLen, 0, NULL, NULL);
 }

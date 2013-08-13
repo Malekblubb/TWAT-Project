@@ -18,22 +18,10 @@ namespace TWAT
 	{
 		std::string m_path;
 		CConfigStorage m_default;
-		CConfigStorage m_conf;
 		CIOFile *m_confFile;
 
 	public:
-		enum SettingList
-		{
-			APP_LANGUAGE = 0,
-
-			GRA_MAXIMIZED = 100,
-			GRA_FULLSCREEN,
-
-			NTW_CHECK_FOR_UPDATES = 200,
-			NTW_AUTO_REFRESH_TRANSLATIONS,
-
-			UI_MENU_EXPANDED = 300
-		};
+		CConfigStorage m_conf; // TODO: maybe better to write a small wrapper to access config instead of making it public?
 
 		CConfig(const std::string &configPath);
 		void Init();
@@ -46,8 +34,8 @@ namespace TWAT
 		void WriteDefault();
 
 		// functions to get the Variable and the Value of a configline like "variable 1"
-		std::string GetVar(const std::string &line) const;
-		int GetVal(const std::string &line) const;
+		std::string GetVarFromLine(const std::string &line) const;
+		std::string GetValFromLine(const std::string &line) const;
 	};
 }
 

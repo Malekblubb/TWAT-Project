@@ -37,8 +37,8 @@ namespace TWAT
 		};
 
 		int UdpSock();
-		int UdpSend(int sock, unsigned char *data, size_t dataLen, Ip4Addr target);
-		int UdpRecv(int sock, unsigned char *buf, size_t bufLen);
+		ssize_t UdpSend(int sock, unsigned char *data, size_t dataLen, Ip4Addr target);
+		ssize_t UdpRecv(int sock, unsigned char *buf, size_t bufLen);
 
 
 

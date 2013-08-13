@@ -6,6 +6,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <iostream>
+#include <QStyledItemDelegate>
 
 using namespace TWAT;
 
@@ -30,7 +31,6 @@ void MainWindow::OnInit()
 	// twat client start
 	m_client = new CClient();
 	m_client->Init();
-
 
 	// user settings
 	m_ui->m_twMainMenu->expandAll();

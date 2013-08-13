@@ -33,12 +33,12 @@ void TWAT::CConfig::Init()
 
 void TWAT::CConfig::Save()
 {
+	std::string buf;
+
+	m_conf.GetList(&buf);
+
 	m_confFile->Open(m_path, NEW);
-
-//	for(std::map<std::string, std::string>::iterator i = m_conf.begin(); i != m_conf.end(); i++)
-//		if(i->first != "INVALID") // check for an invalid setting
-//			m_confFile->Write(i->first + " " + i->second + "\n", APPEND);
-
+	m_confFile->Write(buf, OVERWRITE);
 	m_confFile->Close();
 }
 
@@ -63,12 +63,11 @@ void TWAT::CConfig::ReadFull()
 	std::string buf;
 
 	m_confFile->Open(m_path, READ);
+
 	while(m_confFile->ReadLine(&buf))
 	{
 		if(!buf.empty())
-		{
-			m_conf.SetVar<std::string>(this->GetVar(buf), this->GetVal(buf));
-		}
+			m_conf.SetVar<std::string>(this->GetVarFromLine(buf), this->GetValFromLine(buf));
 	}
 
 	m_confFile->Close();
@@ -77,28 +76,29 @@ void TWAT::CConfig::ReadFull()
 void TWAT::CConfig::FillDefault()
 {
 	// set default values
-	m_default.SetVar<int>("APP_LANGUAGE", 0);
+	m_default.SetVar<int>("app_language", 0);
 
-	m_default.SetVar<int>("GRA_MAXIMIZED", 0);
-	m_default.SetVar<int>("GRA_FULLSCREEN", 0);
+	m_default.SetVar<int>("gra_maximized", 0);
+	m_default.SetVar<int>("gra_fullscreen", 0);
 
-	m_default.SetVar<int>("NTW_CHECK_FOR_UPDATES", 1);
-	m_default.SetVar<int>("NTW_AUTO_REFRESH_TRANSLATIONS", 1);
+	m_default.SetVar<int>("ntw_check_for_updates", 1);
+	m_default.SetVar<int>("ntw_auto_refresh_translations", 1);
 
-	m_default.SetVar<int>("UI_MENU_EXPANDED", 1);
+	m_default.SetVar<int>("ui_menu_expanded", 1);
 }
 
 void TWAT::CConfig::WriteDefault()
 {
+	std::string buf;
+
+	m_default.GetList(&buf);
+
 	m_confFile->Open(m_path, WRITE);
-
-//	for(std::map<std::string, std::string>::iterator i = m_default.begin(); i != m_default.end(); i++)
-//		m_confFile->Write(i->first + " " + i->second + "\n", APPEND);
-
+	m_confFile->Write(buf, OVERWRITE);
 	m_confFile->Close();
 }
 
-std::string TWAT::CConfig::GetVar(const std::string &line) const
+std::string TWAT::CConfig::GetVarFromLine(const std::string &line) const
 {
 	int space = line.find(" ");
 
@@ -108,14 +108,14 @@ std::string TWAT::CConfig::GetVar(const std::string &line) const
 	return "INVALID";
 }
 
-int TWAT::CConfig::GetVal(const std::string &line) const
+std::string TWAT::CConfig::GetValFromLine(const std::string &line) const
 {
 	int space = line.find(" ");
 	int length = line.length();
 
 	// TODO: check if value is a digit
 	if(space != -1)
-		return std::stoi(line.substr(space, length - space));
+		return line.substr(space + 1, length - space - 1);
 
-	return std::stoi("-1");
+	return "-1";
 }
