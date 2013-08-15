@@ -19,8 +19,3 @@ HEADERS += $$system("find ./src -name '*.h'")
 FORMS    += src/ui/ui_layouts/mainwindow.ui
 RESOURCES += data/ressources.qrc
 }
-
-HEADERS += \
-    src/core/shared/config_storage.h
-
-SOURCES +=

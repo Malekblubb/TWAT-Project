@@ -26,7 +26,13 @@ namespace TWAT
 		class Ip4Addr
 		{
 		public:
-			Ip4Addr(const std::string &addr);
+			enum Flags
+			{
+				NUMERIC = 1,
+				HOSTNAME = 2
+			};
+
+			Ip4Addr(const std::string &addr, int flag = NUMERIC);
 
 			std::string Ip() const {return m_ip;}
 			unsigned short Port() const {return m_port;}
@@ -37,7 +43,7 @@ namespace TWAT
 		};
 
 		int UdpSock();
-		ssize_t UdpSend(int sock, unsigned char *data, size_t dataLen, Ip4Addr target);
+		ssize_t UdpSend(int sock, unsigned char *data, size_t dataLen, Ip4Addr *target);
 		ssize_t UdpRecv(int sock, unsigned char *buf, size_t bufLen);
 
 

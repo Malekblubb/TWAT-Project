@@ -27,5 +27,10 @@
         <file>img/icons/image-extract/all.png</file>
         <file>img/icons/image-extract/camera.png</file>
         <file>img/icons/image-extract/selected.png</file>
+        <file>img/icons/file.png</file>
+        <file>img/icons/search.png</file>
+        <file>img/icons/setting1.png</file>
+        <file>img/icons/ok.png</file>
+        <file>img/icons/x.png</file>
     </qresource>
 </RCC>

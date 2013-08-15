@@ -6,7 +6,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <iostream>
-#include <QStyledItemDelegate>
+#include <core/shared/network.h>
 
 using namespace TWAT;
 
