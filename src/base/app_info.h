@@ -4,8 +4,8 @@
  */
 
 
-#ifndef APP_INFO_H
-#define APP_INFO_H
+#ifndef BASE_APP_INFO_H
+#define BASE_APP_INFO_H
 
 #include "system.h"
 
@@ -23,4 +23,4 @@ namespace TWAT
 }
 
 
-#endif // APP_INFO_H
+#endif // BASE_APP_INFO_H

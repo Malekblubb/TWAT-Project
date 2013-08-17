@@ -3,8 +3,8 @@
  * See LICENSE for more information.
  */
 
-#ifndef CONFIG_VARS_H
-#define CONFIG_VARS_H
+#ifndef CORE_SHARED_CONFIG_VARS_H
+#define CORE_SHARED_CONFIG_VARS_H
 
 
 namespace TWAT

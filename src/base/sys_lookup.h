@@ -3,8 +3,8 @@
  * See LICENSE for more information.
  */
 
-#ifndef SYS_LOOKUP_H
-#define SYS_LOOKUP_H
+#ifndef BASE_SYS_LOOKUP_H
+#define BASE_SYS_LOOKUP_H
 
 
 namespace TWAT
@@ -37,13 +37,5 @@ namespace TWAT
 	#define ARCH "64"
 #endif
 
-
-// func-name
-
-#if defined(__GCC__) || defined(__GNUC__)
-#define FUNC __PRETTY_FUNCTION__
-#endif
-
-
 }
-#endif // SYS_LOOKUP_H
+#endif // BASE_SYS_LOOKUP_H

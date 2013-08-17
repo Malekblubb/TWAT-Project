@@ -46,14 +46,14 @@ bool TWAT::CConfig::CreateConfig()
 {
 	if(!m_confFile->Exists())
 	{
-		System::DbgLine("%: creating default config file", FUNC);
+		DBG("creating default config file");
 
 		m_confFile->Create();
 		m_confFile->Close();
 		return false;
 	}
 
-	System::DbgLine("%: config file found", FUNC);
+	DBG("config file found");
 	m_confFile->Close();
 	return true;
 }

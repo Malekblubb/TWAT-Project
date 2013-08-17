@@ -1,5 +1,5 @@
-#ifndef CONFIG_STORAGE_H
-#define CONFIG_STORAGE_H
+#ifndef CORE_SHARED_CONFIG_STORAGE_H
+#define CORE_SHARED_CONFIG_STORAGE_H
 
 
 #include <map>

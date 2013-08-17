@@ -3,15 +3,20 @@
  * See LICENSE for more information.
  */
 
-#include <base/system.h>
+#ifndef CORE_SHARED_NETWORK_H
+#define CORE_SHARED_NETWORK_H
 
 
-#ifndef NETWORK_H
-#define NETWORK_H
+#include <string>
 
 
 namespace TWAT
 {
+	namespace System
+	{
+		class CIpAddr;
+	}
+
 	enum
 	{
 		PKFLAG_CONNLESS = 1
@@ -19,7 +24,7 @@ namespace TWAT
 
 	struct NetworkPacketLabel
 	{
-		System::Ip4Addr *m_addr;
+		System::CIpAddr *m_addr;
 		int m_flags;
 		int m_dataSize;
 	};
@@ -29,7 +34,7 @@ namespace TWAT
 		NetworkPacketLabel m_label;
 		void *m_data;
 
-		NetworkPacket(System::Ip4Addr *addr, void *data, int dataLen, int flags = PKFLAG_CONNLESS);
+		NetworkPacket(System::CIpAddr *addr, void *data, int dataLen, int flags = PKFLAG_CONNLESS);
 		NetworkPacket(int dataLen); // setup for recv
 		~NetworkPacket();
 	};
@@ -37,11 +42,11 @@ namespace TWAT
 	class CNetworkBase
 	{
 	public:
-		void MakeConnless(NetworkPacket *pk);
+		static void MakeConnless(NetworkPacket *pk);
 
-		void SendConnless(int sock, NetworkPacket *pk);
-		ssize_t Send(int sock, NetworkPacket *pk);
-		ssize_t Recv(int sock, NetworkPacket *pk);
+		static ssize_t Send(int sock, NetworkPacket *pk);
+		static ssize_t Recv(int sock, NetworkPacket *pk, System::CIpAddr *fromAddr = 0);
+		static ssize_t RecvRaw(int sock, unsigned char *data, int dataLen, System::CIpAddr *fromAddr = 0);
 	};
 }
 

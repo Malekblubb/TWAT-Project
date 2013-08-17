@@ -3,12 +3,11 @@
  * See LICENSE for more information.
  */
 
-#ifndef CLIENT_H
-#define CLIENT_H
+#ifndef CORE_CLIENT_H
+#define CORE_CLIENT_H
 
 
-#include "shared/config.h"
-#include "shared/config_vars.h"
+#include <core/shared/config.h>
 
 
 namespace TWAT

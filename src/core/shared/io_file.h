@@ -3,8 +3,8 @@
  * See LICENSE for more information.
  */
 
-#ifndef IO_FILE_H
-#define IO_FILE_H
+#ifndef CORE_SHARED_IO_FILE_H
+#define CORE_SHARED_IO_FILE_H
 
 
 #include <string>

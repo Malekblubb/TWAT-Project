@@ -4,12 +4,15 @@
  */
 
 #include "system.h"
+#include "sys_lookup.h"
 
 #include <chrono>
 #include <cstring>
 #include <ctime>
 #include <iostream>
+#include <sstream>
 #include <stdexcept>
+#include <cerrno>
 
 // TODO: apple
 #if defined(OS_LINUX)
@@ -18,6 +21,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+#include <unistd.h>
 #elif defined(OS_WIN)
 #include <windows.h>
 #endif
@@ -72,38 +76,89 @@ std::string TWAT::System::Locale()
 	return locPre.substr(0, 2);
 }
 
+TWAT::System::CIpAddr::CIpAddr()
+{
+	m_isSet = false;
+}
 
-TWAT::System::Ip4Addr::Ip4Addr(const std::string &addr, int flag)
+TWAT::System::CIpAddr::CIpAddr(const std::string &addr)
+{
+	this->SetNewAddr(addr);
+}
+
+void TWAT::System::CIpAddr::SetNewAddr(const std::string &addr)
 {
 	if(addr.find(':') == std::string::npos)
-		throw std::invalid_argument("argument has invalid format (Ip4Addr)");
+		throw std::invalid_argument("argument has invalid format (CIpAddr)");
 
-	if(flag == NUMERIC)
-		if(addr.length() < 9)
-			throw std::length_error("argument has invalid length (Ip4Addr)");
+	if(addr.length() < 9)
+		throw std::length_error("argument has invalid length (CIpAddr)");
 
 	// get ip, port
 	m_ip = addr.substr(0, addr.find(':'));
 	m_port = std::atoi(addr.substr(addr.find(':') + 1, addr.length() - addr.find(':') - 1).c_str());
 
-	// get ip from hostname
-	if(flag == HOSTNAME)
-	{
-		hostent *host;
-		in_addr **addrList;
+	// always try to get ip from hostname
+	hostent *host;
+	in_addr **addrList;
 
-		host = gethostbyname(m_ip.c_str());
+	host = gethostbyname(m_ip.c_str());
+
+	if(host != 0)
+	{
 		addrList = (in_addr **)host->h_addr_list;
 		m_ip = inet_ntoa(*addrList[0]);
+		m_isSet = true;
+	}
+	else
+	{
+		// unable to get hosts ip -> not reachable?
+		m_fallbackHostname = m_ip;
+		m_ip = "0.0.0.0";
+		m_port = 0;
+		m_isSet = false;
 	}
 }
 
-int TWAT::System::UdpSock()
+std::string TWAT::System::IpAddrToStr(CIpAddr *addr)
 {
-	return socket(AF_INET, SOCK_DGRAM, 0);
+	if(addr->IsSet())
+		return addr->Ip() + ":" + std::to_string(addr->Port());
+
+	return "Unknown hostname (" + addr->Fallback() + ")";
 }
 
-ssize_t TWAT::System::UdpSend(int sock, unsigned char *data, size_t dataLen, Ip4Addr *target)
+int TWAT::System::UdpSock(CIpAddr *bindAddr)
+{
+	int tmpSock = socket(AF_INET, SOCK_DGRAM, 0);
+	sockaddr_in tmpAddr;
+
+	tmpAddr.sin_family = AF_INET;
+
+	if(bindAddr == 0)
+	{
+		// don't care about the address
+		tmpAddr.sin_port = htons(0);
+		tmpAddr.sin_addr.s_addr = htonl(INADDR_ANY);
+	}
+	else
+	{
+		tmpAddr.sin_port = htons(bindAddr->Port());
+		tmpAddr.sin_addr.s_addr = inet_addr(bindAddr->Ip().c_str());
+	}
+
+	if(bind(tmpSock, (sockaddr *)&tmpAddr, sizeof tmpAddr) < 0)
+		return -1;
+
+	return tmpSock;
+}
+
+void TWAT::System::SockClose(int sock)
+{
+	close(sock);
+}
+
+ssize_t TWAT::System::UdpSend(int sock, unsigned char *data, size_t dataLen, CIpAddr *target)
 {
 	sockaddr_in tmpAddr;
 
@@ -115,14 +170,49 @@ ssize_t TWAT::System::UdpSend(int sock, unsigned char *data, size_t dataLen, Ip4
 	return sendto(sock, data, dataLen, 0, (sockaddr *)&tmpAddr, sizeof tmpAddr);
 }
 
-ssize_t TWAT::System::UdpRecv(int sock, unsigned char *buf, size_t bufLen)
+ssize_t TWAT::System::UdpRecv(int sock, unsigned char *buf, size_t bufLen, CIpAddr *fromAddr)
 {
-	return recvfrom(sock, buf, bufLen, 0, NULL, NULL);
+	sockaddr_in senderInfo;
+	socklen_t senderInfoSize = sizeof senderInfo;
+	ssize_t sent = -1;
+	std::stringstream stream;
+	std::string s;
+	char addrBuf[INET_ADDRSTRLEN];
+	int trys = 400000;
+
+	bzero(&senderInfo, sizeof senderInfo);
+
+	while((trys--) > 0) // loop until we got data or timeout
+	{
+		errno = 0;
+
+		sent = recvfrom(sock, buf, bufLen, MSG_DONTWAIT, (sockaddr *)&senderInfo, &senderInfoSize);
+
+		if(errno == EWOULDBLOCK)
+			continue;
+
+		else
+			break;
+	}
+
+	if(fromAddr != 0)
+	{
+		// get sender info
+		inet_ntop(AF_INET, &senderInfo.sin_addr, addrBuf, INET_ADDRSTRLEN);
+		stream << addrBuf << ":" << htons(senderInfo.sin_port);
+		fromAddr->SetNewAddr(stream.str());
+	}
+
+	return sent;
 }
 
 
-void TWAT::System::DbgLine(const char *format)
+void TWAT::System::DbgLine(const char *fnc, const char *format)
 {
-	std::cout << format;
+	if((std::string)fnc != "")
+		std::cout << "[" << fnc << "] " << format << std::endl;
+
+	else
+		std::cout << "\n";
 }
 

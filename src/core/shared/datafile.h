@@ -3,8 +3,8 @@
  * See LICENSE for more information.
  */
 
-#ifndef DATAFILE_H
-#define DATAFILE_H
+#ifndef CORE_SHARED_DATAFILE_H
+#define CORE_SHARED_DATAFILE_H
 
 
 #include <fstream>

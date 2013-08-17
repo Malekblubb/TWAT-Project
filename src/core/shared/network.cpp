@@ -4,32 +4,32 @@
  */
 
 #include "network.h"
-
+#include <base/system.h>
 #include <cstring>
 
 
-TWAT::NetworkPacket::NetworkPacket(System::Ip4Addr *addr, void *data, int dataLen, int flags)
+TWAT::NetworkPacket::NetworkPacket(System::CIpAddr *addr, void *data, int dataLen, int flags)
 {
 	// setup infolabel
 	if(flags&PKFLAG_CONNLESS)
 	{
-		this->m_label.m_dataSize = dataLen + 6; // add space for connless-header
-		this->m_label.m_flags |= PKFLAG_CONNLESS;
+		m_label.m_dataSize = dataLen + 6; // add space for connless-header
+		m_label.m_flags |= PKFLAG_CONNLESS;
 	}
 	else
-		this->m_label.m_dataSize = dataLen;
+		m_label.m_dataSize = dataLen;
 
-	this->m_label.m_addr = addr;
+	m_label.m_addr = addr;
 
 	// copy data
-	this->m_data = std::malloc(this->m_label.m_dataSize);
+	m_data = std::malloc(m_label.m_dataSize);
 	std::memcpy(m_data, data, dataLen);
 }
 
 TWAT::NetworkPacket::NetworkPacket(int dataLen)
 {
-	this->m_data = std::malloc(dataLen);
-	this->m_label.m_dataSize = dataLen;
+	m_data = std::malloc(dataLen);
+	m_label.m_dataSize = dataLen;
 }
 
 TWAT::NetworkPacket::~NetworkPacket()
@@ -55,17 +55,26 @@ void TWAT::CNetworkBase::MakeConnless(NetworkPacket *pk)
 	}
 }
 
-void TWAT::CNetworkBase::SendConnless(int sock, NetworkPacket *pk)
-{
-	System::UdpSend(sock, (unsigned char *)pk->m_data, pk->m_label.m_dataSize, pk->m_label.m_addr);
-}
-
 ssize_t TWAT::CNetworkBase::Send(int sock, NetworkPacket *pk)
 {
+	if(pk->m_label.m_flags&PKFLAG_CONNLESS)
+		return System::UdpSend(sock, (unsigned char *)pk->m_data, pk->m_label.m_dataSize, pk->m_label.m_addr);
 
+	// TODO: some other send stuff
+	return System::UdpSend(sock, (unsigned char *)pk->m_data, pk->m_label.m_dataSize, pk->m_label.m_addr);
 }
 
-ssize_t TWAT::CNetworkBase::Recv(int sock, NetworkPacket *pk)
+ssize_t TWAT::CNetworkBase::Recv(int sock, NetworkPacket *pk, System::CIpAddr *fromAddr)
 {
-	return System::UdpRecv(sock, (unsigned char *)pk->m_data, pk->m_label.m_dataSize);
+	ssize_t got = System::UdpRecv(sock, (unsigned char *)pk->m_data, pk->m_label.m_dataSize, fromAddr);
+
+	// set new size to pk-label
+	pk->m_label.m_dataSize = got;
+
+	return got;
+}
+
+ssize_t TWAT::CNetworkBase::RecvRaw(int sock, unsigned char *data, int dataLen, System::CIpAddr *fromAddr)
+{
+	return System::UdpRecv(sock, (unsigned char *)data, dataLen, fromAddr);
 }

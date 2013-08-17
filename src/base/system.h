@@ -3,11 +3,11 @@
  * See LICENSE for more information.
  */
 
-#ifndef SYSTEM_H
-#define SYSTEM_H
+#ifndef BASE_SYSTEM_H
+#define BASE_SYSTEM_H
 
 
-#include "sys_lookup.h"
+//#include "sys_lookup.h"
 #include <string>
 #include <iostream>
 
@@ -22,41 +22,46 @@ namespace TWAT
 		std::string Locale(); // returns the locale like "de"
 
 
+		// TODO: ipv6 stuff
 		// network communication
-		class Ip4Addr
+		class CIpAddr
 		{
-		public:
-			enum Flags
-			{
-				NUMERIC = 1,
-				HOSTNAME = 2
-			};
-
-			Ip4Addr(const std::string &addr, int flag = NUMERIC);
-
-			std::string Ip() const {return m_ip;}
-			unsigned short Port() const {return m_port;}
-
-		private:
+			std::string m_fallbackHostname;
 			std::string m_ip;
 			unsigned short m_port;
+			bool m_isSet;
+
+		public:
+			CIpAddr();
+			CIpAddr(const std::string &addr);
+
+			void SetNewAddr(const std::string &addr);
+
+			std::string Fallback() const {return m_fallbackHostname;}
+			std::string Ip() const {return m_ip;}
+			unsigned short Port() const {return m_port;}
+			bool IsSet() const {return m_isSet;}
 		};
 
-		int UdpSock();
-		ssize_t UdpSend(int sock, unsigned char *data, size_t dataLen, Ip4Addr *target);
-		ssize_t UdpRecv(int sock, unsigned char *buf, size_t bufLen);
+		std::string IpAddrToStr(CIpAddr *addr);
 
+		int UdpSock(CIpAddr *bindAddr = 0);
+		void SockClose(int sock);
+		ssize_t UdpSend(int sock, unsigned char *data, size_t dataLen, CIpAddr *target);
+		ssize_t UdpRecv(int sock, unsigned char *buf, size_t bufLen, CIpAddr *fromAddr);
 
 
 		// stdout-log
-		void DbgLine(const char *format);
-		template<typename T, typename ... Args> void DbgLine(const char *format, T val, Args ... args)
+
+		void DbgLine(const char *fnc, const char *format);
+		template<typename T, typename ... Args> void DbgLine(const char *fnc, const char *format, T val, Args ... args)
 		{
 			std::string tmp = (std::string)format;
 
 			if(tmp.find('\n') == std::string::npos)
 			{
 				tmp.append("\n");
+				tmp = "[" + (std::string)fnc + "] " + tmp;
 				format = tmp.c_str();
 			}
 
@@ -65,13 +70,14 @@ namespace TWAT
 				if(*format == '%')
 				{
 					std::cout << val;
-					DbgLine(format + 1, args... ); // recursive call
+					DbgLine("", format + 1, args... ); // recursive call
 					return;
 				}
 				std::cout << *format;
 			}
 		}
+		#define DBG(...)System::DbgLine(__func__, __VA_ARGS__)
 	}
 }
 
-#endif // SYSTEM_H
+#endif // BASE_SYSTEM_H

@@ -18,7 +18,7 @@ TWAT::CClient::CClient()
 void TWAT::CClient::Init()
 {
 	// start log
-	System::DbgLine("%: TWAT version % started. Timestamp: %", FUNC, APP_VERSION, System::TimeStr());
+	DBG("TWAT version % started. Timestamp: %", APP_VERSION, System::TimeStr());
 
 	// setup config(-path)
 	QDir confDir(APP_WORK_PATH.c_str());
