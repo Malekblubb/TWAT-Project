@@ -5,3 +5,6 @@
 *.autosave
 *.pro.user
 *.pro.user*
+
+#Editors
+*~
