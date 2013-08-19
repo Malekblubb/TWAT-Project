@@ -3,7 +3,7 @@
  * See LICENSE for more information.
  */
 
-#include <windows/mainwindow.h>
+#include <windows/mainwindow/mainwindow.h>
 #include <QApplication>
 
 int main(int argc, char *argv[])

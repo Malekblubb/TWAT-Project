@@ -3,8 +3,8 @@
  * See LICENSE for more information.
  */
 
-#ifndef SERVER_UTIL_H
-#define SERVER_UTIL_H
+#ifndef TOOLS_TW_NET_SERVER_UTIL_H
+#define TOOLS_TW_NET_SERVER_UTIL_H
 
 
 #include <string>
@@ -44,25 +44,30 @@ namespace TWAT
 			int m_maxPlayers;
 			int m_numPlayers;
 			int m_flags;
+			int m_latency;
 		};
 
 		class CServerSniffer
 		{
 			int m_sock;
 			System::CIpAddr *m_addr;
-			unsigned char *m_recData;
+
 			int m_recLen;
+			unsigned char *m_recData;
+			unsigned char m_token; // token must be only one byte
+			long long m_latency;
 
 		public:
+			CServerSniffer();
 			~CServerSniffer();
 
 			bool Connect(const std::string &addr);
 			bool PullInfo(ServerInfo *inf);
 
 		private:
-			void SendReq();
+			bool SendReq();
 		};
 	}
 }
 
-#endif // SERVER_UTIL_H
+#endif // TOOLS_TW_NET_SERVER_UTIL_H

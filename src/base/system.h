@@ -7,7 +7,6 @@
 #define BASE_SYSTEM_H
 
 
-//#include "sys_lookup.h"
 #include <string>
 #include <iostream>
 
@@ -17,7 +16,9 @@ namespace TWAT
 	namespace System
 	{
 		// systemside funcs
+		long long TimeStamp();
 		std::string TimeStr(); // returns current timestamp as std::string
+
 		std::string WorkDir(); // returns the path of the main wotking-directory like /home/user/.twat
 		std::string Locale(); // returns the locale like "de"
 
@@ -43,7 +44,14 @@ namespace TWAT
 			bool IsSet() const {return m_isSet;}
 		};
 
+		enum IpVer
+		{
+			IP4 = 0,
+			IP6
+		};
+
 		std::string IpAddrToStr(CIpAddr *addr);
+		std::string RawIpToStr(int ipVer, unsigned char *data);
 
 		int UdpSock(CIpAddr *bindAddr = 0);
 		void SockClose(int sock);
@@ -52,7 +60,6 @@ namespace TWAT
 
 
 		// stdout-log
-
 		void DbgLine(const char *fnc, const char *format);
 		template<typename T, typename ... Args> void DbgLine(const char *fnc, const char *format, T val, Args ... args)
 		{

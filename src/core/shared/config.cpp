@@ -40,6 +40,8 @@ void TWAT::CConfig::Save()
 	m_confFile->Open(m_path, NEW);
 	m_confFile->Write(buf, OVERWRITE);
 	m_confFile->Close();
+
+	DBG("config saved");
 }
 
 bool TWAT::CConfig::CreateConfig()

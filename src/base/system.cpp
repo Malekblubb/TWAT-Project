@@ -27,6 +27,12 @@
 #endif
 
 
+long long TWAT::System::TimeStamp()
+{
+	return (long long)std::chrono::duration_cast<std::chrono::seconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count()
+			+ (long long)std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
+}
+
 std::string TWAT::System::TimeStr()
 {
 	auto timePoint = std::chrono::system_clock::now();
@@ -128,6 +134,28 @@ std::string TWAT::System::IpAddrToStr(CIpAddr *addr)
 	return "Unknown hostname (" + addr->Fallback() + ")";
 }
 
+std::string TWAT::System::RawIpToStr(int ipVer, unsigned char *data)
+{
+	char tmp[INET6_ADDRSTRLEN];
+	int af = 0;
+
+	if(ipVer == IP4)
+		af = AF_INET;
+	else if(ipVer == IP6)
+		af = AF_INET6;
+
+	if(inet_ntop(af, data, tmp, sizeof tmp))
+	{
+		if(ipVer == IP4)
+			return (std::string)tmp;
+
+		else if(ipVer == IP6)
+			return "[" + (std::string)tmp + "]";
+	}
+
+	return "Invalid data passed";
+}
+
 int TWAT::System::UdpSock(CIpAddr *bindAddr)
 {
 	int tmpSock = socket(AF_INET, SOCK_DGRAM, 0);
@@ -174,19 +202,19 @@ ssize_t TWAT::System::UdpRecv(int sock, unsigned char *buf, size_t bufLen, CIpAd
 {
 	sockaddr_in senderInfo;
 	socklen_t senderInfoSize = sizeof senderInfo;
-	ssize_t sent = -1;
+	ssize_t got = -1;
 	std::stringstream stream;
-	std::string s;
 	char addrBuf[INET_ADDRSTRLEN];
 	int trys = 400000;
 
 	bzero(&senderInfo, sizeof senderInfo);
+	std::memset(buf, 0, bufLen);
 
 	while((trys--) > 0) // loop until we got data or timeout
 	{
 		errno = 0;
 
-		sent = recvfrom(sock, buf, bufLen, MSG_DONTWAIT, (sockaddr *)&senderInfo, &senderInfoSize);
+		got = recvfrom(sock, buf, bufLen, MSG_DONTWAIT, (sockaddr *)&senderInfo, &senderInfoSize);
 
 		if(errno == EWOULDBLOCK)
 			continue;
@@ -203,7 +231,7 @@ ssize_t TWAT::System::UdpRecv(int sock, unsigned char *buf, size_t bufLen, CIpAd
 		fromAddr->SetNewAddr(stream.str());
 	}
 
-	return sent;
+	return got;
 }
 
 
@@ -213,6 +241,6 @@ void TWAT::System::DbgLine(const char *fnc, const char *format)
 		std::cout << "[" << fnc << "] " << format << std::endl;
 
 	else
-		std::cout << "\n";
+		std::cout << format;
 }
 

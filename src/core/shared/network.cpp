@@ -8,7 +8,7 @@
 #include <cstring>
 
 
-TWAT::NetworkPacket::NetworkPacket(System::CIpAddr *addr, void *data, int dataLen, int flags)
+TWAT::CNetworkPacket::CNetworkPacket(System::CIpAddr *addr, void *data, int dataLen, int flags)
 {
 	// setup infolabel
 	if(flags&PKFLAG_CONNLESS)
@@ -22,40 +22,57 @@ TWAT::NetworkPacket::NetworkPacket(System::CIpAddr *addr, void *data, int dataLe
 	m_label.m_addr = addr;
 
 	// copy data
-	m_data = std::malloc(m_label.m_dataSize);
+	m_data = (unsigned char*)std::malloc(m_label.m_dataSize);
+	std::memset(m_data, 0, m_label.m_dataSize);
 	std::memcpy(m_data, data, dataLen);
 }
 
-TWAT::NetworkPacket::NetworkPacket(int dataLen)
+TWAT::CNetworkPacket::CNetworkPacket(int dataLen)
 {
-	m_data = std::malloc(dataLen);
+	m_data = (unsigned char *)std::malloc(dataLen);
 	m_label.m_dataSize = dataLen;
 }
 
-TWAT::NetworkPacket::~NetworkPacket()
+TWAT::CNetworkPacket::~CNetworkPacket()
 {
 	std::free(m_data);
 }
 
-
-void TWAT::CNetworkBase::MakeConnless(NetworkPacket *pk)
+void TWAT::CNetworkPacket::MakeConnless()
 {
 	// check if packet has connless flag
-	if(pk->m_label.m_flags&PKFLAG_CONNLESS)
+	if(m_label.m_flags&PKFLAG_CONNLESS)
 	{
 		// make connless
-		unsigned char tmp[pk->m_label.m_dataSize + 6];
+		unsigned char tmp[m_label.m_dataSize + 6];
 
 		for(int i = 0; i < 6; i++)
 			tmp[i] = 0xff;
 
-		std::memcpy(&tmp[6], pk->m_data, pk->m_label.m_dataSize);
-		std::memset(pk->m_data, 0, pk->m_label.m_dataSize);
-		std::memcpy(pk->m_data, tmp, pk->m_label.m_dataSize);
+		std::memcpy(&tmp[6], m_data, m_label.m_dataSize);
+		std::memset(m_data, 0, m_label.m_dataSize);
+		std::memcpy(m_data, tmp, m_label.m_dataSize);
 	}
 }
 
-ssize_t TWAT::CNetworkBase::Send(int sock, NetworkPacket *pk)
+void TWAT::CNetworkPacket::AddData(unsigned char *data, int dataLen)
+{
+	if(dataLen < 1)
+		return;
+
+	unsigned char tmp[m_label.m_dataSize + dataLen];
+
+	std::memcpy(tmp, m_data, m_label.m_dataSize); // copy old data
+	std::memcpy(tmp + m_label.m_dataSize, data, dataLen); // add new data at end
+
+	std::memset(m_data, 0, m_label.m_dataSize + dataLen); // clear out member data
+	std::memcpy(m_data, tmp, m_label.m_dataSize + dataLen); // set new member data
+
+	// set new len to info-label
+	m_label.m_dataSize += dataLen;
+}
+
+ssize_t TWAT::CNetworkBase::Send(int sock, CNetworkPacket *pk)
 {
 	if(pk->m_label.m_flags&PKFLAG_CONNLESS)
 		return System::UdpSend(sock, (unsigned char *)pk->m_data, pk->m_label.m_dataSize, pk->m_label.m_addr);
@@ -64,7 +81,7 @@ ssize_t TWAT::CNetworkBase::Send(int sock, NetworkPacket *pk)
 	return System::UdpSend(sock, (unsigned char *)pk->m_data, pk->m_label.m_dataSize, pk->m_label.m_addr);
 }
 
-ssize_t TWAT::CNetworkBase::Recv(int sock, NetworkPacket *pk, System::CIpAddr *fromAddr)
+ssize_t TWAT::CNetworkBase::Recv(int sock, CNetworkPacket *pk, System::CIpAddr *fromAddr)
 {
 	ssize_t got = System::UdpRecv(sock, (unsigned char *)pk->m_data, pk->m_label.m_dataSize, fromAddr);
 

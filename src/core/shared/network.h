@@ -29,23 +29,27 @@ namespace TWAT
 		int m_dataSize;
 	};
 
-	struct NetworkPacket
+	class CNetworkPacket
 	{
+	public:
 		NetworkPacketLabel m_label;
-		void *m_data;
+		unsigned char *m_data;
 
-		NetworkPacket(System::CIpAddr *addr, void *data, int dataLen, int flags = PKFLAG_CONNLESS);
-		NetworkPacket(int dataLen); // setup for recv
-		~NetworkPacket();
+		CNetworkPacket(System::CIpAddr *addr, void *data, int dataLen, int flags = PKFLAG_CONNLESS);
+		CNetworkPacket(int dataLen); // setup for recv
+		~CNetworkPacket();
+
+		void MakeConnless();
+		void AddData(unsigned char *data, int dataLen);
 	};
 
 	class CNetworkBase
 	{
 	public:
-		static void MakeConnless(NetworkPacket *pk);
+		static void MakeConnless(CNetworkPacket *pk);
 
-		static ssize_t Send(int sock, NetworkPacket *pk);
-		static ssize_t Recv(int sock, NetworkPacket *pk, System::CIpAddr *fromAddr = 0);
+		static ssize_t Send(int sock, CNetworkPacket *pk);
+		static ssize_t Recv(int sock, CNetworkPacket *pk, System::CIpAddr *fromAddr = 0);
 		static ssize_t RecvRaw(int sock, unsigned char *data, int dataLen, System::CIpAddr *fromAddr = 0);
 	};
 }

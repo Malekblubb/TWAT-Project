@@ -3,9 +3,11 @@
  * See LICENSE for more information.
  */
 
-#ifndef INFO_DECODER
-#define INFO_DECODER
+#ifndef TOOLS_TW_NET_INFO_DECODER_H
+#define TOOLS_TW_NET_INFO_DECODER_H
 
+
+#include <string>
 
 
 namespace TWAT
@@ -15,12 +17,12 @@ namespace TWAT
 		class CRawInfoDecoder
 		{
 		public:
-			static bool DecodeServerInfo(unsigned char *data, int dataLen, class ServerInfo *inf);
-			static bool DecodeListInfo(unsigned char *data);
+			static bool DecodeServerInfo(unsigned char *data, int dataLen, int token, struct ServerInfo *inf);
+			static bool DecodeListInfo(unsigned char *data, int dataLen, class CMasterList *lst);
 			static int DecodeCountInfo(unsigned char *data, int dataLen);
 		};
 	}
 }
 
 
-#endif // INFO_DECODER
+#endif // TOOLS_TW_NET_INFO_DECODER_H

@@ -20,6 +20,17 @@ namespace TWAT
 
 	namespace TwTools
 	{
+		class CMasterList
+		{
+			std::vector<std::string> m_ips;
+
+		public:
+			std::string operator[](int pos) {return m_ips.at(pos);}
+
+			void AddAddr(const std::string &ip);
+			int Size() const {return m_ips.size();}
+		};
+
 		class CMasterRequest
 		{
 			enum Reqs
@@ -33,14 +44,14 @@ namespace TWAT
 
 		public:
 			CMasterRequest();
+			~CMasterRequest();
 
 			void AddServer(const std::string &addr);
 			int PullCount();
-			bool PullList();
+			bool PullList(CMasterList *lst);
 
 		private:
 			int SendReq(System::CIpAddr *addr, int req, unsigned char *data);
-
 		};
 	}
 }

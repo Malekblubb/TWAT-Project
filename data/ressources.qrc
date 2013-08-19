@@ -1,22 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>img/logos/twat100a.png</file>
-        <file>img/icons/pbMenuPlayDemo_def.png</file>
-        <file>img/icons/pbMenuPlayDemo_active.png</file>
-        <file>img/icons/pbMenuTwatServer_active.png</file>
-        <file>img/icons/pbMenuTwatServer_def.png</file>
-        <file>img/icons/pbMenuModifyMap_def.png</file>
-        <file>img/icons/pbMenuModifyMap_active.png</file>
-        <file>img/icons/pbMenuConvertDemo_active.png</file>
-        <file>img/icons/pbMenuConvertDemo_def.png</file>
-        <file>img/icons/pbMenuCreate247_active.png</file>
-        <file>img/icons/pbMenuCreate247_def.png</file>
-        <file>img/icons/pbMenuCreateLan_active.png</file>
-        <file>img/icons/pbMenuCreateLan_def.png</file>
-        <file>img/icons/pbMenuExtractImages_active.png</file>
-        <file>img/icons/pbMenuExtractImages_def.png</file>
-        <file>img/icons/pbMenuMasterServer_active.png</file>
-        <file>img/icons/pbMenuMasterServer_def.png</file>
         <file>img/icons/right-controls/close.png</file>
         <file>img/icons/right-controls/maximize.png</file>
         <file>img/icons/right-controls/minimize.png</file>
@@ -32,5 +16,25 @@
         <file>img/icons/setting1.png</file>
         <file>img/icons/ok.png</file>
         <file>img/icons/x.png</file>
+        <file>img/icons/extern_active.png</file>
+        <file>img/icons/list.png</file>
+        <file>img/icons/list_active.png</file>
+        <file>img/icons/plug_active.png</file>
+        <file>img/icons/refresh_active.png</file>
+        <file>img/icons/server_active.png</file>
+        <file>img/icons/setting_active.png</file>
+        <file>img/icons/stats_active.png</file>
+        <file>img/icons/video_active.png</file>
+        <file>img/icons/wifi_active.png</file>
+        <file>img/icons/extern.png</file>
+        <file>img/icons/plug.png</file>
+        <file>img/icons/refresh.png</file>
+        <file>img/icons/server.png</file>
+        <file>img/icons/setting.png</file>
+        <file>img/icons/video.png</file>
+        <file>img/icons/wifi.png</file>
+        <file>img/icons/stats.png</file>
+        <file>img/icons/convert.png</file>
+        <file>img/icons/convert_active.png</file>
     </qresource>
 </RCC>
