@@ -16,10 +16,21 @@
 #include <cstring>
 
 
+TWAT::TwTools::CMasterList::CMasterList()
+{
+	m_chunkSize = 0;
+}
+
 void TWAT::TwTools::CMasterList::AddAddr(const std::string &ip)
 {
 	m_ips.push_back(ip);
 }
+
+void TWAT::TwTools::CMasterList::AddChunkSize(int size)
+{
+	m_chunkSize += size;
+}
+
 
 TWAT::TwTools::CMasterRequest::CMasterRequest()
 {
@@ -35,6 +46,11 @@ void TWAT::TwTools::CMasterRequest::AddServer(const std::string &addr)
 {
 	System::CIpAddr *tmpAddr = new System::CIpAddr(addr);
 	m_addrs.push_back(tmpAddr);
+}
+
+void TWAT::TwTools::CMasterRequest::ClearServers()
+{
+	m_addrs.clear();
 }
 
 int TWAT::TwTools::CMasterRequest::PullCount()
@@ -66,22 +82,25 @@ int TWAT::TwTools::CMasterRequest::PullCount()
 	return count;
 }
 
-bool TWAT::TwTools::CMasterRequest::PullList(CMasterList *lst)
+bool TWAT::TwTools::CMasterRequest::PullList(CMasterList *lst, int expCount)
 {
 	int gotLen = 0;
 	unsigned char *recData = (unsigned char *)std::malloc(2048); // moa space
 
-	for(std::vector<System::CIpAddr *>::iterator i = m_addrs.begin(); i != m_addrs.end(); ++i)
+	while(lst->ChunkSize() < expCount)
 	{
-		std::memset(recData, 0, 2048);
-
-		if((gotLen = this->SendReq(*i, LIST, recData)) > 0)
+		for(std::vector<System::CIpAddr *>::iterator i = m_addrs.begin(); i != m_addrs.end(); ++i)
 		{
-			if(!CRawInfoDecoder::DecodeListInfo(recData, gotLen, lst))
-				DBG("error while decode recved list data from: %", System::IpAddrToStr(*i));
+			std::memset(recData, 0, 2048);
+
+			if((gotLen = this->SendReq(*i, LIST, recData)) > 0)
+			{
+				if(!CRawInfoDecoder::DecodeListInfo(recData, gotLen, lst))
+					DBG("error while decode recved list data from: %", System::IpAddrToStr(*i));
+			}
+			else
+				DBG("error while connect to master: %", System::IpAddrToStr(*i));
 		}
-		else
-			DBG("error while connect to master: %", System::IpAddrToStr(*i));
 	}
 
 	std::free(recData);
@@ -107,7 +126,6 @@ int TWAT::TwTools::CMasterRequest::SendReq(System::CIpAddr *addr, int req, unsig
 		break;
 	}
 
-//	CNetworkBase::MakeConnless(pk);
 	pk->MakeConnless();
 	CNetworkBase::Send(m_sock, pk);
 	return CNetworkBase::RecvRaw(m_sock, data, bufLen);

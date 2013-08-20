@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2013 Christoph Malek
+ * See LICENSE for more information.
+ */
+
 #ifndef CORE_SHARED_CONFIG_STORAGE_H
 #define CORE_SHARED_CONFIG_STORAGE_H
 

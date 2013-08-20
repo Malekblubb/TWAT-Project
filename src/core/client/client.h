@@ -7,21 +7,16 @@
 #define CORE_CLIENT_H
 
 
-#include <core/shared/config.h>
-
-
 namespace TWAT
 {
 	class CClient
 	{
 	public:
 		CClient();
-		CConfig *m_config;
+		class CConfig *m_config;
 
 	public:
 		void Init();
-
-
 	};
 }
 

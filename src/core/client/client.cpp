@@ -6,6 +6,9 @@
 #include "client.h"
 
 #include <base/app_info.h>
+
+#include <core/shared/config.h>
+
 #include <iostream>
 #include <QDir>
 

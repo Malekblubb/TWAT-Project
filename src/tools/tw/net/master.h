@@ -9,6 +9,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 
 namespace TWAT
@@ -23,12 +24,16 @@ namespace TWAT
 		class CMasterList
 		{
 			std::vector<std::string> m_ips;
+			int m_chunkSize;
 
 		public:
+			CMasterList();
 			std::string operator[](int pos) {return m_ips.at(pos);}
 
 			void AddAddr(const std::string &ip);
+			void AddChunkSize(int size);
 			int Size() const {return m_ips.size();}
+			int ChunkSize() const {return m_chunkSize;}
 		};
 
 		class CMasterRequest
@@ -47,8 +52,10 @@ namespace TWAT
 			~CMasterRequest();
 
 			void AddServer(const std::string &addr);
+			void ClearServers();
+
 			int PullCount();
-			bool PullList(CMasterList *lst);
+			bool PullList(CMasterList *lst, int expCount);
 
 		private:
 			int SendReq(System::CIpAddr *addr, int req, unsigned char *data);

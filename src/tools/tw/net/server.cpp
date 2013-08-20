@@ -3,7 +3,7 @@
  * See LICENSE for more information.
  */
 
-#include "server_util.h"
+#include "server.h"
 
 #include "info_decoder.h"
 #include "pk_requests.h"

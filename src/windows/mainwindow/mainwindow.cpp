@@ -5,11 +5,18 @@
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <iostream>
-#include <core/shared/network.h>
-#include <tools/tw/net/server_util.h>
-#include <tools/tw/net/master.h>
+
 #include <base/system.h>
+
+#include <core/client/client.h>
+#include <core/shared/config.h>
+#include <core/shared/network.h>
+
+#include <tools/tw/net/server.h>
+#include <tools/tw/net/master.h>
+
+#include <core/client/serverlist.h>
+
 
 using namespace TWAT;
 
@@ -45,14 +52,24 @@ void MainWindow::OnExit()
 	m_client->m_config->Save();
 }
 
+void MainWindow::SetStatus(const std::string &status)
+{
+	m_ui->m_lbStatusbarStatusText->setText(status.c_str());
+}
+
 void MainWindow::on_m_twMainMenu_clicked(const QModelIndex &index)
 {
 	if(index.parent().isValid())
 		m_ui->m_widgetMainStacked->setCurrentIndex(index.parent().row() + index.row());
 }
 
-void MainWindow::on_pushButton_2_clicked()
+void MainWindow::on_m_pbSrvListRefresh_clicked()
 {
+	CTwServerBrowser browser;
 
+	browser.UseDefaultMasters(true);
+	browser.RefreshList();
+
+	for(int i = 0; i < browser.NumServers(); i++)
+		DBG("gametype: %", browser[i]->m_gameType);
 }
-

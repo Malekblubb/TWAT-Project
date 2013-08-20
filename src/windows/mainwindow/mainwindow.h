@@ -6,16 +6,18 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QDebug>
-#include <QPushButton>
+
+#include <string>
 #include <QMainWindow>
-#include <QMouseEvent>
-#include <QWidget>
-#include <QTreeWidget>
-#include <core/client.h>
 
 
-namespace Ui {
+namespace TWAT
+{
+	class CClient;
+}
+
+namespace Ui
+{
 	class MainWindow;
 }
 
@@ -30,12 +32,16 @@ public:
 private:
 	void OnInit();
 	void OnExit();
+	void SetStatus(const std::string &status);
 
+	// slots
 private slots:
 
 	void on_m_twMainMenu_clicked(const QModelIndex &index);
 
-	void on_pushButton_2_clicked();
+	// ----- serverlist -----
+
+	void on_m_pbSrvListRefresh_clicked();
 
 private:
 	Ui::MainWindow *m_ui;

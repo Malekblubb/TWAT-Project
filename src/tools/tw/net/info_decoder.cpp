@@ -5,7 +5,7 @@
 
 #include "info_decoder.h"
 
-#include "server_util.h"
+#include "server.h"
 #include "master.h"
 
 #include <base/system.h>
@@ -70,9 +70,12 @@ bool TWAT::TwTools::CRawInfoDecoder::DecodeListInfo(unsigned char *data, int dat
 
 	static unsigned char ip4Spacer[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff};
 	std::string addr;
+	int chunkSize = 0;
 
 	for(int i = 14; i < dataLen; i += 18)
 	{
+		++chunkSize;
+
 		bool isIp4 = std::memcmp(data + i, ip4Spacer, sizeof ip4Spacer) == 0 ? true : false;
 
 		// process ip
@@ -88,6 +91,9 @@ bool TWAT::TwTools::CRawInfoDecoder::DecodeListInfo(unsigned char *data, int dat
 
 		lst->AddAddr(addr);
 	}
+
+	// most time one chunk includes 75 ip adresses, the result will NOT be 100% correct
+	lst->AddChunkSize(chunkSize);
 
 	return true;
 }
