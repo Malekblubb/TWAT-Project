@@ -3,8 +3,8 @@
  * See LICENSE for more information.
  */
 
-#ifndef CORE_CLIENT_SERVERLIST_H
-#define CORE_CLIENT_SERVERLIST_H
+#ifndef CORE_CLIENT_COMPONENTS_SERVERBROWSER_H
+#define CORE_CLIENT_COMPONENTS_SERVERBROWSER_H
 
 
 #include <string>
@@ -23,7 +23,6 @@ namespace TWAT
 	class CTwServerBrowser
 	{
 		TwTools::CMasterRequest *m_masterReq;
-		TwTools::CMasterList *m_ipList;
 		std::vector<TwTools::ServerInfo> m_serverList;
 
 		int m_numServers;
@@ -34,11 +33,13 @@ namespace TWAT
 		CTwServerBrowser();
 
 		// direct read access to m_serverList at index pos
-		TwTools::ServerInfo *operator[](int pos){return &m_serverList[pos];}
+		TwTools::ServerInfo *At(int pos){return &m_serverList[pos];}
+
 		int NumServers() const {return m_numServers;}
 
 		void AddMaster(const std::string &ip);
 		void UseDefaultMasters(bool b);
+
 		void RefreshList();
 
 	private:
@@ -47,4 +48,4 @@ namespace TWAT
 	};
 }
 
-#endif // CORE_CLIENT_SERVERLIST_H
+#endif // CORE_CLIENT_COMPONENTS_SERVERBROWSER_H

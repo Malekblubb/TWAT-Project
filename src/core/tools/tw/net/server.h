@@ -3,8 +3,8 @@
  * See LICENSE for more information.
  */
 
-#ifndef TOOLS_TW_NET_SERVER_UTIL_H
-#define TOOLS_TW_NET_SERVER_UTIL_H
+#ifndef CORE_TOOLS_TW_NET_SERVER_H
+#define CORE_TOOLS_TW_NET_SERVER_H
 
 
 #include <string>
@@ -45,6 +45,8 @@ namespace TWAT
 			int m_numPlayers;
 			int m_flags;
 			int m_latency;
+
+			bool m_isValid;
 		};
 
 		class CServerSniffer
@@ -61,6 +63,7 @@ namespace TWAT
 			CServerSniffer();
 			~CServerSniffer();
 
+			void Clear();
 			bool Connect(const std::string &addr);
 			bool PullInfo(ServerInfo *inf);
 
@@ -70,4 +73,4 @@ namespace TWAT
 	}
 }
 
-#endif // TOOLS_TW_NET_SERVER_UTIL_H
+#endif // CORE_TOOLS_TW_NET_SERVER_H

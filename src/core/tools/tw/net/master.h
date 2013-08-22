@@ -3,13 +3,12 @@
  * See LICENSE for more information.
  */
 
-#ifndef TOOLS_TW_NET_MASTER_H
-#define TOOLS_TW_NET_MASTER_H
+#ifndef CORE_TOOLS_TW_NET_MASTER_H
+#define CORE_TOOLS_TW_NET_MASTER_H
 
 
 #include <string>
 #include <vector>
-#include <map>
 
 
 namespace TWAT
@@ -28,7 +27,7 @@ namespace TWAT
 
 		public:
 			CMasterList();
-			std::string operator[](int pos) {return m_ips.at(pos);}
+			std::string operator[](int pos) {return m_ips[pos];}
 
 			void AddAddr(const std::string &ip);
 			void AddChunkSize(int size);
@@ -63,4 +62,4 @@ namespace TWAT
 	}
 }
 
-#endif // TOOLS_TW_NET_MASTER_H
+#endif // CORE_TOOLS_TW_NET_MASTER_H

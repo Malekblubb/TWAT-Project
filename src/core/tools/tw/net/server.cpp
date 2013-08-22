@@ -18,13 +18,14 @@
 TWAT::TwTools::CServerSniffer::CServerSniffer()
 {
 	m_sock = System::UdpSock();
+	m_addr = new System::CIpAddr();
 	m_recData = (unsigned char *)std::malloc(1024);
 	m_token = 5; // random
 }
 
 bool TWAT::TwTools::CServerSniffer::Connect(const std::string &addr)
 {
-	m_addr = new System::CIpAddr(addr);
+	m_addr->SetNewAddr(addr);
 
 	if(m_sock < 0)
 		return false;
@@ -46,7 +47,8 @@ bool TWAT::TwTools::CServerSniffer::PullInfo(ServerInfo *inf)
 		return false;
 	}
 
-	// add latency (non decode stuff)
+	// non decode stuff
+	inf->m_addr = System::IpAddrToStr(m_addr);
 	inf->m_latency = m_latency;
 
 	return true;
@@ -66,7 +68,7 @@ bool TWAT::TwTools::CServerSniffer::SendReq()
 	// send, recv, ping
 	start = System::TimeStamp();
 	CNetworkBase::Send(m_sock, sPk);
-	m_recLen = CNetworkBase::RecvRaw(m_sock, m_recData, 1024);
+	m_recLen = CNetworkBase::RecvRaw(m_sock, m_recData, 1024, m_addr);
 	end = System::TimeStamp();
 	m_latency = (end - start) / 1000;
 

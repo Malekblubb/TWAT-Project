@@ -3,8 +3,8 @@
  * See LICENSE for more information.
  */
 
-#ifndef TOOLS_TW_NET_INFO_DECODER_H
-#define TOOLS_TW_NET_INFO_DECODER_H
+#ifndef CORE_TOOLS_TW_NET_INFO_DECODER_H
+#define CORE_TOOLS_TW_NET_INFO_DECODER_H
 
 
 #include <string>
@@ -25,4 +25,4 @@ namespace TWAT
 }
 
 
-#endif // TOOLS_TW_NET_INFO_DECODER_H
+#endif // CORE_TOOLS_TW_NET_INFO_DECODER_H

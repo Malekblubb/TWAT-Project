@@ -8,6 +8,8 @@
 #include <base/app_info.h>
 
 #include <core/shared/config.h>
+#include <core/client/components/serverbrowser.h>
+#include <core/tools/tw/net/server.h>
 
 #include <iostream>
 #include <QDir>
@@ -28,6 +30,9 @@ void TWAT::CClient::Init()
 	if(!confDir.exists())
 		confDir.mkdir(APP_WORK_PATH.c_str());
 
+	// setup main-components
 	m_config = new CConfig(APP_CONF_PATH);
 	m_config->Init();
+
+	m_twSrvBrowser = new CTwServerBrowser();
 }

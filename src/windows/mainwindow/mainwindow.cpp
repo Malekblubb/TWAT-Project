@@ -10,12 +10,8 @@
 
 #include <core/client/client.h>
 #include <core/shared/config.h>
-#include <core/shared/network.h>
-
-#include <tools/tw/net/server.h>
-#include <tools/tw/net/master.h>
-
-#include <core/client/serverlist.h>
+#include <core/client/components/serverbrowser.h>
+#include <core/tools/tw/net/server.h>
 
 
 using namespace TWAT;
@@ -65,11 +61,9 @@ void MainWindow::on_m_twMainMenu_clicked(const QModelIndex &index)
 
 void MainWindow::on_m_pbSrvListRefresh_clicked()
 {
-	CTwServerBrowser browser;
+	m_client->m_twSrvBrowser->UseDefaultMasters(true);
+	m_client->m_twSrvBrowser->RefreshList();
 
-	browser.UseDefaultMasters(true);
-	browser.RefreshList();
-
-	for(int i = 0; i < browser.NumServers(); i++)
-		DBG("gametype: %", browser[i]->m_gameType);
+//	for(int i = 0; i < m_client->m_twSrvBrowser->NumServers(); i++)
+//	DBG("ip: %, name: %", m_client->m_twSrvBrowser->At(i)->m_addr, m_client->m_twSrvBrowser->At(i)->m_name);
 }

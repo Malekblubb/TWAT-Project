@@ -94,6 +94,8 @@ TWAT::System::CIpAddr::CIpAddr(const std::string &addr)
 
 void TWAT::System::CIpAddr::SetNewAddr(const std::string &addr)
 {
+	m_isSet = false;
+
 	if(addr.find(':') == std::string::npos)
 		throw std::invalid_argument("argument has invalid format (CIpAddr)");
 
@@ -173,10 +175,10 @@ int TWAT::System::UdpSock(CIpAddr *bindAddr)
 	{
 		tmpAddr.sin_port = htons(bindAddr->Port());
 		tmpAddr.sin_addr.s_addr = inet_addr(bindAddr->Ip().c_str());
-	}
 
-	if(bind(tmpSock, (sockaddr *)&tmpAddr, sizeof tmpAddr) < 0)
-		return -1;
+		if(bind(tmpSock, (sockaddr *)&tmpAddr, sizeof tmpAddr) < 0)
+			return -1;
+	}
 
 	return tmpSock;
 }

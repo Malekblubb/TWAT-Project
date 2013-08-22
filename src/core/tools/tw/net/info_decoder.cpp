@@ -17,6 +17,8 @@
 
 bool TWAT::TwTools::CRawInfoDecoder::DecodeServerInfo(unsigned char *data, int dataLen, int token, ServerInfo *inf)
 {
+	inf->m_isValid = false;
+
 	if(dataLen < 14)
 		return false;
 
@@ -27,6 +29,7 @@ bool TWAT::TwTools::CRawInfoDecoder::DecodeServerInfo(unsigned char *data, int d
 	if(tok != std::to_string(token))
 		return false;
 	
+
 	inf->m_version = up.GetString();
 	if(inf->m_version.substr(0, 3) != "0.6")
 		return false;
@@ -53,6 +56,7 @@ bool TWAT::TwTools::CRawInfoDecoder::DecodeServerInfo(unsigned char *data, int d
 		inf->m_clients.push_back(tmpCl);
 	}
 
+	inf->m_isValid = true;
 	return true;
 }
 
@@ -86,13 +90,13 @@ bool TWAT::TwTools::CRawInfoDecoder::DecodeListInfo(unsigned char *data, int dat
 
 
 		// process port
-		int port = (int)(data[i + 16] * 0xff + data[i + 16]) + data[i + 17];
+		int port = (int)(data[i + 16] * 0xff + data[i + 16]) + (int)data[i + 17];
 		addr += ":" + std::to_string(port);
 
 		lst->AddAddr(addr);
 	}
 
-	// most time one chunk includes 75 ip adresses, the result will NOT be 100% correct
+	// most time one chunk contains 75 ip adresses
 	lst->AddChunkSize(chunkSize);
 
 	return true;

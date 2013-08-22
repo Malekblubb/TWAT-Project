@@ -61,8 +61,6 @@ int TWAT::TwTools::CMasterRequest::PullCount()
 
 	for(std::vector<System::CIpAddr *>::iterator i = m_addrs.begin(); i != m_addrs.end(); ++i)
 	{
-		std::memset(recData, 0, 1024);
-
 		if((gotLen = this->SendReq(*i, COUNT, recData)) > 0)
 		{
 			// TODO: CHECK PK
@@ -86,12 +84,17 @@ bool TWAT::TwTools::CMasterRequest::PullList(CMasterList *lst, int expCount)
 {
 	int gotLen = 0;
 	unsigned char *recData = (unsigned char *)std::malloc(2048); // moa space
+	bool fin = false;
 
-	while(lst->ChunkSize() < expCount)
+	while(!fin)
 	{
 		for(std::vector<System::CIpAddr *>::iterator i = m_addrs.begin(); i != m_addrs.end(); ++i)
 		{
-			std::memset(recData, 0, 2048);
+			if(lst->ChunkSize() >= expCount)
+			{
+				fin = true;
+				break;
+			}
 
 			if((gotLen = this->SendReq(*i, LIST, recData)) > 0)
 			{
@@ -126,6 +129,7 @@ int TWAT::TwTools::CMasterRequest::SendReq(System::CIpAddr *addr, int req, unsig
 		break;
 	}
 
+	std::memset(data, 0, bufLen);
 	pk->MakeConnless();
 	CNetworkBase::Send(m_sock, pk);
 	return CNetworkBase::RecvRaw(m_sock, data, bufLen);

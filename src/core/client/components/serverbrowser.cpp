@@ -3,18 +3,17 @@
  * See LICENSE for more information.
  */
 
-#include "serverlist.h"
-
-#include <tools/tw/net/master.h>
-#include <tools/tw/net/server.h>
+#include "serverbrowser.h"
 
 #include <base/system.h>
+
+#include <core/tools/tw/net/master.h>
+#include <core/tools/tw/net/server.h>
 
 
 TWAT::CTwServerBrowser::CTwServerBrowser()
 {
 	m_masterReq = new TwTools::CMasterRequest();
-	m_ipList = new TwTools::CMasterList();
 
 	m_numServers = 0;
 	m_useDefaultMasters = false;
@@ -52,17 +51,21 @@ void TWAT::CTwServerBrowser::ClearAllMasters()
 
 void TWAT::CTwServerBrowser::RefreshList()
 {
-	TwTools::CMasterList tmpMasterLst;
-	TwTools::CServerSniffer tmpSniffer;
+	TwTools::CMasterList masterList;
+	TwTools::CServerSniffer sniffer;
+	TwTools::ServerInfo inf;
+	int tmpCount = 0;
 
+	tmpCount = m_masterReq->PullCount();
+	m_masterReq->PullList(&masterList, tmpCount);
+	m_serverList.clear();
 
-	m_numServers = m_masterReq->PullCount();
-	m_masterReq->PullList(&tmpMasterLst, m_numServers);
-	m_serverList.resize(tmpMasterLst.Size());
-
-	for(unsigned int i = 0; i < m_serverList.size(); ++i)
+	for(int i = 0; i < masterList.Size(); ++i)
 	{
-		tmpSniffer.Connect(tmpMasterLst[i]);
-		tmpSniffer.PullInfo(&m_serverList[i]);
+		if(sniffer.Connect(masterList[i]))
+			if(sniffer.PullInfo(&inf))
+				m_serverList.push_back(inf);
 	}
+
+	m_numServers = m_serverList.size();
 }

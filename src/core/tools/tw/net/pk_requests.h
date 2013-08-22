@@ -1,5 +1,10 @@
-#ifndef TOOLS_TW_NET_PK_REQUESTS_H
-#define TOOLS_TW_NET_PK_REQUESTS_H
+/*
+ * Copyright (c) 2013 Christoph Malek
+ * See LICENSE for more information.
+ */
+
+#ifndef CORE_TOOLS_TW_NET_PK_REQUESTS_H
+#define CORE_TOOLS_TW_NET_PK_REQUESTS_H
 
 
 namespace TWAT
@@ -25,4 +30,4 @@ namespace TWAT
 	}
 }
 
-#endif // TOOLS_TW_NET_PK_REQUESTS_H
+#endif // CORE_TOOLS_TW_NET_PK_REQUESTS_H
