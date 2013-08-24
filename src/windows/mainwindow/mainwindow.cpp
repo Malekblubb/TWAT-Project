@@ -5,15 +5,17 @@
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <windows/configwindow.h>
+//#include "ui_configwindow.h"
 
 #include <base/system.h>
 
 #include <core/client/client.h>
 #include <core/shared/config.h>
+
 #include <core/client/components/serverbrowser.h>
 #include <core/tools/tw/net/server.h>
-
-
+#include <QMovie>
 using namespace TWAT;
 
 
@@ -21,9 +23,11 @@ using namespace TWAT;
 // Tool specific slots etc. stripped to other files.
 
 // exit, init
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::MainWindow)
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::MainWindow), m_confWidow(new configwindow)
 {
+	// setup ui
 	m_ui->setupUi(this);
+
 	this->OnInit();
 }
 
@@ -32,38 +36,62 @@ MainWindow::~MainWindow()
 	delete m_ui;
 }
 
+void MainWindow::closeEvent(QCloseEvent *)
+{
+	this->OnExit();
+}
+
 void MainWindow::OnInit()
 {
 	// twat client start
 	m_client = new CClient();
 	m_client->Init();
 
-	// user settings
-	m_ui->m_twMainMenu->expandAll();
+	// load user settings
+	this->LoadConfVars();
 }
 
 void MainWindow::OnExit()
 {
 	// save config
 	m_client->m_config->Save();
+
 }
 
-void MainWindow::SetStatus(const std::string &status)
+void MainWindow::SetStatus(const QString &text)
 {
-	m_ui->m_lbStatusbarStatusText->setText(status.c_str());
+	m_ui->m_lbStatusbarStatusText->setText(text);
+}
+
+void MainWindow::ShowStatusIcon(bool b)
+{
+	if(b)
+	{
+		QMovie *m = new QMovie(":/img/animated/loading.gif");
+		m->start();
+		m_ui->m_lbStatusbarIcon->setMovie(m);
+		m_ui->m_lbStatusbarIcon->show();
+	}
+	else
+		m_ui->m_lbStatusbarIcon->hide();
+}
+
+void MainWindow::LoadConfVars()
+{
+	if(m_client->m_config->m_conf.GetVar<int>("ui_menu_expanded"))
+		m_ui->m_twMainMenu->expandAll();
+
+	if(m_client->m_config->m_conf.GetVar<int>("utl_use_default_masters"))
+		m_client->m_twSrvBrowser->UseDefaultMasters(true);
 }
 
 void MainWindow::on_m_twMainMenu_clicked(const QModelIndex &index)
 {
 	if(index.parent().isValid())
-		m_ui->m_widgetMainStacked->setCurrentIndex(index.parent().row() + index.row());
+		m_ui->m_swMain->setCurrentIndex(index.parent().row() + index.row());
 }
 
-void MainWindow::on_m_pbSrvListRefresh_clicked()
+void MainWindow::on_m_pbBottomMenuSettings_clicked()
 {
-	m_client->m_twSrvBrowser->UseDefaultMasters(true);
-	m_client->m_twSrvBrowser->RefreshList();
-
-//	for(int i = 0; i < m_client->m_twSrvBrowser->NumServers(); i++)
-//	DBG("ip: %, name: %", m_client->m_twSrvBrowser->At(i)->m_addr, m_client->m_twSrvBrowser->At(i)->m_name);
+	m_confWidow->Show(m_client->m_config);
 }

@@ -8,7 +8,8 @@ QT       += core gui
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = twat_project
 TEMPLATE = app
-QMAKE_CXXFLAGS += -std=c++0x
+QMAKE_CXXFLAGS += -std=c++0x \
+                  -pthread
 OBJECTS_DIR = ./obj
 INCLUDEPATH += src
 
@@ -16,6 +17,6 @@ INCLUDEPATH += src
 client{
 SOURCES += $$system("find ./src -name '*.cpp'")
 HEADERS += $$system("find ./src -name '*.h'")
-FORMS    += src/ui/ui_layouts/mainwindow.ui
+FORMS    += $$system("find ./src -name '*.ui'")
 RESOURCES += data/ressources.qrc
 }

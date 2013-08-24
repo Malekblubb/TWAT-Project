@@ -41,15 +41,12 @@ bool TWAT::TwTools::CServerSniffer::PullInfo(ServerInfo *inf)
 	if(!this->SendReq()) // refresh
 		return false;
 
-	if(!CRawInfoDecoder::DecodeServerInfo(m_recData, m_recLen, m_token, inf))
-	{
-		DBG("error while decode recved serverinfo from: %", System::IpAddrToStr(m_addr));
-		return false;
-	}
-
-	// non decode stuff
+	// add non decode stuff
 	inf->m_addr = System::IpAddrToStr(m_addr);
 	inf->m_latency = m_latency;
+
+	if(!CRawInfoDecoder::DecodeServerInfo(m_recData, m_recLen, m_token, inf))
+		return false;
 
 	return true;
 }
@@ -67,10 +64,13 @@ bool TWAT::TwTools::CServerSniffer::SendReq()
 
 	// send, recv, ping
 	start = System::TimeStamp();
+
 	CNetworkBase::Send(m_sock, sPk);
-	m_recLen = CNetworkBase::RecvRaw(m_sock, m_recData, 1024, m_addr);
+	if((m_recLen = CNetworkBase::RecvRaw(m_sock, m_recData, 1024, m_addr)) < 0)
+		return false;
+
 	end = System::TimeStamp();
-	m_latency = (end - start) / 1000;
+	m_latency = (end - start) / (long long)1000;
 
 	// TODO: check valid recved pk here
 	return true;

@@ -161,26 +161,30 @@ std::string TWAT::System::RawIpToStr(int ipVer, unsigned char *data)
 int TWAT::System::UdpSock(CIpAddr *bindAddr)
 {
 	int tmpSock = socket(AF_INET, SOCK_DGRAM, 0);
-	sockaddr_in tmpAddr;
 
-	tmpAddr.sin_family = AF_INET;
-
-	if(bindAddr == 0)
+	if(tmpSock > 0)
 	{
-		// don't care about the address
-		tmpAddr.sin_port = htons(0);
-		tmpAddr.sin_addr.s_addr = htonl(INADDR_ANY);
-	}
-	else
-	{
-		tmpAddr.sin_port = htons(bindAddr->Port());
-		tmpAddr.sin_addr.s_addr = inet_addr(bindAddr->Ip().c_str());
+		if(bindAddr != 0)
+		{
+			sockaddr_in tmpAddr;
 
-		if(bind(tmpSock, (sockaddr *)&tmpAddr, sizeof tmpAddr) < 0)
-			return -1;
+			tmpAddr.sin_family = AF_INET;
+			tmpAddr.sin_port = htons(bindAddr->Port());
+			tmpAddr.sin_addr.s_addr = inet_addr(bindAddr->Ip().c_str());
+
+
+			if(bind(tmpSock, (sockaddr *)&tmpAddr, sizeof tmpAddr) < 0)
+			{
+				System::SockClose(tmpSock);
+				return -1;
+			}
+		}
+
+
+		return tmpSock;
 	}
 
-	return tmpSock;
+	return -1;
 }
 
 void TWAT::System::SockClose(int sock)
@@ -231,6 +235,7 @@ ssize_t TWAT::System::UdpRecv(int sock, unsigned char *buf, size_t bufLen, CIpAd
 		inet_ntop(AF_INET, &senderInfo.sin_addr, addrBuf, INET_ADDRSTRLEN);
 		stream << addrBuf << ":" << htons(senderInfo.sin_port);
 		fromAddr->SetNewAddr(stream.str());
+
 	}
 
 	return got;

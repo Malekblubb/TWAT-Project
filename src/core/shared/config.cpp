@@ -80,13 +80,13 @@ void TWAT::CConfig::FillDefault()
 	// set default values
 	m_default.SetVar<int>("app_language", 0);
 
-	m_default.SetVar<int>("gra_maximized", 0);
-	m_default.SetVar<int>("gra_fullscreen", 0);
-
 	m_default.SetVar<int>("ntw_check_for_updates", 1);
 	m_default.SetVar<int>("ntw_auto_refresh_translations", 1);
 
 	m_default.SetVar<int>("ui_menu_expanded", 1);
+
+	m_default.SetVar<int>("utl_use_default_masters", 1);
+	m_default.SetVar<std::string>("utl_custom_masterlist", "");
 }
 
 void TWAT::CConfig::WriteDefault()

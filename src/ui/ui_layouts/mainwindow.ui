@@ -566,7 +566,7 @@ QTreeWidget::item:selected
        <item row="0" column="0">
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
-          <widget class="QStackedWidget" name="m_widgetMainStacked">
+          <widget class="QStackedWidget" name="m_swMain">
            <property name="font">
             <font>
              <family>Open Sans</family>
@@ -880,6 +880,12 @@ QTableWidget::item:selected{ background-color:#50aefa; color:#ffffff}</string>
              </property>
              <property name="editTriggers">
               <set>QAbstractItemView::NoEditTriggers</set>
+             </property>
+             <property name="selectionMode">
+              <enum>QAbstractItemView::SingleSelection</enum>
+             </property>
+             <property name="selectionBehavior">
+              <enum>QAbstractItemView::SelectRows</enum>
              </property>
              <property name="showGrid">
               <bool>false</bool>
@@ -4808,7 +4814,7 @@ QListWidget::item:selected{background-color:#50aefa;color:#ffffff;}</string>
           </widget>
          </item>
          <item>
-          <widget class="QWidget" name="m_widgetBottomProgrssBar" native="true">
+          <widget class="QWidget" name="m_widgetBottomStatusBar" native="true">
            <property name="minimumSize">
             <size>
              <width>0</width>
@@ -4984,6 +4990,9 @@ QListWidget::item:selected{background-color:#50aefa;color:#ffffff;}</string>
                   <italic>true</italic>
                  </font>
                 </property>
+                <property name="styleSheet">
+                 <string notr="true"/>
+                </property>
                 <property name="text">
                  <string>Status:</string>
                 </property>
@@ -5120,7 +5129,42 @@ QListWidget::item:selected{background-color:#50aefa;color:#ffffff;}</string>
                 </property>
                </widget>
               </item>
+              <item>
+               <spacer name="horizontalSpacer_3">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeType">
+                 <enum>QSizePolicy::Fixed</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>15</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
              </layout>
+            </item>
+            <item>
+             <widget class="QLabel" name="m_lbStatusbarIcon">
+              <property name="minimumSize">
+               <size>
+                <width>16</width>
+                <height>16</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16</width>
+                <height>16</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
             </item>
             <item>
              <spacer name="horizontalSpacer">

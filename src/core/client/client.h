@@ -19,7 +19,6 @@ namespace TWAT
 		class CConfig *m_config;
 		class CTwServerBrowser *m_twSrvBrowser;
 
-	public:
 		void Init();
 	};
 }

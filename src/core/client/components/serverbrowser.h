@@ -20,22 +20,30 @@ namespace TWAT
 		struct ServerInfo;
 	}
 
+
 	class CTwServerBrowser
 	{
 		TwTools::CMasterRequest *m_masterReq;
 		std::vector<TwTools::ServerInfo> m_serverList;
 
-		int m_numServers;
+		int m_expCount; // expected count from masterserver
+		int m_numServers; // num "real" servers
 		bool m_useDefaultMasters;
+		bool m_refreshing;
+		bool m_finishedSrv;
+		long long m_refreshTime;
 
 
 	public:
 		CTwServerBrowser();
 
 		// direct read access to m_serverList at index pos
-		TwTools::ServerInfo *At(int pos){return &m_serverList[pos];}
+		TwTools::ServerInfo *At(int pos) {return &m_serverList[pos];}
 
+		int ExpCount() const {return m_expCount;}
 		int NumServers() const {return m_numServers;}
+		int RefreshTime() const {return m_refreshTime;}
+		bool IsRefreshing() const {return m_refreshing;}
 
 		void AddMaster(const std::string &ip);
 		void UseDefaultMasters(bool b);

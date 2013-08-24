@@ -34,6 +34,7 @@ void TWAT::TwTools::CMasterList::AddChunkSize(int size)
 
 TWAT::TwTools::CMasterRequest::CMasterRequest()
 {
+	//	m_sock = System::UdpSock();
 	m_sock = System::UdpSock();
 }
 
@@ -61,7 +62,11 @@ int TWAT::TwTools::CMasterRequest::PullCount()
 
 	for(std::vector<System::CIpAddr *>::iterator i = m_addrs.begin(); i != m_addrs.end(); ++i)
 	{
-		if((gotLen = this->SendReq(*i, COUNT, recData)) > 0)
+		CNetworkPacket *pk = new CNetworkPacket(*i, (unsigned char *)SERVERBROWSE_GETCOUNT, 8);
+		pk->MakeConnless();
+		CNetworkBase::Send(m_sock, pk);
+
+		if((gotLen = CNetworkBase::RecvRaw(m_sock, recData, 1024)) > 0)
 		{
 			// TODO: CHECK PK
 
@@ -80,57 +85,25 @@ int TWAT::TwTools::CMasterRequest::PullCount()
 	return count;
 }
 
-bool TWAT::TwTools::CMasterRequest::PullList(CMasterList *lst, int expCount)
+bool TWAT::TwTools::CMasterRequest::PullList(CMasterList *lst)
 {
 	int gotLen = 0;
 	unsigned char *recData = (unsigned char *)std::malloc(2048); // moa space
-	bool fin = false;
 
-	while(!fin)
+
+	for(std::vector<System::CIpAddr *>::iterator i = m_addrs.begin(); i != m_addrs.end(); ++i)
 	{
-		for(std::vector<System::CIpAddr *>::iterator i = m_addrs.begin(); i != m_addrs.end(); ++i)
-		{
-			if(lst->ChunkSize() >= expCount)
-			{
-				fin = true;
-				break;
-			}
+		CNetworkPacket *pk = new CNetworkPacket(*i, (unsigned char *)SERVERBROWSE_GETLIST, 8);
+		pk->MakeConnless();
+		CNetworkBase::Send(m_sock, pk);
 
-			if((gotLen = this->SendReq(*i, LIST, recData)) > 0)
-			{
-				if(!CRawInfoDecoder::DecodeListInfo(recData, gotLen, lst))
-					DBG("error while decode recved list data from: %", System::IpAddrToStr(*i));
-			}
-			else
-				DBG("error while connect to master: %", System::IpAddrToStr(*i));
+		while((gotLen = CNetworkBase::RecvRaw(m_sock, recData, 2048)) > 0) // get the info splittet in X pk's
+		{
+			if(!CRawInfoDecoder::DecodeListInfo(recData, gotLen, lst))
+				DBG("error while decode recved list data from: %", System::IpAddrToStr(*i));
 		}
 	}
 
 	std::free(recData);
 	return true;
-}
-
-int TWAT::TwTools::CMasterRequest::SendReq(System::CIpAddr *addr, int req, unsigned char *data)
-{
-	CNetworkPacket *pk;
-	int bufLen = 0;
-
-	switch(req)
-	{
-	case COUNT:
-		pk = new CNetworkPacket(addr, (char *)SERVERBROWSE_GETCOUNT, 8);
-		bufLen = 1024;
-		break;
-	case LIST:
-		pk = new CNetworkPacket(addr, (char *)SERVERBROWSE_GETLIST, 8);
-		bufLen = 2048;
-		break;
-	default: return -1;
-		break;
-	}
-
-	std::memset(data, 0, bufLen);
-	pk->MakeConnless();
-	CNetworkBase::Send(m_sock, pk);
-	return CNetworkBase::RecvRaw(m_sock, data, bufLen);
 }

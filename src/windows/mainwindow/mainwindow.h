@@ -3,10 +3,11 @@
  * See LICENSE for more information.
  */
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef WINDOWS_MAINWINDOW_MAINWINDOW_H
+#define WINDOWS_MAINWINDOW_MAINWINDOW_H
 
 
+#include <thread>
 #include <string>
 #include <QMainWindow>
 
@@ -29,26 +30,37 @@ public:
 	explicit MainWindow(QWidget *parent = 0);
 	~MainWindow();
 
-private:
+protected:
+	// ----- main -----
+	void closeEvent(QCloseEvent *);
 	void OnInit();
 	void OnExit();
-	void SetStatus(const std::string &status);
+	void SetStatus(const QString &text);
+	void ShowStatusIcon(bool b);
+	void LoadConfVars();
+
+	// ----- serverbrowser -----
+	void RefreshSrvBrowserUiList();
+
 
 	// slots
 private slots:
-
+	// ----- main; menu etc. -----
 	void on_m_twMainMenu_clicked(const QModelIndex &index);
+	void on_m_pbBottomMenuSettings_clicked();
 
-	// ----- serverlist -----
-
+	// ----- serverbrowser -----
 	void on_m_pbSrvListRefresh_clicked();
+	void on_m_twSrvListList_clicked(const QModelIndex &index);
 
 private:
 	Ui::MainWindow *m_ui;
+	class configwindow *m_confWidow;
 
 protected:
 	TWAT::CClient *m_client;
+
+	std::thread *m_workerThread; // thread for async (ui/core) work
 };
 
-
-#endif // MAINWINDOW_H
+#endif // WINDOWS_MAINWINDOW_MAINWINDOW_H

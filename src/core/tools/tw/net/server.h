@@ -45,8 +45,6 @@ namespace TWAT
 			int m_numPlayers;
 			int m_flags;
 			int m_latency;
-
-			bool m_isValid;
 		};
 
 		class CServerSniffer

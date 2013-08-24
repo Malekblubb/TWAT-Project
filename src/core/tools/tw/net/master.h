@@ -45,6 +45,7 @@ namespace TWAT
 
 			int m_sock;
 			std::vector<System::CIpAddr *> m_addrs;
+			System::CIpAddr *m_addr;
 
 		public:
 			CMasterRequest();
@@ -54,10 +55,7 @@ namespace TWAT
 			void ClearServers();
 
 			int PullCount();
-			bool PullList(CMasterList *lst, int expCount);
-
-		private:
-			int SendReq(System::CIpAddr *addr, int req, unsigned char *data);
+			bool PullList(CMasterList *lst);
 		};
 	}
 }

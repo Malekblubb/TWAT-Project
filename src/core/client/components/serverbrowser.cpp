@@ -21,6 +21,9 @@ TWAT::CTwServerBrowser::CTwServerBrowser()
 
 void TWAT::CTwServerBrowser::AddMaster(const std::string &ip)
 {
+	if(m_useDefaultMasters)
+		this->ClearAllMasters();
+
 	m_masterReq->AddServer(ip);
 	m_useDefaultMasters = false;
 }
@@ -53,19 +56,25 @@ void TWAT::CTwServerBrowser::RefreshList()
 {
 	TwTools::CMasterList masterList;
 	TwTools::CServerSniffer sniffer;
-	TwTools::ServerInfo inf;
-	int tmpCount = 0;
+	long long start = 0, end = 0;
 
-	tmpCount = m_masterReq->PullCount();
-	m_masterReq->PullList(&masterList, tmpCount);
+	start = System::TimeStamp();
+
+	m_refreshing = true;
+	m_expCount = m_masterReq->PullCount();
+	m_masterReq->PullList(&masterList);
 	m_serverList.clear();
+	m_numServers = 0;
+	m_serverList.resize(m_expCount);
 
 	for(int i = 0; i < masterList.Size(); ++i)
 	{
-		if(sniffer.Connect(masterList[i]))
-			if(sniffer.PullInfo(&inf))
-				m_serverList.push_back(inf);
+		sniffer.Connect(masterList[i]);
+		if(sniffer.PullInfo(&m_serverList[i]))
+			++m_numServers;
 	}
 
-	m_numServers = m_serverList.size();
+	end = System::TimeStamp();
+	m_refreshTime = (end - start) / (long long)1000000;
+	m_refreshing = false;
 }

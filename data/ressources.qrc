@@ -36,5 +36,8 @@
         <file>img/icons/stats.png</file>
         <file>img/icons/convert.png</file>
         <file>img/icons/convert_active.png</file>
+        <file>img/ui_elements/switch_off.png</file>
+        <file>img/ui_elements/switch_on.png</file>
+        <file>img/animated/loading.gif</file>
     </qresource>
 </RCC>
