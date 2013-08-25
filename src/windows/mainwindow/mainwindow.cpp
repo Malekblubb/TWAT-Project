@@ -5,8 +5,8 @@
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+
 #include <windows/configwindow.h>
-//#include "ui_configwindow.h"
 
 #include <base/system.h>
 
@@ -15,7 +15,9 @@
 
 #include <core/client/components/serverbrowser.h>
 #include <core/tools/tw/net/server.h>
+
 #include <QMovie>
+
 using namespace TWAT;
 
 
@@ -49,6 +51,9 @@ void MainWindow::OnInit()
 
 	// load user settings
 	this->LoadConfVars();
+
+	// change non-designer properties
+	this->ChangeUiElements();
 }
 
 void MainWindow::OnExit()
@@ -83,6 +88,11 @@ void MainWindow::LoadConfVars()
 
 	if(m_client->m_config->m_conf.GetVar<int>("utl_use_default_masters"))
 		m_client->m_twSrvBrowser->UseDefaultMasters(true);
+}
+
+void MainWindow::ChangeUiElements()
+{
+	m_ui->m_twSrvListList->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 }
 
 void MainWindow::on_m_twMainMenu_clicked(const QModelIndex &index)

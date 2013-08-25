@@ -17,6 +17,7 @@ TWAT::CTwServerBrowser::CTwServerBrowser()
 
 	m_numServers = 0;
 	m_useDefaultMasters = false;
+	m_refreshing = false;
 }
 
 void TWAT::CTwServerBrowser::AddMaster(const std::string &ip)
@@ -47,11 +48,6 @@ void TWAT::CTwServerBrowser::UseDefaultMasters(bool b)
 	}
 }
 
-void TWAT::CTwServerBrowser::ClearAllMasters()
-{
-	m_masterReq->ClearServers();
-}
-
 void TWAT::CTwServerBrowser::RefreshList()
 {
 	TwTools::CMasterList masterList;
@@ -70,11 +66,23 @@ void TWAT::CTwServerBrowser::RefreshList()
 	for(int i = 0; i < masterList.Size(); ++i)
 	{
 		sniffer.Connect(masterList[i]);
-		if(sniffer.PullInfo(&m_serverList[i]))
-			++m_numServers;
+		sniffer.PullInfo(&m_serverList[i]);
+
+		++m_numServers;
+		this->CalcPercentage();
 	}
 
 	end = System::TimeStamp();
 	m_refreshTime = (end - start) / (long long)1000000;
 	m_refreshing = false;
+}
+
+void TWAT::CTwServerBrowser::ClearAllMasters()
+{
+	m_masterReq->ClearServers();
+}
+
+void TWAT::CTwServerBrowser::CalcPercentage()
+{
+	m_percentage = (m_numServers / (float)m_expCount) * 100;
 }

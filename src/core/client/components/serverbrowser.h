@@ -28,6 +28,7 @@ namespace TWAT
 
 		int m_expCount; // expected count from masterserver
 		int m_numServers; // num "real" servers
+		int m_percentage;
 		bool m_useDefaultMasters;
 		bool m_refreshing;
 		bool m_finishedSrv;
@@ -42,6 +43,7 @@ namespace TWAT
 
 		int ExpCount() const {return m_expCount;}
 		int NumServers() const {return m_numServers;}
+		int Percentage() const {return m_percentage;}
 		int RefreshTime() const {return m_refreshTime;}
 		bool IsRefreshing() const {return m_refreshing;}
 
@@ -52,7 +54,7 @@ namespace TWAT
 
 	private:
 		void ClearAllMasters();
-
+		void CalcPercentage();
 	};
 }
 

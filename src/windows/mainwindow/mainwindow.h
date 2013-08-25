@@ -15,6 +15,11 @@
 namespace TWAT
 {
 	class CClient;
+
+	namespace TwTools
+	{
+		struct ServerInfo;
+	}
 }
 
 namespace Ui
@@ -38,9 +43,11 @@ protected:
 	void SetStatus(const QString &text);
 	void ShowStatusIcon(bool b);
 	void LoadConfVars();
+	void ChangeUiElements();
 
 	// ----- serverbrowser -----
-	void RefreshSrvBrowserUiList();
+	void RefreshSrvBrowserTable();
+	void AddServerInfoRow(TWAT::TwTools::ServerInfo *inf, int row);
 
 
 	// slots
@@ -52,6 +59,7 @@ private slots:
 	// ----- serverbrowser -----
 	void on_m_pbSrvListRefresh_clicked();
 	void on_m_twSrvListList_clicked(const QModelIndex &index);
+	void on_m_leSrvListSearchBar_textChanged(const QString &arg1);
 
 private:
 	Ui::MainWindow *m_ui;
