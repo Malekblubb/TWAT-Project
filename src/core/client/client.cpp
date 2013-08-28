@@ -7,8 +7,10 @@
 
 #include <base/app_info.h>
 
+#include <core/core.h>
+#include <core/twserverbrowser.h>
 #include <core/shared/config.h>
-#include <core/client/components/serverbrowser.h>
+#include <core/client/components/twserverbrowser.h>
 #include <core/tools/tw/net/server.h>
 
 #include <iostream>
@@ -34,5 +36,18 @@ void TWAT::CClient::Init()
 	m_config = new CConfig(APP_CONF_PATH);
 	m_config->Init();
 
-	m_twSrvBrowser = new CTwServerBrowser();
+	// setup components
+	this->SetupComponents();
+}
+
+void TWAT::CClient::SetupComponents()
+{
+	// create core instance
+	m_core = CCore::CreateCore();
+
+	// register components
+	Core()->RegisterComponent<CTwServerBrowser>("twserverbrowser");
+
+	// request components
+	m_twServerBrowser = Core()->RequestComponent<ITwServerBrowser>();
 }

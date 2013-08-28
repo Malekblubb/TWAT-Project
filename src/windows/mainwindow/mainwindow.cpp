@@ -13,7 +13,7 @@
 #include <core/client/client.h>
 #include <core/shared/config.h>
 
-#include <core/client/components/serverbrowser.h>
+#include <core/client/components/twserverbrowser.h>
 #include <core/tools/tw/net/server.h>
 
 #include <QMovie>
@@ -86,8 +86,8 @@ void MainWindow::LoadConfVars()
 	if(m_client->m_config->m_conf.GetVar<int>("ui_menu_expanded"))
 		m_ui->m_twMainMenu->expandAll();
 
-	if(m_client->m_config->m_conf.GetVar<int>("utl_use_default_masters"))
-		m_client->m_twSrvBrowser->UseDefaultMasters(true);
+//	if(m_client->m_config->m_conf.GetVar<int>("utl_use_default_masters"))
+//		m_client->m_twSrvBrowser->UseDefaultMasters(true);
 }
 
 void MainWindow::ChangeUiElements()

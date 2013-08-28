@@ -48,7 +48,7 @@ void TWAT::CTwServerBrowser::UseDefaultMasters(bool b)
 	}
 }
 
-void TWAT::CTwServerBrowser::RefreshList()
+void TWAT::CTwServerBrowser::Refresh()
 {
 	TwTools::CMasterList masterList;
 	TwTools::CServerSniffer sniffer;

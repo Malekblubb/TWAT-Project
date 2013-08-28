@@ -7,6 +7,8 @@
 #define CORE_CLIENT_COMPONENTS_SERVERBROWSER_H
 
 
+#include <core/twserverbrowser.h>
+
 #include <string>
 #include <vector>
 
@@ -21,7 +23,7 @@ namespace TWAT
 	}
 
 
-	class CTwServerBrowser
+	class CTwServerBrowser : public ITwServerBrowser
 	{
 		TwTools::CMasterRequest *m_masterReq;
 		std::vector<TwTools::ServerInfo> m_serverList;
@@ -43,14 +45,14 @@ namespace TWAT
 
 		int ExpCount() const {return m_expCount;}
 		int NumServers() const {return m_numServers;}
-		int Percentage() const {return m_percentage;}
+		int PercentageFinished() const {return m_percentage;}
 		int RefreshTime() const {return m_refreshTime;}
 		bool IsRefreshing() const {return m_refreshing;}
 
 		void AddMaster(const std::string &ip);
 		void UseDefaultMasters(bool b);
 
-		void RefreshList();
+		void Refresh();
 
 	private:
 		void ClearAllMasters();

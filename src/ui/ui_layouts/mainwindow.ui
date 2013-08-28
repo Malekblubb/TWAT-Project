@@ -2282,6 +2282,12 @@ QTableWidget::item:selected{ background-color:#50aefa; color:#ffffff}</string>
                         <iconset resource="../../../data/ressources.qrc">
                          <normaloff>:/img/icons/refresh.png</normaloff>:/img/icons/refresh.png</iconset>
                        </property>
+                       <property name="iconSize">
+                        <size>
+                         <width>16</width>
+                         <height>16</height>
+                        </size>
+                       </property>
                        <property name="flat">
                         <bool>true</bool>
                        </property>

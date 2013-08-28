@@ -9,17 +9,25 @@
 
 namespace TWAT
 {
-	// CClient:
-	//		wrapper to access components, etc...
-
 	class CClient
 	{
 	public:
 		CClient();
-		class CConfig *m_config;
-		class CTwServerBrowser *m_twSrvBrowser;
-
 		void Init();
+
+
+		class CConfig *m_config;
+
+		class CCore *m_core;
+
+		class ITwServerBrowser *m_twServerBrowser;
+
+
+		class CCore *Core() {return m_core;}
+		class ITwServerBrowser *ServerBrowser() {return m_twServerBrowser;}
+
+	private:
+		void SetupComponents();
 	};
 }
 

@@ -9,7 +9,7 @@
 #include <base/system.h>
 
 #include <core/client/client.h>
-#include <core/client/components/serverbrowser.h>
+#include <core/client/components/twserverbrowser.h>
 
 #include <core/tools/tw/net/server.h>
 
@@ -32,9 +32,9 @@ void MainWindow::RefreshSrvBrowserTable()
 		{
 			QCoreApplication::processEvents(); // unfreeze ui
 
-			QString format = QString("Refreshing serverlist... %1/%2 (%3%)").arg(m_client->m_twSrvBrowser->NumServers()).
-					arg(m_client->m_twSrvBrowser->ExpCount()).arg(m_client->m_twSrvBrowser->Percentage());
-			this->SetStatus(format);
+//			QString format = QString("Refreshing serverlist... %1/%2 (%3%)").arg(m_client->m_twSrvBrowser->NumServers()).
+//					arg(m_client->m_twSrvBrowser->ExpCount()).arg(m_client->m_twSrvBrowser->Percentage());
+//			this->SetStatus(format);
 
 			if(m_client->m_twSrvBrowser->IsRefreshing())
 				std::this_thread::sleep_for(std::chrono::milliseconds(25)); // give him some time to send, rcv, decode, when refreshing
@@ -79,7 +79,7 @@ void MainWindow::on_m_pbSrvListRefresh_clicked()
 	m_ui->m_twSrvListList->setRowCount(0);
 	m_ui->m_pbSrvListRefresh->setEnabled(false);
 
-	m_workerThread = new std::thread(&CTwServerBrowser::RefreshList, m_client->m_twSrvBrowser);
+//	m_workerThread = new std::thread(&CTwServerBrowser::RefreshList, m_client->m_twSrvBrowser);
 	m_workerThread->detach();
 	this->RefreshSrvBrowserTable();
 }
