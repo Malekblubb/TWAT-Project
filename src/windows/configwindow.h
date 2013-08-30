@@ -11,7 +11,8 @@
 
 namespace TWAT
 {
-	class CConfig;
+	class IConfig;
+	class CComponentCore;
 }
 
 namespace Ui
@@ -23,13 +24,14 @@ class configwindow : public QWidget
 {
 	Q_OBJECT
 
-	TWAT::CConfig *m_conf;
+	TWAT::IConfig *m_conf;
+	TWAT::CComponentCore *m_twatCore;
 	
 public:
 	explicit configwindow(QWidget *parent = 0);
 	~configwindow();
 	
-	void Show(TWAT::CConfig *conf);
+	void Show(TWAT::CComponentCore *core);
 
 private:
 	void SetupUiElements();

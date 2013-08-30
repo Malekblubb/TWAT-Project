@@ -7,24 +7,26 @@
 #define CORE_SHARED_CONFIG_H
 
 
-#include "config_storage.h"
+#include <core/config.h>
+
 #include <string>
 
 
 namespace TWAT
 {
-	class CConfig
+	class CConfig : public IConfig
 	{
 		std::string m_path;
-		CConfigStorage m_default;
+		class CConfigStorage *m_default;
 		class CIOFile *m_confFile;
 
 	public:
-		CConfigStorage m_conf; // TODO: maybe better to write a small wrapper to access config instead of making it public?
+		class CConfigStorage *m_conf;
 
-		CConfig(const std::string &configPath);
+		CConfig();
 		void Init();
 		void Save();
+		class CConfigStorage *Store() {return m_conf;}
 
 	private:
 		bool CreateConfig();

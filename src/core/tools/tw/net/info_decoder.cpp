@@ -107,9 +107,6 @@ bool TWAT::TwTools::CRawInfoDecoder::DecodeListInfo(unsigned char *data, int dat
 		lst->AddAddr(addr);
 	}
 
-	// most time one chunk contains 75 ip adresses
-	lst->AddChunkSize(chunkSize);
-
 	return true;
 }
 

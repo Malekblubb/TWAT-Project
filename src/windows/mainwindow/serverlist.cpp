@@ -9,7 +9,7 @@
 #include <base/system.h>
 
 #include <core/client/client.h>
-#include <core/client/components/twserverbrowser.h>
+#include <core/shared/twserverbrowser.h>
 
 #include <core/tools/tw/net/server.h>
 
@@ -21,29 +21,31 @@ void MainWindow::RefreshSrvBrowserTable()
 	QCoreApplication::processEvents(); // unfreeze ui
 	std::this_thread::sleep_for(std::chrono::milliseconds(500)); // wait until we got expcount
 
-	if(m_client->m_twSrvBrowser->IsRefreshing())
+	if(Client()->ServerBrowser()->IsRefreshing())
 	{
-		this->SetStatus("Refreshing serverlist... 0/" + QString::number(m_client->m_twSrvBrowser->ExpCount()));
+//		DBG("EXP: %", Client()->ServerBrowser()->ExpCount());
+		this->SetStatus("Refreshing serverlist... 0/" + QString::number(Client()->ServerBrowser()->ExpCount()));
 		this->ShowStatusIcon(true);
 
-		std::this_thread::sleep_for(std::chrono::milliseconds(m_client->m_twSrvBrowser->ExpCount()) * 3); // wait until we got some srvs
+		std::this_thread::sleep_for(std::chrono::milliseconds(Client()->ServerBrowser()->ExpCount()) * 3); // wait until we got some srvs
 
-		for(int i = 0; i < m_client->m_twSrvBrowser->NumServers(); ++i)
+		for(int i = 0; i < Client()->ServerBrowser()->NumServers(); ++i)
 		{
 			QCoreApplication::processEvents(); // unfreeze ui
 
-//			QString format = QString("Refreshing serverlist... %1/%2 (%3%)").arg(m_client->m_twSrvBrowser->NumServers()).
-//					arg(m_client->m_twSrvBrowser->ExpCount()).arg(m_client->m_twSrvBrowser->Percentage());
-//			this->SetStatus(format);
+			QString format = QString("Refreshing serverlist... %1/%2 (%3%)").arg(Client()->ServerBrowser()->NumServers()).
+					arg(Client()->ServerBrowser()->ExpCount()).arg(Client()->ServerBrowser()->PercentageFinished());
+			this->SetStatus(format);
 
-			if(m_client->m_twSrvBrowser->IsRefreshing())
+			if(Client()->ServerBrowser()->IsRefreshing())
 				std::this_thread::sleep_for(std::chrono::milliseconds(25)); // give him some time to send, rcv, decode, when refreshing
 
 			// add the data to table
-			this->AddServerInfoRow(m_client->m_twSrvBrowser->At(i), i);
+//			DBG("name: %", Client()->ServerBrowser()->NumServers());
+			this->AddServerInfoRow(Client()->ServerBrowser()->At(i), i);
 		}
 
-		QString format = QString("Refreshed %1 servers in %2 seconds").arg(m_client->m_twSrvBrowser->NumServers()).arg(m_client->m_twSrvBrowser->RefreshTime());
+		QString format = QString("Refreshed %1 servers in %2 seconds").arg(Client()->ServerBrowser()->NumServers()).arg(Client()->ServerBrowser()->RefreshTime());
 		this->SetStatus(format);
 	}
 	else
@@ -51,6 +53,7 @@ void MainWindow::RefreshSrvBrowserTable()
 
 	this->ShowStatusIcon(false);
 	m_ui->m_pbSrvListRefresh->setEnabled(true);
+	m_workerThread->join();
 }
 
 void MainWindow::AddServerInfoRow(TwTools::ServerInfo *inf, int row)
@@ -79,20 +82,26 @@ void MainWindow::on_m_pbSrvListRefresh_clicked()
 	m_ui->m_twSrvListList->setRowCount(0);
 	m_ui->m_pbSrvListRefresh->setEnabled(false);
 
-//	m_workerThread = new std::thread(&CTwServerBrowser::RefreshList, m_client->m_twSrvBrowser);
-	m_workerThread->detach();
+	m_workerThread = new std::thread(&ITwServerBrowser::Refresh, Client()->ServerBrowser());
+
 	this->RefreshSrvBrowserTable();
 }
 
 void MainWindow::on_m_twSrvListList_clicked(const QModelIndex &index)
 {
+	// server info
+	m_ui->m_lbSrvListServerInfoIpVar->setText(Client()->ServerBrowser()->At(index.row())->m_addr.c_str());
+	m_ui->m_lbSrvListServerInfoVersionVar->setText(Client()->ServerBrowser()->At(index.row())->m_version.c_str());
+
+
+	// player info
 	m_ui->m_twSrvListPlayerList->setRowCount(0);
 	m_ui->m_twSrvListPlayerList->setColumnWidth(0, 60);
 
-	for(int i = 0; i < m_client->m_twSrvBrowser->At(index.row())->m_numClients; ++i)
+	for(int i = 0; i < Client()->ServerBrowser()->At(index.row())->m_numClients; ++i)
 	{
-		QTableWidgetItem *score = new QTableWidgetItem(QString::number(m_client->m_twSrvBrowser->At(index.row())->m_clients[i].m_score));
-		QTableWidgetItem *name = new QTableWidgetItem(m_client->m_twSrvBrowser->At(index.row())->m_clients[i].m_name.c_str());
+		QTableWidgetItem *score = new QTableWidgetItem(QString::number(Client()->ServerBrowser()->At(index.row())->m_clients[i].m_score));
+		QTableWidgetItem *name = new QTableWidgetItem(Client()->ServerBrowser()->At(index.row())->m_clients[i].m_name.c_str());
 
 		m_ui->m_twSrvListPlayerList->insertRow(i);
 		m_ui->m_twSrvListPlayerList->setItem(i, 0, score);

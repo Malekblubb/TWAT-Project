@@ -133,7 +133,7 @@ std::string TWAT::System::IpAddrToStr(CIpAddr *addr)
 	if(addr->IsSet())
 		return addr->Ip() + ":" + std::to_string(addr->Port());
 
-	return "Unknown hostname (" + addr->Fallback() + ")";
+	return "Unknown host (" + addr->Fallback() + ")";
 }
 
 std::string TWAT::System::RawIpToStr(int ipVer, unsigned char *data)

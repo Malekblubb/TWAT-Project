@@ -67,6 +67,7 @@ private:
 
 protected:
 	TWAT::CClient *m_client;
+	TWAT::CClient *Client() {return m_client;}
 
 	std::thread *m_workerThread; // thread for async (ui/core) work
 };

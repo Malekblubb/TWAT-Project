@@ -39,5 +39,8 @@
         <file>img/ui_elements/switch_off.png</file>
         <file>img/ui_elements/switch_on.png</file>
         <file>img/animated/loading.gif</file>
+        <file>img/icons/edit.png</file>
+        <file>img/icons/tracker.png</file>
+        <file>img/icons/bolt.png</file>
     </qresource>
 </RCC>

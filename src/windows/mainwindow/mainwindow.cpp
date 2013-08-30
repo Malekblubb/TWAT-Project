@@ -12,8 +12,9 @@
 
 #include <core/client/client.h>
 #include <core/shared/config.h>
+#include <core/shared/config_storage.h>
 
-#include <core/client/components/twserverbrowser.h>
+#include <core/shared/twserverbrowser.h>
 #include <core/tools/tw/net/server.h>
 
 #include <QMovie>
@@ -46,8 +47,8 @@ void MainWindow::closeEvent(QCloseEvent *)
 void MainWindow::OnInit()
 {
 	// twat client start
-	m_client = new CClient();
-	m_client->Init();
+	m_client = CClient::CreateClient();
+	Client()->Init();
 
 	// load user settings
 	this->LoadConfVars();
@@ -59,7 +60,7 @@ void MainWindow::OnInit()
 void MainWindow::OnExit()
 {
 	// save config
-	m_client->m_config->Save();
+	Client()->Config()->Save();
 
 }
 
@@ -83,11 +84,11 @@ void MainWindow::ShowStatusIcon(bool b)
 
 void MainWindow::LoadConfVars()
 {
-	if(m_client->m_config->m_conf.GetVar<int>("ui_menu_expanded"))
+	if(Client()->Config()->Store()->GetVar<int>("ui_menu_expanded"))
 		m_ui->m_twMainMenu->expandAll();
 
-//	if(m_client->m_config->m_conf.GetVar<int>("utl_use_default_masters"))
-//		m_client->m_twSrvBrowser->UseDefaultMasters(true);
+	if(Client()->Config()->Store()->GetVar<int>("utl_use_default_masters"))
+		m_client->ServerBrowser()->UseDefaultMasters(true);
 }
 
 void MainWindow::ChangeUiElements()
@@ -103,5 +104,5 @@ void MainWindow::on_m_twMainMenu_clicked(const QModelIndex &index)
 
 void MainWindow::on_m_pbBottomMenuSettings_clicked()
 {
-	m_confWidow->Show(m_client->m_config);
+	m_confWidow->Show(Client()->Core());
 }

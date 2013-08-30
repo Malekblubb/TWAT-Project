@@ -23,16 +23,12 @@ namespace TWAT
 		class CMasterList
 		{
 			std::vector<std::string> m_ips;
-			int m_chunkSize;
 
 		public:
-			CMasterList();
 			std::string operator[](int pos) {return m_ips[pos];}
 
 			void AddAddr(const std::string &ip);
-			void AddChunkSize(int size);
 			int Size() const {return m_ips.size();}
-			int ChunkSize() const {return m_chunkSize;}
 		};
 
 		class CMasterRequest

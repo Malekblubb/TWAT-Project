@@ -16,19 +16,9 @@
 #include <cstring>
 
 
-TWAT::TwTools::CMasterList::CMasterList()
-{
-	m_chunkSize = 0;
-}
-
 void TWAT::TwTools::CMasterList::AddAddr(const std::string &ip)
 {
 	m_ips.push_back(ip);
-}
-
-void TWAT::TwTools::CMasterList::AddChunkSize(int size)
-{
-	m_chunkSize += size;
 }
 
 

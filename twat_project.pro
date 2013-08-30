@@ -8,8 +8,7 @@ QT       += core gui
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = twat_project
 TEMPLATE = app
-QMAKE_CXXFLAGS += -std=c++0x \
-                  -pthread
+QMAKE_CXXFLAGS += -std=c++0x
 OBJECTS_DIR = ./obj
 INCLUDEPATH += src
 

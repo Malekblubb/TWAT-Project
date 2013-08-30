@@ -15,19 +15,20 @@ namespace TWAT
 		CClient();
 		void Init();
 
+		static CClient *CreateClient() {return new CClient();}
 
-		class CConfig *m_config;
 
-		class CCore *m_core;
-
+		class CComponentCore *m_core;
+		class IConfig *m_config;
 		class ITwServerBrowser *m_twServerBrowser;
 
-
-		class CCore *Core() {return m_core;}
+		class CComponentCore *Core() {return m_core;}
+		class IConfig *Config() {return m_config;}
 		class ITwServerBrowser *ServerBrowser() {return m_twServerBrowser;}
 
 	private:
 		void SetupComponents();
+		void InitComponents();
 	};
 }
 
