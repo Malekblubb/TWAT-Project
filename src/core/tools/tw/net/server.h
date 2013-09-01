@@ -53,6 +53,7 @@ namespace TWAT
 			System::CIpAddr *m_addr;
 
 			int m_recLen;
+			int m_sentLen;
 			unsigned char *m_recData;
 			unsigned char m_token; // token must be only one byte
 			long long m_latency;
@@ -61,9 +62,12 @@ namespace TWAT
 			CServerSniffer();
 			~CServerSniffer();
 
-			void Clear();
 			bool Connect(const std::string &addr);
 			bool PullInfo(ServerInfo *inf);
+			int TestLatency();
+
+			int RecLen() const {return m_recLen;}
+			int SentLen() const {return m_sentLen;}
 
 		private:
 			bool SendReq();

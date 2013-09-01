@@ -4,18 +4,25 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui \
+            printsupport #qcustomplot
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = twat_project
 TEMPLATE = app
 QMAKE_CXXFLAGS += -std=c++0x
 OBJECTS_DIR = ./obj
-INCLUDEPATH += src
+INCLUDEPATH +=  src \
+                ..
 
 
 client{
-SOURCES += $$system("find ./src -name '*.cpp'")
-HEADERS += $$system("find ./src -name '*.h'")
-FORMS    += $$system("find ./src -name '*.ui'")
+Q_CUSTOMPLOT_SRC += ../qcustomplot/qcustomplot.cpp
+Q_CUSTOMPLOT_HDR += ../qcustomplot/qcustomplot.h
+
+SOURCES +=  $$system("find ./src -name '*.cpp'") \
+            $$Q_CUSTOMPLOT_SRC
+HEADERS +=  $$system("find ./src -name '*.h'") \
+            $$Q_CUSTOMPLOT_HDR
+FORMS   +=  $$system("find ./src -name '*.ui'")
 RESOURCES += data/ressources.qrc
 }

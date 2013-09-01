@@ -52,12 +52,12 @@ void TWAT::CTwServerBrowser::UseDefaultMasters(bool b)
 void TWAT::CTwServerBrowser::Refresh()
 {
 	TwTools::CMasterList masterList;
-//	TwTools::CServerSniffer sniffer;
 	long long start = 0, end = 0;
 
 	start = System::TimeStamp();
 
 	m_refreshing = true;
+	m_percentage = 0;
 	m_expCount = m_masterReq->PullCount();
 	m_masterReq->PullList(&masterList);
 	m_serverList.clear();

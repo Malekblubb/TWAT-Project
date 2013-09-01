@@ -9,8 +9,6 @@
 
 #include <core/config.h>
 
-#include <string>
-
 
 namespace TWAT
 {

@@ -10,9 +10,12 @@
 #include <core/component_core.h>
 #include <core/config.h>
 #include <core/twserverbrowser.h>
+#include <core/twservertester.h>
 
 #include <core/shared/config.h>
 #include <core/shared/twserverbrowser.h>
+#include <core/shared/twservertester.h>
+
 #include <core/tools/tw/net/server.h>
 
 #include <iostream>
@@ -49,10 +52,12 @@ void TWAT::CClient::SetupComponents()
 	// register components
 	Core()->RegisterComponent<CConfig>("config");
 	Core()->RegisterComponent<CTwServerBrowser>("twserverbrowser");
+	Core()->RegisterComponent<CTwServerTester>("twservertester");
 
 	// request components
 	m_config = Core()->RequestComponent<IConfig>();
 	m_twServerBrowser = Core()->RequestComponent<ITwServerBrowser>();
+	m_twServerTester = Core()->RequestComponent<ITwServerTester>();
 }
 
 void TWAT::CClient::InitComponents()

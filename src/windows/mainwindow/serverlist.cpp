@@ -6,57 +6,65 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include <base/system.h>
-
 #include <core/client/client.h>
+
 #include <core/shared/twserverbrowser.h>
 
 #include <core/tools/tw/net/server.h>
 
+#include <QTimer>
+
 using namespace TWAT;
 
 
-void MainWindow::RefreshSrvBrowserTable()
+CUiServerList::CUiServerList(Ui::MainWindow *ui, MainWindow *window) : m_ui(ui), m_mainWindow(window)
 {
-	QCoreApplication::processEvents(); // unfreeze ui
-	std::this_thread::sleep_for(std::chrono::milliseconds(500)); // wait until we got expcount
+	m_timer = new QTimer();
 
-	if(Client()->ServerBrowser()->IsRefreshing())
+	connect(m_timer, SIGNAL(timeout()), this, SLOT(RefreshTable())); // refresh table when timer timed out
+	connect(this, SIGNAL(TableRefreshed(bool)), this, SLOT(OnRefreshFinished(bool)));
+}
+
+void CUiServerList::OnRefreshClicked()
+{
+	m_mainWindow->SetStatus("Refreshing serverlist...");
+	m_mainWindow->ShowStatusIcon(true);
+	m_ui->m_twSrvListList->setRowCount(0);
+	m_ui->m_pbSrvListRefresh->setEnabled(false);
+
+	m_timer->start(5000);
+	m_mainWindow->m_workerThread = new std::thread(&ITwServerBrowser::Refresh, m_mainWindow->Client()->TwServerBrowser());
+}
+
+void CUiServerList::RefreshTable()
+{
+	m_timer->stop();
+
+	// TODO: maybe rework this one day...
+	if(m_mainWindow->Client()->TwServerBrowser()->IsRefreshing())
 	{
-//		DBG("EXP: %", Client()->ServerBrowser()->ExpCount());
-		this->SetStatus("Refreshing serverlist... 0/" + QString::number(Client()->ServerBrowser()->ExpCount()));
-		this->ShowStatusIcon(true);
-
-		std::this_thread::sleep_for(std::chrono::milliseconds(Client()->ServerBrowser()->ExpCount()) * 3); // wait until we got some srvs
-
-		for(int i = 0; i < Client()->ServerBrowser()->NumServers(); ++i)
+		for(int i = 0; i < m_mainWindow->Client()->TwServerBrowser()->NumServers(); ++i)
 		{
 			QCoreApplication::processEvents(); // unfreeze ui
 
-			QString format = QString("Refreshing serverlist... %1/%2 (%3%)").arg(Client()->ServerBrowser()->NumServers()).
-					arg(Client()->ServerBrowser()->ExpCount()).arg(Client()->ServerBrowser()->PercentageFinished());
-			this->SetStatus(format);
-
-			if(Client()->ServerBrowser()->IsRefreshing())
+			if(m_mainWindow->Client()->TwServerBrowser()->IsRefreshing())
 				std::this_thread::sleep_for(std::chrono::milliseconds(25)); // give him some time to send, rcv, decode, when refreshing
 
-			// add the data to table
-//			DBG("name: %", Client()->ServerBrowser()->NumServers());
-			this->AddServerInfoRow(Client()->ServerBrowser()->At(i), i);
-		}
+			m_ui->m_lbSrvListStatus->setText(QString("Refreshed %1/%2 servers (%3%)").
+											 arg(m_mainWindow->Client()->TwServerBrowser()->NumServers()).
+											 arg(m_mainWindow->Client()->TwServerBrowser()->ExpCount()).
+											 arg(m_mainWindow->Client()->TwServerBrowser()->PercentageFinished()));
 
-		QString format = QString("Refreshed %1 servers in %2 seconds").arg(Client()->ServerBrowser()->NumServers()).arg(Client()->ServerBrowser()->RefreshTime());
-		this->SetStatus(format);
+			// add the data to table
+			this->AddServerInfoRow(m_mainWindow->Client()->TwServerBrowser()->At(i), i);
+		}
+		emit TableRefreshed(true);
 	}
 	else
-		this->SetStatus("Error while refresh serverlist");
-
-	this->ShowStatusIcon(false);
-	m_ui->m_pbSrvListRefresh->setEnabled(true);
-	m_workerThread->join();
+		emit TableRefreshed(false);
 }
 
-void MainWindow::AddServerInfoRow(TwTools::ServerInfo *inf, int row)
+void CUiServerList::AddServerInfoRow(TwTools::ServerInfo *inf, int row)
 {
 	QTableWidgetItem *name = new QTableWidgetItem(inf->m_name.c_str());
 	QTableWidgetItem *gametype = new QTableWidgetItem(inf->m_gameType.c_str());
@@ -77,31 +85,37 @@ void MainWindow::AddServerInfoRow(TwTools::ServerInfo *inf, int row)
 	m_ui->m_twSrvListList->setItem(row, 4, ping);
 }
 
-void MainWindow::on_m_pbSrvListRefresh_clicked()
+void CUiServerList::OnRefreshFinished(bool success)
 {
-	m_ui->m_twSrvListList->setRowCount(0);
-	m_ui->m_pbSrvListRefresh->setEnabled(false);
+	if(success)
+		m_ui->m_lbSrvListStatus->setText(QString("Refreshed %1 servers in %2 seconds").
+								arg(m_mainWindow->Client()->TwServerBrowser()->NumServers()).
+								arg(m_mainWindow->Client()->TwServerBrowser()->RefreshTime()));
 
-	m_workerThread = new std::thread(&ITwServerBrowser::Refresh, Client()->ServerBrowser());
+	else
+		m_ui->m_lbSrvListStatus->setText("Refresh failed");
 
-	this->RefreshSrvBrowserTable();
+	m_mainWindow->SetStatus("Servers refreshed");
+	m_mainWindow->ShowStatusIcon(false);
+	m_ui->m_pbSrvListRefresh->setEnabled(true);
+	m_mainWindow->m_workerThread->join();
 }
 
-void MainWindow::on_m_twSrvListList_clicked(const QModelIndex &index)
+void CUiServerList::OnTableEntryClicked(const QModelIndex &index)
 {
 	// server info
-	m_ui->m_lbSrvListServerInfoIpVar->setText(Client()->ServerBrowser()->At(index.row())->m_addr.c_str());
-	m_ui->m_lbSrvListServerInfoVersionVar->setText(Client()->ServerBrowser()->At(index.row())->m_version.c_str());
+	m_ui->m_lbSrvListServerInfoIpVar->setText(m_mainWindow->Client()->TwServerBrowser()->At(index.row())->m_addr.c_str());
+	m_ui->m_lbSrvListServerInfoVersionVar->setText(m_mainWindow->Client()->TwServerBrowser()->At(index.row())->m_version.c_str());
 
 
 	// player info
 	m_ui->m_twSrvListPlayerList->setRowCount(0);
 	m_ui->m_twSrvListPlayerList->setColumnWidth(0, 60);
 
-	for(int i = 0; i < Client()->ServerBrowser()->At(index.row())->m_numClients; ++i)
+	for(int i = 0; i < m_mainWindow->Client()->TwServerBrowser()->At(index.row())->m_numClients; ++i)
 	{
-		QTableWidgetItem *score = new QTableWidgetItem(QString::number(Client()->ServerBrowser()->At(index.row())->m_clients[i].m_score));
-		QTableWidgetItem *name = new QTableWidgetItem(Client()->ServerBrowser()->At(index.row())->m_clients[i].m_name.c_str());
+		QTableWidgetItem *score = new QTableWidgetItem(QString::number(m_mainWindow->Client()->TwServerBrowser()->At(index.row())->m_clients[i].m_score));
+		QTableWidgetItem *name = new QTableWidgetItem(m_mainWindow->Client()->TwServerBrowser()->At(index.row())->m_clients[i].m_name.c_str());
 
 		m_ui->m_twSrvListPlayerList->insertRow(i);
 		m_ui->m_twSrvListPlayerList->setItem(i, 0, score);
@@ -109,12 +123,28 @@ void MainWindow::on_m_twSrvListList_clicked(const QModelIndex &index)
 	}
 }
 
-void MainWindow::on_m_leSrvListSearchBar_textChanged(const QString &arg1)
+void CUiServerList::OnTestServerClicked()
+{
+	if(!m_ui->m_twSrvListList->selectedItems().empty())
+	{
+		// switch page
+		m_ui->m_swMain->setCurrentIndex(9);
+		m_ui->m_twMainMenu->setCurrentIndex(m_ui->m_twMainMenu->indexAt(QPoint(9, 0)));
+
+		emit TestServerRequest(m_mainWindow->Client()->TwServerBrowser()->At(m_ui->m_twSrvListList->selectedItems().at(0)->row())->m_addr.c_str());
+	}
+	else
+	{
+
+	}
+}
+
+void CUiServerList::Search(const QString &text)
 {
 	for(int i = 0; i < m_ui->m_twSrvListList->rowCount(); ++i)
 	{
 		// name
-		if(m_ui->m_twSrvListList->item(i, 0)->text().toLower().contains(arg1.toLower()))
+		if(m_ui->m_twSrvListList->item(i, 0)->text().toLower().contains(text.toLower()))
 			m_ui->m_twSrvListList->setCurrentItem(m_ui->m_twSrvListList->item(i, 0));
 	}
 }

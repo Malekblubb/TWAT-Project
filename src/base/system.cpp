@@ -97,10 +97,10 @@ void TWAT::System::CIpAddr::SetNewAddr(const std::string &addr)
 	m_isSet = false;
 
 	if(addr.find(':') == std::string::npos)
-		throw std::invalid_argument("argument has invalid format (CIpAddr)");
+		return;
 
 	if(addr.length() < 9)
-		throw std::length_error("argument has invalid length (CIpAddr)");
+		return;
 
 	// get ip, port
 	m_ip = addr.substr(0, addr.find(':'));

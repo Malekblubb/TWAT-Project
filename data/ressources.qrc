@@ -42,5 +42,8 @@
         <file>img/icons/edit.png</file>
         <file>img/icons/tracker.png</file>
         <file>img/icons/bolt.png</file>
+        <file>img/icons/bolt_active.png</file>
+        <file>img/icons/down.png</file>
+        <file>img/icons/up.png</file>
     </qresource>
 </RCC>

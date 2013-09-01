@@ -51,6 +51,14 @@ bool TWAT::TwTools::CServerSniffer::PullInfo(ServerInfo *inf)
 	return true;
 }
 
+int TWAT::TwTools::CServerSniffer::TestLatency()
+{
+	if(!this->SendReq())
+		return 999;
+
+	return m_latency;
+}
+
 bool TWAT::TwTools::CServerSniffer::SendReq()
 {
 	long long start = 0, end = 0;
@@ -65,14 +73,14 @@ bool TWAT::TwTools::CServerSniffer::SendReq()
 	// send, recv, ping
 	start = System::TimeStamp();
 
-	CNetworkBase::Send(m_sock, sPk);
+	m_sentLen = CNetworkBase::Send(m_sock, sPk);
 	if((m_recLen = CNetworkBase::RecvRaw(m_sock, m_recData, 1024, m_addr)) < 0)
 		return false;
+
 
 	end = System::TimeStamp();
 	m_latency = (end - start) / (long long)1000;
 
-	// TODO: check valid recved pk here
 	return true;
 }
 
