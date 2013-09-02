@@ -15,6 +15,7 @@ TWAT::CTwServerBrowser::CTwServerBrowser()
 {
 	m_srvSniffer = new TwTools::CServerSniffer();
 	m_masterReq = new TwTools::CMasterRequest();
+	m_masterList = new TwTools::CMasterList();
 
 	m_numServers = 0;
 	m_useDefaultMasters = false;
@@ -49,33 +50,33 @@ void TWAT::CTwServerBrowser::UseDefaultMasters(bool b)
 	}
 }
 
-void TWAT::CTwServerBrowser::Refresh()
+bool TWAT::CTwServerBrowser::Refresh()
 {
-	TwTools::CMasterList masterList;
-	long long start = 0, end = 0;
+	if(m_numServers == m_expCount)
+		return false;
 
-	start = System::TimeStamp();
+	m_srvSniffer->Connect((*m_masterList)[m_numServers]);
+	m_srvSniffer->PullInfo(&m_serverList[m_numServers]);
+	++m_numServers;
 
-	m_refreshing = true;
-	m_percentage = 0;
-	m_expCount = m_masterReq->PullCount();
-	m_masterReq->PullList(&masterList);
-	m_serverList.clear();
+	this->CalcPercentage();
+
+	return true;
+}
+
+void TWAT::CTwServerBrowser::RefreshMasterList()
+{
+	// reset all
 	m_numServers = 0;
+
+	// master
+	m_masterList->Clear();
+	m_masterReq->PullList(m_masterList);
+	m_expCount = m_masterList->Size();
+
+	// server
+	m_serverList.clear();
 	m_serverList.resize(m_expCount);
-
-	for(int i = 0; i < masterList.Size(); ++i)
-	{
-		m_srvSniffer->Connect(masterList[i]);
-		m_srvSniffer->PullInfo(&m_serverList[i]);
-
-		++m_numServers;
-		this->CalcPercentage();
-	}
-
-	end = System::TimeStamp();
-	m_refreshTime = (end - start) / (long long)1000000;
-	m_refreshing = false;
 }
 
 void TWAT::CTwServerBrowser::ClearAllMasters()

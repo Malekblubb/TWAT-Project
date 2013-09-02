@@ -211,7 +211,7 @@ ssize_t TWAT::System::UdpRecv(int sock, unsigned char *buf, size_t bufLen, CIpAd
 	ssize_t got = -1;
 	std::stringstream stream;
 	char addrBuf[INET_ADDRSTRLEN];
-	int trys = 400000;
+	int trys = 500000;
 
 	bzero(&senderInfo, sizeof senderInfo);
 	std::memset(buf, 0, bufLen);
@@ -222,7 +222,7 @@ ssize_t TWAT::System::UdpRecv(int sock, unsigned char *buf, size_t bufLen, CIpAd
 
 		got = recvfrom(sock, buf, bufLen, MSG_DONTWAIT, (sockaddr *)&senderInfo, &senderInfoSize);
 
-		if(errno == EWOULDBLOCK)
+		if((errno == EWOULDBLOCK) || (errno == EAGAIN))
 			continue;
 
 		else

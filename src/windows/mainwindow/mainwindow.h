@@ -86,15 +86,18 @@ public:
 	CUiServerList(Ui::MainWindow *ui, MainWindow *window);
 
 signals:
-	void TableRefreshed(bool success);
+	void RefreshStart();
+	void RefreshEnd();
 	void TestServerRequest(const QString &ip);
 
 
 private slots:
+	void OnRefreshStart();
+	void OnRefreshEnd();
+
 	void OnRefreshClicked();
 	void OnTableEntryClicked(const QModelIndex &index);
 	void OnTestServerClicked();
-	void OnRefreshFinished(bool success);
 
 	void RefreshTable();
 	void Search(const QString &text);

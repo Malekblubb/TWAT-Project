@@ -22,46 +22,50 @@ CUiServerList::CUiServerList(Ui::MainWindow *ui, MainWindow *window) : m_ui(ui),
 	m_timer = new QTimer();
 
 	connect(m_timer, SIGNAL(timeout()), this, SLOT(RefreshTable())); // refresh table when timer timed out
-	connect(this, SIGNAL(TableRefreshed(bool)), this, SLOT(OnRefreshFinished(bool)));
+	connect(this, SIGNAL(RefreshStart()), this, SLOT(OnRefreshStart()));
+	connect(this, SIGNAL(RefreshEnd()), this, SLOT(OnRefreshEnd()));
 }
 
 void CUiServerList::OnRefreshClicked()
+{
+	emit RefreshStart();
+}
+
+void CUiServerList::OnRefreshStart()
 {
 	m_mainWindow->SetStatus("Refreshing serverlist...");
 	m_mainWindow->ShowStatusIcon(true);
 	m_ui->m_twSrvListList->setRowCount(0);
 	m_ui->m_pbSrvListRefresh->setEnabled(false);
 
-	m_timer->start(5000);
-	m_mainWindow->m_workerThread = new std::thread(&ITwServerBrowser::Refresh, m_mainWindow->Client()->TwServerBrowser());
+	m_mainWindow->Client()->TwServerBrowser()->RefreshMasterList();
+	m_timer->start(10);
+}
+
+void CUiServerList::OnRefreshEnd()
+{
+	m_timer->stop();
+
+	m_mainWindow->SetStatus("Servers refreshed");
+	m_mainWindow->ShowStatusIcon(false);
+	m_ui->m_pbSrvListRefresh->setEnabled(true);
 }
 
 void CUiServerList::RefreshTable()
 {
-	m_timer->stop();
-
-	// TODO: maybe rework this one day...
-	if(m_mainWindow->Client()->TwServerBrowser()->IsRefreshing())
+	if(!m_mainWindow->Client()->TwServerBrowser()->Refresh())
 	{
-		for(int i = 0; i < m_mainWindow->Client()->TwServerBrowser()->NumServers(); ++i)
-		{
-			QCoreApplication::processEvents(); // unfreeze ui
-
-			if(m_mainWindow->Client()->TwServerBrowser()->IsRefreshing())
-				std::this_thread::sleep_for(std::chrono::milliseconds(25)); // give him some time to send, rcv, decode, when refreshing
-
-			m_ui->m_lbSrvListStatus->setText(QString("Refreshed %1/%2 servers (%3%)").
-											 arg(m_mainWindow->Client()->TwServerBrowser()->NumServers()).
-											 arg(m_mainWindow->Client()->TwServerBrowser()->ExpCount()).
-											 arg(m_mainWindow->Client()->TwServerBrowser()->PercentageFinished()));
-
-			// add the data to table
-			this->AddServerInfoRow(m_mainWindow->Client()->TwServerBrowser()->At(i), i);
-		}
-		emit TableRefreshed(true);
+		emit RefreshEnd();
+		return;
 	}
-	else
-		emit TableRefreshed(false);
+
+	m_ui->m_lbSrvListStatus->setText(QString("Refreshed %1/%2 servers (%3%)").
+									 arg(m_mainWindow->Client()->TwServerBrowser()->NumServers()).
+									 arg(m_mainWindow->Client()->TwServerBrowser()->ExpCount()).
+									 arg(m_mainWindow->Client()->TwServerBrowser()->PercentageFinished()));
+
+	this->AddServerInfoRow(m_mainWindow->Client()->TwServerBrowser()->At(m_mainWindow->Client()->TwServerBrowser()->NumServers() - 1),
+						   m_mainWindow->Client()->TwServerBrowser()->NumServers() - 1);
 }
 
 void CUiServerList::AddServerInfoRow(TwTools::ServerInfo *inf, int row)
@@ -83,22 +87,6 @@ void CUiServerList::AddServerInfoRow(TwTools::ServerInfo *inf, int row)
 	m_ui->m_twSrvListList->setItem(row, 2, map);
 	m_ui->m_twSrvListList->setItem(row, 3, players);
 	m_ui->m_twSrvListList->setItem(row, 4, ping);
-}
-
-void CUiServerList::OnRefreshFinished(bool success)
-{
-	if(success)
-		m_ui->m_lbSrvListStatus->setText(QString("Refreshed %1 servers in %2 seconds").
-								arg(m_mainWindow->Client()->TwServerBrowser()->NumServers()).
-								arg(m_mainWindow->Client()->TwServerBrowser()->RefreshTime()));
-
-	else
-		m_ui->m_lbSrvListStatus->setText("Refresh failed");
-
-	m_mainWindow->SetStatus("Servers refreshed");
-	m_mainWindow->ShowStatusIcon(false);
-	m_ui->m_pbSrvListRefresh->setEnabled(true);
-	m_mainWindow->m_workerThread->join();
 }
 
 void CUiServerList::OnTableEntryClicked(const QModelIndex &index)

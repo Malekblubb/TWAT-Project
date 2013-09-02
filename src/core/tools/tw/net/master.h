@@ -28,6 +28,7 @@ namespace TWAT
 			std::string operator[](int pos) {return m_ips[pos];}
 
 			void AddAddr(const std::string &ip);
+			void Clear();
 			int Size() const {return m_ips.size();}
 		};
 

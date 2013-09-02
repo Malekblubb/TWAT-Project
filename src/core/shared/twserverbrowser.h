@@ -17,6 +17,7 @@ namespace TWAT
 	namespace TwTools
 	{
 		class CMasterRequest;
+		class CMasterList;
 		class CServerSniffer;
 		struct ServerInfo;
 	}
@@ -26,6 +27,7 @@ namespace TWAT
 	{
 		TwTools::CServerSniffer *m_srvSniffer;
 		TwTools::CMasterRequest *m_masterReq;
+		TwTools::CMasterList *m_masterList;
 		std::vector<TwTools::ServerInfo> m_serverList;
 
 		int m_expCount; // expected count from masterserver
@@ -52,7 +54,8 @@ namespace TWAT
 		void AddMaster(const std::string &ip);
 		void UseDefaultMasters(bool b);
 
-		void Refresh();
+		bool Refresh();
+		void RefreshMasterList();
 
 	private:
 		void ClearAllMasters();

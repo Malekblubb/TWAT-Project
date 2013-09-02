@@ -26,7 +26,7 @@ namespace TWAT
 		virtual ~ITwServerBrowser() {}
 
 
-		virtual void Refresh() = 0;
+		virtual bool Refresh() = 0;
 
 		virtual void AddMaster(const std::string &ip) = 0;
 		virtual void UseDefaultMasters(bool b) = 0;
@@ -38,6 +38,8 @@ namespace TWAT
 		virtual int NumServers() const = 0;
 		virtual int RefreshTime() const = 0;
 		virtual int PercentageFinished() const = 0;
+
+		virtual void RefreshMasterList() = 0;
 	};
 
 }

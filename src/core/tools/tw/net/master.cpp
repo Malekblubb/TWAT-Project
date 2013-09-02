@@ -21,6 +21,11 @@ void TWAT::TwTools::CMasterList::AddAddr(const std::string &ip)
 	m_ips.push_back(ip);
 }
 
+void TWAT::TwTools::CMasterList::Clear()
+{
+	m_ips.clear();
+}
+
 
 TWAT::TwTools::CMasterRequest::CMasterRequest()
 {
