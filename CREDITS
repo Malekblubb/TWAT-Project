@@ -1,8 +1,14 @@
+SOURCE/LIBS
+
+    QCustomPlot
+	Web:	http://www.qcustomplot.com/
+
+
 
 GRAPHICS
 
     UI Icons
-	Autor:	Jiri Silha
+	Author:	Jiri Silha
 	Web:	http://silha.me
 		https://twitter.com/jirisilha
 		http://dribbble.com/jirisilha
