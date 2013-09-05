@@ -10,6 +10,7 @@
 #include <core/twserverbrowser.h>
 
 #include <vector>
+#include <map>
 
 
 namespace TWAT
@@ -32,6 +33,7 @@ namespace TWAT
 
 		int m_expCount; // expected count from masterserver
 		int m_numServers; // num "real" servers
+		int m_numSent;
 		int m_percentage;
 		bool m_useDefaultMasters;
 		bool m_refreshing;
@@ -56,6 +58,7 @@ namespace TWAT
 
 		bool Refresh();
 		void RefreshMasterList();
+		int ProcessIncomming();
 
 	private:
 		void ClearAllMasters();

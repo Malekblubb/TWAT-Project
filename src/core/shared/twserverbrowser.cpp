@@ -52,12 +52,27 @@ void TWAT::CTwServerBrowser::UseDefaultMasters(bool b)
 
 bool TWAT::CTwServerBrowser::Refresh()
 {
-	if(m_numServers == m_expCount)
-		return false;
 
-	m_srvSniffer->Connect((*m_masterList)[m_numServers]);
-	m_srvSniffer->PullInfo(&m_serverList[m_numServers]);
-	++m_numServers;
+	DBG("num: %, exp: %", m_numServers, m_expCount);
+
+
+	if(m_numSent >= m_expCount)
+	{
+		if(this->ProcessIncomming() <= 0)
+			return false;
+	}
+	else
+	{
+
+		if(m_numSent <= m_expCount)
+		{
+			m_srvSniffer->Connect((*m_masterList)[m_numSent]);
+			m_srvSniffer->SendReq();
+			++m_numSent;
+		}
+	}
+
+	this->ProcessIncomming();
 
 	this->CalcPercentage();
 
@@ -68,6 +83,7 @@ void TWAT::CTwServerBrowser::RefreshMasterList()
 {
 	// reset all
 	m_numServers = 0;
+	m_numSent = 0;
 
 	// master
 	m_masterList->Clear();
@@ -76,7 +92,14 @@ void TWAT::CTwServerBrowser::RefreshMasterList()
 
 	// server
 	m_serverList.clear();
-	m_serverList.resize(m_expCount);
+}
+
+int TWAT::CTwServerBrowser::ProcessIncomming()
+{
+	int num = m_srvSniffer->ProcessIncomming(&m_serverList);
+	m_numServers += num;
+
+	return num;
 }
 
 void TWAT::CTwServerBrowser::ClearAllMasters()

@@ -594,7 +594,7 @@ QTreeWidget::item:selected
             <string notr="true"/>
            </property>
            <property name="currentIndex">
-            <number>9</number>
+            <number>11</number>
            </property>
            <widget class="QWidget" name="page"/>
            <widget class="QWidget" name="pagePlayDemo">
@@ -10798,7 +10798,7 @@ QTableWidget::item:selected{ background-color:#50aefa; color:#ffffff}</string>
               <rect>
                <x>324</x>
                <y>176</y>
-               <width>77</width>
+               <width>81</width>
                <height>21</height>
               </rect>
              </property>
@@ -10929,7 +10929,7 @@ QTableWidget::item:selected{ background-color:#50aefa; color:#ffffff}</string>
               <rect>
                <x>571</x>
                <y>176</y>
-               <width>66</width>
+               <width>68</width>
                <height>21</height>
               </rect>
              </property>
@@ -11060,7 +11060,7 @@ QTableWidget::item:selected{ background-color:#50aefa; color:#ffffff}</string>
               <rect>
                <x>778</x>
                <y>176</y>
-               <width>112</width>
+               <width>116</width>
                <height>21</height>
               </rect>
              </property>
@@ -11717,6 +11717,19 @@ QTableWidget::item:selected{ background-color:#50aefa; color:#ffffff}</string>
              </property>
              <property name="flat">
               <bool>true</bool>
+             </property>
+            </widget>
+            <widget class="QPushButton" name="pushButton_2">
+             <property name="geometry">
+              <rect>
+               <x>50</x>
+               <y>400</y>
+               <width>93</width>
+               <height>29</height>
+              </rect>
+             </property>
+             <property name="text">
+              <string>PushButton</string>
              </property>
             </widget>
            </widget>

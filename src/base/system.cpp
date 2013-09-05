@@ -22,6 +22,7 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <unistd.h>
+#include <fcntl.h>
 #elif defined(OS_WIN)
 #include <windows.h>
 #endif
@@ -180,6 +181,8 @@ int TWAT::System::UdpSock(CIpAddr *bindAddr)
 			}
 		}
 
+		fcntl(tmpSock, F_SETFL, O_NONBLOCK);
+
 
 		return tmpSock;
 	}
@@ -204,23 +207,25 @@ ssize_t TWAT::System::UdpSend(int sock, unsigned char *data, size_t dataLen, CIp
 	return sendto(sock, data, dataLen, 0, (sockaddr *)&tmpAddr, sizeof tmpAddr);
 }
 
-ssize_t TWAT::System::UdpRecv(int sock, unsigned char *buf, size_t bufLen, CIpAddr *fromAddr)
+ssize_t TWAT::System::UdpRecv(int sock, unsigned char *buf, size_t bufLen, int timeout, CIpAddr *fromAddr)
 {
 	sockaddr_in senderInfo;
 	socklen_t senderInfoSize = sizeof senderInfo;
 	ssize_t got = -1;
 	std::stringstream stream;
 	char addrBuf[INET_ADDRSTRLEN];
-	int trys = 500000;
+	long long to = System::TimeStamp() + timeout;
 
 	bzero(&senderInfo, sizeof senderInfo);
 	std::memset(buf, 0, bufLen);
 
-	while((trys--) > 0) // loop until we got data or timeout
+
+	// idea from https://github.com/fisted
+	while(System::TimeStamp() < to) // loop until we got data or timeout
 	{
 		errno = 0;
 
-		got = recvfrom(sock, buf, bufLen, MSG_DONTWAIT, (sockaddr *)&senderInfo, &senderInfoSize);
+		got = recvfrom(sock, buf, bufLen, 0, (sockaddr *)&senderInfo, &senderInfoSize);
 
 		if((errno == EWOULDBLOCK) || (errno == EAGAIN))
 			continue;
@@ -235,7 +240,6 @@ ssize_t TWAT::System::UdpRecv(int sock, unsigned char *buf, size_t bufLen, CIpAd
 		inet_ntop(AF_INET, &senderInfo.sin_addr, addrBuf, INET_ADDRSTRLEN);
 		stream << addrBuf << ":" << htons(senderInfo.sin_port);
 		fromAddr->SetNewAddr(stream.str());
-
 	}
 
 	return got;

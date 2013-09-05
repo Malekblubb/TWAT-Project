@@ -61,7 +61,7 @@ int TWAT::TwTools::CMasterRequest::PullCount()
 		pk->MakeConnless();
 		CNetworkBase::Send(m_sock, pk);
 
-		if((gotLen = CNetworkBase::RecvRaw(m_sock, recData, 1024)) > 0)
+		if((gotLen = CNetworkBase::RecvRaw(m_sock, recData, 1024, 100000)) > 0)
 		{
 			// TODO: CHECK PK
 
@@ -88,11 +88,13 @@ bool TWAT::TwTools::CMasterRequest::PullList(CMasterList *lst)
 
 	for(std::vector<System::CIpAddr *>::iterator i = m_addrs.begin(); i != m_addrs.end(); ++i)
 	{
+		DBG("requesting list from master: %", System::IpAddrToStr(*i));
+
 		CNetworkPacket *pk = new CNetworkPacket(*i, (unsigned char *)SERVERBROWSE_GETLIST, 8);
 		pk->MakeConnless();
 		CNetworkBase::Send(m_sock, pk);
 
-		while((gotLen = CNetworkBase::RecvRaw(m_sock, recData, 2048)) > 0) // get the info splittet in X pk's
+		while((gotLen = CNetworkBase::RecvRaw(m_sock, recData, 2048, 100000)) > 0) // get the info splittet in X pk's
 		{
 			if(!CRawInfoDecoder::DecodeListInfo(recData, gotLen, lst))
 				DBG("error while decode recved list data from: %", System::IpAddrToStr(*i));

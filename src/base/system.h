@@ -56,7 +56,7 @@ namespace TWAT
 		int UdpSock(CIpAddr *bindAddr = 0);
 		void SockClose(int sock);
 		ssize_t UdpSend(int sock, unsigned char *data, size_t dataLen, CIpAddr *target);
-		ssize_t UdpRecv(int sock, unsigned char *buf, size_t bufLen, CIpAddr *fromAddr);
+		ssize_t UdpRecv(int sock, unsigned char *buf, size_t bufLen, int timeout, CIpAddr *fromAddr);
 
 
 		// stdout-log

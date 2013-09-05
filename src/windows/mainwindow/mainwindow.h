@@ -99,6 +99,7 @@ private slots:
 	void OnTableEntryClicked(const QModelIndex &index);
 	void OnTestServerClicked();
 
+	void Refresh();
 	void RefreshTable();
 	void Search(const QString &text);
 

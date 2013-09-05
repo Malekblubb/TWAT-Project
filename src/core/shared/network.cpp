@@ -83,7 +83,7 @@ ssize_t TWAT::CNetworkBase::Send(int sock, CNetworkPacket *pk)
 
 ssize_t TWAT::CNetworkBase::Recv(int sock, CNetworkPacket *pk, System::CIpAddr *fromAddr)
 {
-	ssize_t got = System::UdpRecv(sock, (unsigned char *)pk->m_data, pk->m_label.m_dataSize, fromAddr);
+	ssize_t got = System::UdpRecv(sock, (unsigned char *)pk->m_data, pk->m_label.m_dataSize, 0, fromAddr);
 
 	// set new size to pk-label
 	pk->m_label.m_dataSize = got;
@@ -91,7 +91,7 @@ ssize_t TWAT::CNetworkBase::Recv(int sock, CNetworkPacket *pk, System::CIpAddr *
 	return got;
 }
 
-ssize_t TWAT::CNetworkBase::RecvRaw(int sock, unsigned char *data, int dataLen, System::CIpAddr *fromAddr)
+ssize_t TWAT::CNetworkBase::RecvRaw(int sock, unsigned char *data, int dataLen, int timeout, System::CIpAddr *fromAddr)
 {
-	return System::UdpRecv(sock, (unsigned char *)data, dataLen, fromAddr);
+	return System::UdpRecv(sock, (unsigned char *)data, dataLen, timeout, fromAddr);
 }

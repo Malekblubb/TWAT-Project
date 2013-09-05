@@ -46,11 +46,9 @@ namespace TWAT
 	class CNetworkBase
 	{
 	public:
-		static void MakeConnless(CNetworkPacket *pk);
-
 		static ssize_t Send(int sock, CNetworkPacket *pk);
 		static ssize_t Recv(int sock, CNetworkPacket *pk, System::CIpAddr *fromAddr = 0);
-		static ssize_t RecvRaw(int sock, unsigned char *data, int dataLen, System::CIpAddr *fromAddr = 0);
+		static ssize_t RecvRaw(int sock, unsigned char *data, int dataLen, int timeout, System::CIpAddr *fromAddr = 0);
 	};
 }
 

@@ -119,6 +119,9 @@ void MainWindow::ChangeUiElements()
 	m_ui->m_widgetTestSrvPlot->yAxis->setBasePen(QPen(QColor(181, 181, 181)));
 	m_ui->m_widgetTestSrvPlot->yAxis->setTicks(false);
 	m_ui->m_widgetTestSrvPlot->yAxis->setRange(0, 60);
+	m_ui->m_widgetTestSrvPlot->setInteraction(QCP::iRangeDrag, true);
+	m_ui->m_widgetTestSrvPlot->setInteraction(QCP::iRangeZoom, true);
+	m_ui->m_widgetTestSrvPlot->axisRect()->setRangeZoomFactor(2);
 }
 
 void MainWindow::ResetVars()

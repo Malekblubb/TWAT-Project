@@ -9,6 +9,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 
 namespace TWAT
@@ -44,7 +45,9 @@ namespace TWAT
 			int m_maxPlayers;
 			int m_numPlayers;
 			int m_flags;
+
 			int m_latency;
+			long long m_sentTime;
 		};
 
 		class CServerSniffer
@@ -56,6 +59,8 @@ namespace TWAT
 			int m_sentLen;
 			unsigned char *m_recData;
 			unsigned char m_token; // token must be only one byte
+			std::map<std::string, ServerInfo> m_servers;
+
 			long long m_latency;
 
 		public:
@@ -69,8 +74,13 @@ namespace TWAT
 			int RecLen() const {return m_recLen;}
 			int SentLen() const {return m_sentLen;}
 
-		private:
+			// only for serverbrowser
 			bool SendReq();
+			int ProcessIncomming(std::vector<ServerInfo> *buf);
+			//
+
+		private:
+			void RecvReq();
 		};
 	}
 }

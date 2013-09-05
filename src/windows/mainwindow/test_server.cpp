@@ -102,7 +102,7 @@ void CUiTestServer::RefreshUiInfos()
 	if(m_currentPing > 500 || m_currentPing == 0) // massive jumps
 		m_ui->m_widgetTestSrvPlot->yAxis->setRange(0, m_currentPing);
 	else
-		m_ui->m_widgetTestSrvPlot->yAxis->setRange(m_currentPing - 10, m_currentPing + 10); // scroll horizontal +/- 10
+		m_ui->m_widgetTestSrvPlot->yAxis->setRange( m_currentPing -10, m_currentPing + 20); // scroll horizontal
 
 
 	// refresh labels

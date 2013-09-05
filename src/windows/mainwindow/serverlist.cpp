@@ -21,7 +21,7 @@ CUiServerList::CUiServerList(Ui::MainWindow *ui, MainWindow *window) : m_ui(ui),
 {
 	m_timer = new QTimer();
 
-	connect(m_timer, SIGNAL(timeout()), this, SLOT(RefreshTable())); // refresh table when timer timed out
+	connect(m_timer, SIGNAL(timeout()), this, SLOT(Refresh())); // refresh table when timer timed out
 	connect(this, SIGNAL(RefreshStart()), this, SLOT(OnRefreshStart()));
 	connect(this, SIGNAL(RefreshEnd()), this, SLOT(OnRefreshEnd()));
 }
@@ -41,17 +41,20 @@ void CUiServerList::OnRefreshStart()
 	m_mainWindow->Client()->TwServerBrowser()->RefreshMasterList();
 	m_timer->start(10);
 }
+#include <base/system.h>
 
 void CUiServerList::OnRefreshEnd()
 {
 	m_timer->stop();
+
+	this->RefreshTable();
 
 	m_mainWindow->SetStatus("Servers refreshed");
 	m_mainWindow->ShowStatusIcon(false);
 	m_ui->m_pbSrvListRefresh->setEnabled(true);
 }
 
-void CUiServerList::RefreshTable()
+void CUiServerList::Refresh()
 {
 	if(!m_mainWindow->Client()->TwServerBrowser()->Refresh())
 	{
@@ -59,13 +62,25 @@ void CUiServerList::RefreshTable()
 		return;
 	}
 
+//	currentpos = m_mainWindow->Client()->TwServerBrowser()->NumServers();
+
+//	if(m_mainWindow->Client()->TwServerBrowser()->PercentageFinished() > 25)
+//		this->RefreshTable();
+}
+
+void CUiServerList::RefreshTable()
+{
+
 	m_ui->m_lbSrvListStatus->setText(QString("Refreshed %1/%2 servers (%3%)").
 									 arg(m_mainWindow->Client()->TwServerBrowser()->NumServers()).
 									 arg(m_mainWindow->Client()->TwServerBrowser()->ExpCount()).
 									 arg(m_mainWindow->Client()->TwServerBrowser()->PercentageFinished()));
 
-	this->AddServerInfoRow(m_mainWindow->Client()->TwServerBrowser()->At(m_mainWindow->Client()->TwServerBrowser()->NumServers() - 1),
-						   m_mainWindow->Client()->TwServerBrowser()->NumServers() - 1);
+	for(int i = 0; i < m_mainWindow->Client()->TwServerBrowser()->NumServers(); i++)
+	{
+//		DBG("name: %", m_mainWindow->Client()->TwServerBrowser()->At(i)->m_name);
+		this->AddServerInfoRow(m_mainWindow->Client()->TwServerBrowser()->At(i), i);
+	}
 }
 
 void CUiServerList::AddServerInfoRow(TwTools::ServerInfo *inf, int row)
