@@ -80,8 +80,8 @@ class CUiServerList : public QObject
 
 	Ui::MainWindow *m_ui;
 	MainWindow *m_mainWindow;
-	QTimer *m_timer;
 
+	QTimer *m_timer;
 	int m_lastServerPos;
 	int m_currentGot;
 
@@ -116,13 +116,13 @@ class CUiTestServer : public QObject
 
 	Ui::MainWindow *m_ui;
 	MainWindow *m_mainWindow;
+
 	QString m_ip;
 	QTimer *m_timer;
-
+	bool m_wasRunning;
+	bool m_runs;
 	int m_currentPing;
 	int m_numPks;
-	QVector<double> m_plotX;
-	QVector<double> m_plotY;
 
 	enum
 	{
@@ -135,16 +135,16 @@ public:
 
 signals:
 	void TestStart();
-	void TestStop();
+	void TestPause();
 
 private slots:
 	void OnSrvListSwitch(const QString &ip);
 
 	void OnStartClicked();
-	void OnStopClicked();
+	void OnPauseClicked();
 
 	void StartTest();
-	void StopTest();
+	void PauseTest();
 	void RefreshStatistics();
 
 private:

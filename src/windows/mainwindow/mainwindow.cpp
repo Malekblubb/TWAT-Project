@@ -89,7 +89,7 @@ void MainWindow::ConnectUiAndComponents()
 	connect(m_uiServerList, SIGNAL(TestServerRequest(QString)), m_uiTestServer, SLOT(OnSrvListSwitch(QString)));
 
 	connect(m_ui->m_pbTestSrvStart, SIGNAL(clicked()), m_uiTestServer, SLOT(OnStartClicked()));
-	connect(m_ui->m_pbTestSrvStop, SIGNAL(clicked()), m_uiTestServer, SLOT(OnStopClicked()));
+	connect(m_ui->m_pbTestSrvPause, SIGNAL(clicked()), m_uiTestServer, SLOT(OnPauseClicked()));
 }
 
 void MainWindow::LoadConfVars()

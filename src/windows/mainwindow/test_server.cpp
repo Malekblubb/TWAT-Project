@@ -23,12 +23,11 @@ using namespace TWAT;
 CUiTestServer::CUiTestServer(Ui::MainWindow *ui, MainWindow *window) : m_ui(ui), m_mainWindow(window)
 {
 	m_timer = new QTimer();
-
-	m_plotX.resize(1);
-	m_plotY.resize(1);
+	m_runs = false;
+	m_wasRunning = false;
 
 	connect(this, SIGNAL(TestStart()), this, SLOT(StartTest()));
-	connect(this, SIGNAL(TestStop()), this, SLOT(StopTest()));
+	connect(this, SIGNAL(TestPause()), this, SLOT(PauseTest()));
 	connect(m_timer, SIGNAL(timeout()), this, SLOT(RefreshStatistics()));
 }
 
@@ -44,9 +43,9 @@ void CUiTestServer::OnStartClicked()
 	emit TestStart();
 }
 
-void CUiTestServer::OnStopClicked()
+void CUiTestServer::OnPauseClicked()
 {
-	emit TestStop();
+	emit TestPause();
 }
 
 void CUiTestServer::StartTest()
@@ -61,6 +60,8 @@ void CUiTestServer::StartTest()
 		this->SetUpUiInfos();
 		this->Reset();
 
+		m_wasRunning = true;
+		m_runs = true;
 		m_timer->start(1000);
 	}
 	else
@@ -68,16 +69,40 @@ void CUiTestServer::StartTest()
 
 }
 
-void CUiTestServer::StopTest()
+void CUiTestServer::PauseTest()
 {
-	m_timer->stop();
-	m_mainWindow->SetStatus("Testing stoped");
-	m_mainWindow->ShowStatusIcon(false);
+	if(m_wasRunning)
+	{
+		if(m_runs)
+		{
+			m_timer->stop();
+
+			m_runs = false;
+			m_ui->m_lbTestSrvStatusVar->setText("Paused");
+			m_ui->m_pbTestSrvPause->setText("Continue");
+
+			m_mainWindow->SetStatus("Testing paused");
+			m_mainWindow->ShowStatusIcon(false);
+		}
+
+		else
+		{
+			m_timer->start(1000);
+
+			m_runs = true;
+			m_ui->m_lbTestSrvStatusVar->setText("Testing");
+			m_ui->m_pbTestSrvPause->setText("Pause");
+
+			m_mainWindow->SetStatus(QString("Testing server %1...").arg(m_ip));
+			m_mainWindow->ShowStatusIcon(true);
+		}
+	}
 }
 
 void CUiTestServer::SetUpUiInfos()
 {
 	m_ui->m_lbTestSrvStartTimeVar->setText(System::TimeStr().c_str());
+	m_ui->m_lbTestSrvStatusVar->setText("Testing");
 	m_ui->m_lbTestSrvServerMod->setText(m_mainWindow->Client()->TwServerTester()->ServerInfo()->m_gameType.c_str());
 	m_ui->m_lbTestSrvServerVersion->setText(m_mainWindow->Client()->TwServerTester()->ServerInfo()->m_version.c_str());
 }
@@ -93,10 +118,7 @@ void CUiTestServer::RefreshStatistics()
 void CUiTestServer::RefreshUiInfos()
 {
 	// refresh plot
-	m_plotX[0] = m_numPks;
-	m_plotY[0] = m_currentPing;
-
-	m_ui->m_widgetTestSrvPlot->graph(0)->addData(m_plotX, m_plotY);
+	m_ui->m_widgetTestSrvPlot->graph(0)->addData(m_numPks, m_currentPing);
 	m_ui->m_widgetTestSrvPlot->replot();
 	m_ui->m_widgetTestSrvPlot->xAxis->setRange(m_numPks - 60, m_numPks); // scroll vertical
 
