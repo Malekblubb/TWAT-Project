@@ -28,9 +28,11 @@ namespace TWAT
 		virtual TwTools::ServerInfo *ServerInfo() const = 0;
 		virtual int NumSentPks() const = 0;
 		virtual int NumLostPks() const = 0;
-		virtual bool CurrentPkLost() const = 0;
+
 		virtual int SentDataLen() const = 0;
 		virtual int RecDataLen() const = 0;
+
+		virtual bool CurrentPkLost() const = 0;
 		virtual int CurrentSentDataLen() const = 0;
 		virtual int CurrentRecDataLen() const = 0;
 	};

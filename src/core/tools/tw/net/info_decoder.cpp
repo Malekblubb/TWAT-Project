@@ -19,7 +19,7 @@ bool TWAT::TwTools::CRawInfoDecoder::DecodeServerInfo(unsigned char *data, int d
 {
 	if(dataLen < 14)
 	{
-		DBG("invalid packet recved (%)", inf->m_addr);
+		DBG("invalid packet recved (addr=%)", inf->m_addr);
 		return false;
 	}
 
@@ -29,20 +29,20 @@ bool TWAT::TwTools::CRawInfoDecoder::DecodeServerInfo(unsigned char *data, int d
 	std::string tok  = up.GetString();
 	if(tok != std::to_string(token))
 	{
-		DBG("token check failed (%)", inf->m_addr);
+		DBG("token check failed (got=%, expected=%; addr=%)",tok, token, inf->m_addr);
 		return false;
 	}
 	
 	if(up.Error())
 	{
-		DBG("unpacker error (%)", inf->m_addr);
+		DBG("unpacker error (addr=%)", inf->m_addr);
 		return false;
 	}
 
 	inf->m_version = up.GetString();
 	if(inf->m_version.substr(0, 3) != "0.6")
 	{
-		DBG("wrong version (%), should be 0.6 (%)", inf->m_version, inf->m_addr);
+		DBG("version check failed (got=%, should be 0.6; addr=%)", inf->m_version, inf->m_addr);
 		return false;
 	}
 

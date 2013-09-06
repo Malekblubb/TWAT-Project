@@ -14,6 +14,7 @@
 
 #include <core/tools/tw/net/server.h>
 
+#include <QMessageBox>
 #include <QTimer>
 
 using namespace TWAT;
@@ -62,7 +63,8 @@ void CUiTestServer::StartTest()
 
 		m_timer->start(1000);
 	}
-//	else
+	else
+		QMessageBox::warning(m_mainWindow, "Error", "Can't connect to this server");
 
 }
 

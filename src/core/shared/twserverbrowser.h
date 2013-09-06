@@ -37,30 +37,30 @@ namespace TWAT
 		int m_percentage;
 		bool m_useDefaultMasters;
 		bool m_refreshing;
-		bool m_finishedSrv;
+
 		long long m_refreshTime;
 
 
 	public:
 		CTwServerBrowser();
 
+		int Refresh();
+		void RefreshMasterList();
+
+		void AddMaster(const std::string &ip);
+		void UseDefaultMasters(bool b);
+
 		// direct read access to m_serverList at index pos
 		TwTools::ServerInfo *At(int pos) {return &m_serverList[pos];}
-
 		int ExpCount() const {return m_expCount;}
 		int NumServers() const {return m_numServers;}
 		int PercentageFinished() const {return m_percentage;}
 		int RefreshTime() const {return m_refreshTime;}
 		bool IsRefreshing() const {return m_refreshing;}
 
-		void AddMaster(const std::string &ip);
-		void UseDefaultMasters(bool b);
-
-		bool Refresh();
-		void RefreshMasterList();
-		int ProcessIncomming();
 
 	private:
+		int ProcessIncomming();
 		void ClearAllMasters();
 		void CalcPercentage();
 	};

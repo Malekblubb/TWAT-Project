@@ -50,16 +50,14 @@ void TWAT::CTwServerBrowser::UseDefaultMasters(bool b)
 	}
 }
 
-bool TWAT::CTwServerBrowser::Refresh()
+int TWAT::CTwServerBrowser::Refresh()
 {
-
-	DBG("num: %, exp: %", m_numServers, m_expCount);
-
+	m_refreshing = true;
 
 	if(m_numSent >= m_expCount)
 	{
-		if(this->ProcessIncomming() <= 0)
-			return false;
+		if(this->ProcessIncomming() <= 0) // last check before end
+			m_refreshing = false;
 	}
 	else
 	{
@@ -72,11 +70,8 @@ bool TWAT::CTwServerBrowser::Refresh()
 		}
 	}
 
-	this->ProcessIncomming();
-
 	this->CalcPercentage();
-
-	return true;
+	return this->ProcessIncomming();
 }
 
 void TWAT::CTwServerBrowser::RefreshMasterList()
@@ -92,6 +87,9 @@ void TWAT::CTwServerBrowser::RefreshMasterList()
 
 	// server
 	m_serverList.clear();
+
+	// sniffer buffer
+	m_srvSniffer->ClearServerBuffer();
 }
 
 int TWAT::CTwServerBrowser::ProcessIncomming()

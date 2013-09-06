@@ -69,7 +69,7 @@ int TWAT::TwTools::CServerSniffer::TestLatency()
 
 	this->RecvReq();
 
-	return (System::TimeStamp() - start) *1000/1000000;
+	return (System::TimeStamp() - start) * 1000 / 1000000;
 }
 
 bool TWAT::TwTools::CServerSniffer::SendReq()
@@ -81,7 +81,8 @@ bool TWAT::TwTools::CServerSniffer::SendReq()
 	sPk->AddData(&m_token, 1); // add token
 
 	// send
-	m_sentLen = CNetworkBase::Send(m_sock, sPk);
+	if((m_sentLen = CNetworkBase::Send(m_sock, sPk)) <= 0)
+		return false;
 
 	ServerInfo tmpInfo;
 	tmpInfo.m_sentTime = System::TimeStamp();
@@ -98,27 +99,40 @@ void TWAT::TwTools::CServerSniffer::RecvReq()
 int TWAT::TwTools::CServerSniffer::ProcessIncomming(std::vector<ServerInfo> *buf)
 {
 	int i = 0;
+
 	while(1)
 	{
 		unsigned char data[1024];
-		System::CIpAddr *from = new System::CIpAddr();
-		ssize_t got = CNetworkBase::RecvRaw(m_sock, data, 1024, 5000, from);
+		ssize_t got = CNetworkBase::RecvRaw(m_sock, data, 1024, 1000, m_addr); // dont wait too long
 
 		if(got <= 0)
 			break;
 
 		ServerInfo inf;
+		inf.m_sentTime = m_servers[System::IpAddrToStr(m_addr)].m_sentTime;
+		inf.m_latency = (System::TimeStamp() - inf.m_sentTime) * 1000 / 1000000;
+		inf.m_addr = System::IpAddrToStr(m_addr);
+
 		if(!CRawInfoDecoder::DecodeServerInfo(data, got, m_token, &inf))
 			continue;
 
+		// check for time out
+		if(inf.m_latency > 999 || inf.m_latency < 0)
+		{
+			DBG("server took too long to respond (addr=%)", System::IpAddrToStr(m_addr));
+			continue;
+		}
 
-		inf.m_sentTime = m_servers[System::IpAddrToStr(from)].m_sentTime;
-		inf.m_latency = (System::TimeStamp() - inf.m_sentTime)*1000/1000000;
-		inf.m_addr = System::IpAddrToStr(from);
+		// valid data, push back
 		buf->push_back(inf);
 
 		++i;
 	}
 
 	return i;
+}
+
+void TWAT::TwTools::CServerSniffer::ClearServerBuffer()
+{
+	m_servers.clear();
 }

@@ -21,7 +21,7 @@ CUiServerList::CUiServerList(Ui::MainWindow *ui, MainWindow *window) : m_ui(ui),
 {
 	m_timer = new QTimer();
 
-	connect(m_timer, SIGNAL(timeout()), this, SLOT(Refresh())); // refresh table when timer timed out
+	connect(m_timer, SIGNAL(timeout()), this, SLOT(Refresh())); // refresh when timer timed out
 	connect(this, SIGNAL(RefreshStart()), this, SLOT(OnRefreshStart()));
 	connect(this, SIGNAL(RefreshEnd()), this, SLOT(OnRefreshEnd()));
 }
@@ -33,6 +33,10 @@ void CUiServerList::OnRefreshClicked()
 
 void CUiServerList::OnRefreshStart()
 {
+	// reset all
+	m_lastServerPos = 0;
+	m_currentGot = 0;
+
 	m_mainWindow->SetStatus("Refreshing serverlist...");
 	m_mainWindow->ShowStatusIcon(true);
 	m_ui->m_twSrvListList->setRowCount(0);
@@ -41,13 +45,10 @@ void CUiServerList::OnRefreshStart()
 	m_mainWindow->Client()->TwServerBrowser()->RefreshMasterList();
 	m_timer->start(10);
 }
-#include <base/system.h>
 
 void CUiServerList::OnRefreshEnd()
 {
 	m_timer->stop();
-
-	this->RefreshTable();
 
 	m_mainWindow->SetStatus("Servers refreshed");
 	m_mainWindow->ShowStatusIcon(false);
@@ -56,30 +57,26 @@ void CUiServerList::OnRefreshEnd()
 
 void CUiServerList::Refresh()
 {
-	if(!m_mainWindow->Client()->TwServerBrowser()->Refresh())
+	if((m_currentGot = m_mainWindow->Client()->TwServerBrowser()->Refresh()) <= 0 && !m_mainWindow->Client()->TwServerBrowser()->IsRefreshing())
 	{
 		emit RefreshEnd();
 		return;
 	}
 
-//	currentpos = m_mainWindow->Client()->TwServerBrowser()->NumServers();
-
-//	if(m_mainWindow->Client()->TwServerBrowser()->PercentageFinished() > 25)
-//		this->RefreshTable();
+	this->RefreshTable();
 }
 
 void CUiServerList::RefreshTable()
 {
-
 	m_ui->m_lbSrvListStatus->setText(QString("Refreshed %1/%2 servers (%3%)").
 									 arg(m_mainWindow->Client()->TwServerBrowser()->NumServers()).
 									 arg(m_mainWindow->Client()->TwServerBrowser()->ExpCount()).
 									 arg(m_mainWindow->Client()->TwServerBrowser()->PercentageFinished()));
 
-	for(int i = 0; i < m_mainWindow->Client()->TwServerBrowser()->NumServers(); i++)
+	for(int i = 0; i < m_currentGot; ++i)
 	{
-//		DBG("name: %", m_mainWindow->Client()->TwServerBrowser()->At(i)->m_name);
-		this->AddServerInfoRow(m_mainWindow->Client()->TwServerBrowser()->At(i), i);
+		AddServerInfoRow(m_mainWindow->Client()->TwServerBrowser()->At(m_lastServerPos), m_lastServerPos);
+		++m_lastServerPos;
 	}
 }
 
@@ -132,7 +129,7 @@ void CUiServerList::OnTestServerClicked()
 	{
 		// switch page
 		m_ui->m_swMain->setCurrentIndex(9);
-		m_ui->m_twMainMenu->setCurrentIndex(m_ui->m_twMainMenu->indexAt(QPoint(9, 0)));
+//		m_ui->m_twMainMenu->setCurrentIndex(m_ui->m_twMainMenu->indexAt(QPoint(9, 0)));
 
 		emit TestServerRequest(m_mainWindow->Client()->TwServerBrowser()->At(m_ui->m_twSrvListList->selectedItems().at(0)->row())->m_addr.c_str());
 	}

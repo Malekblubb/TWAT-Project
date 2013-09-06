@@ -77,6 +77,7 @@ namespace TWAT
 			// only for serverbrowser
 			bool SendReq();
 			int ProcessIncomming(std::vector<ServerInfo> *buf);
+			void ClearServerBuffer();
 			//
 
 		private:

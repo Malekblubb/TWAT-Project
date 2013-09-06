@@ -82,6 +82,9 @@ class CUiServerList : public QObject
 	MainWindow *m_mainWindow;
 	QTimer *m_timer;
 
+	int m_lastServerPos;
+	int m_currentGot;
+
 public:
 	CUiServerList(Ui::MainWindow *ui, MainWindow *window);
 
