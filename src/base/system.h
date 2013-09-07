@@ -60,13 +60,15 @@ namespace TWAT
 
 
 		// stdout-log
-		void DbgLine(const char *fnc, const char *format);
-		template<typename T, typename ... Args> void DbgLine(const char *fnc, const char *format, T val, Args ... args)
+		void DbgLine(std::string fnc, const char *format);
+		template<typename T, typename ... Args> void DbgLine(std::string fnc, const char *format, T val, Args ... args)
 		{
 			std::string tmp = (std::string)format;
 
 			if(tmp.find('\n') == std::string::npos)
 			{
+				int offset = fnc.find("TWAT");
+				fnc = fnc.substr(offset, fnc.find('(') - offset);
 				tmp.append("\n");
 				tmp = "[" + (std::string)fnc + "] " + tmp;
 				format = tmp.c_str();
@@ -83,7 +85,7 @@ namespace TWAT
 				std::cout << *format;
 			}
 		}
-		#define DBG(...)System::DbgLine(__func__, __VA_ARGS__)
+		#define DBG(...)System::DbgLine(__PRETTY_FUNCTION__, __VA_ARGS__)
 	}
 }
 

@@ -16,7 +16,7 @@
 TWAT::CConfig::CConfig()
 {
 	m_path = APP_CONF_PATH;
-	m_confFile = new CIOFile(m_path, READ);
+	m_confFile = new CIOFile(m_path, CIOFile::READ);
 	m_default = new CConfigStorage();
 	m_conf = new CConfigStorage();
 }
@@ -43,8 +43,8 @@ void TWAT::CConfig::Save()
 
 	m_conf->GetList(&buf);
 
-	m_confFile->Open(m_path, NEW);
-	m_confFile->Write(buf, OVERWRITE);
+	m_confFile->Open(m_path, CIOFile::NEW);
+	m_confFile->Write(buf, CIOFile::OVERWRITE);
 	m_confFile->Close();
 
 	DBG("config saved");
@@ -70,7 +70,7 @@ void TWAT::CConfig::ReadFull()
 {
 	std::string buf;
 
-	m_confFile->Open(m_path, READ);
+	m_confFile->Open(m_path, CIOFile::READ);
 
 	while(m_confFile->ReadLine(&buf))
 	{
@@ -101,8 +101,8 @@ void TWAT::CConfig::WriteDefault()
 
 	m_default->GetList(&buf);
 
-	m_confFile->Open(m_path, WRITE);
-	m_confFile->Write(buf, OVERWRITE);
+	m_confFile->Open(m_path, CIOFile::WRITE);
+	m_confFile->Write(buf, CIOFile::OVERWRITE);
 	m_confFile->Close();
 }
 

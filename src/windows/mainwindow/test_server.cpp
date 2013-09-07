@@ -25,6 +25,7 @@ CUiTestServer::CUiTestServer(Ui::MainWindow *ui, MainWindow *window) : m_ui(ui),
 	m_timer = new QTimer();
 	m_runs = false;
 	m_wasRunning = false;
+	m_timerTickSpeed = 1000;
 
 	connect(this, SIGNAL(TestStart()), this, SLOT(StartTest()));
 	connect(this, SIGNAL(TestPause()), this, SLOT(PauseTest()));
@@ -62,7 +63,7 @@ void CUiTestServer::StartTest()
 
 		m_wasRunning = true;
 		m_runs = true;
-		m_timer->start(1000);
+		m_timer->start(m_timerTickSpeed);
 	}
 	else
 		QMessageBox::warning(m_mainWindow, "Error", "Can't connect to this server");
@@ -87,7 +88,7 @@ void CUiTestServer::PauseTest()
 
 		else
 		{
-			m_timer->start(1000);
+			m_timer->start(m_timerTickSpeed);
 
 			m_runs = true;
 			m_ui->m_lbTestSrvStatusVar->setText("Testing");

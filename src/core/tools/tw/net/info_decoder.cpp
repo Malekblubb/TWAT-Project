@@ -19,7 +19,7 @@ bool TWAT::TwTools::CRawInfoDecoder::DecodeServerInfo(unsigned char *data, int d
 {
 	if(dataLen < 14)
 	{
-		DBG("invalid packet recved (addr=%)", inf->m_addr);
+		DBG("invalid packetdata passed (datalen=%, expected=>14; addr=%)", dataLen, inf->m_addr);
 		return false;
 	}
 
@@ -29,7 +29,7 @@ bool TWAT::TwTools::CRawInfoDecoder::DecodeServerInfo(unsigned char *data, int d
 	std::string tok  = up.GetString();
 	if(tok != std::to_string(token))
 	{
-		DBG("token check failed (got=%, expected=%; addr=%)",tok, token, inf->m_addr);
+		DBG("token check failed (got=%, expected=%; addr=%)", tok, token, inf->m_addr);
 		return false;
 	}
 	
@@ -42,7 +42,7 @@ bool TWAT::TwTools::CRawInfoDecoder::DecodeServerInfo(unsigned char *data, int d
 	inf->m_version = up.GetString();
 	if(inf->m_version.substr(0, 3) != "0.6")
 	{
-		DBG("version check failed (got=%, should be 0.6; addr=%)", inf->m_version, inf->m_addr);
+		DBG("version check failed (got=%, expected=0.6; addr=%)", inf->m_version, inf->m_addr);
 		return false;
 	}
 
@@ -85,12 +85,9 @@ bool TWAT::TwTools::CRawInfoDecoder::DecodeListInfo(unsigned char *data, int dat
 
 	static unsigned char ip4Spacer[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff};
 	std::string addr;
-	int chunkSize = 0;
 
 	for(int i = 14; i < dataLen; i += 18)
 	{
-		++chunkSize;
-
 		bool isIp4 = std::memcmp(data + i, ip4Spacer, sizeof ip4Spacer) == 0 ? true : false;
 
 		// process ip

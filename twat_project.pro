@@ -26,3 +26,6 @@ HEADERS +=  $$system("find ./src -name '*.h'") \
 FORMS   +=  $$system("find ./src -name '*.ui'")
 RESOURCES += data/ressources.qrc
 }
+
+HEADERS += \
+    src/core/tools/tw/datafiles/map.h

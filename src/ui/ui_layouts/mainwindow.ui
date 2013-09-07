@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1255</width>
-    <height>702</height>
+    <height>715</height>
    </rect>
   </property>
   <property name="font">
@@ -594,7 +594,7 @@ QTreeWidget::item:selected
             <string notr="true"/>
            </property>
            <property name="currentIndex">
-            <number>9</number>
+            <number>11</number>
            </property>
            <widget class="QWidget" name="page"/>
            <widget class="QWidget" name="pagePlayDemo">
@@ -12138,8 +12138,8 @@ QTableWidget::item:selected{ background-color:#50aefa; color:#ffffff}</string>
             <widget class="QPushButton" name="pushButton_2">
              <property name="geometry">
               <rect>
-               <x>50</x>
-               <y>400</y>
+               <x>100</x>
+               <y>430</y>
                <width>93</width>
                <height>29</height>
               </rect>

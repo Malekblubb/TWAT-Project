@@ -95,13 +95,13 @@ bool TWAT::CIOFile::ReadLine(std::string *buf)
 void TWAT::CIOFile::Read(int from, int to, std::string *buf)
 {
 	int length = to - from;
-	char tmp[1];
+	char tmp;
 
 	m_stream.seekg(from);
 
 	while(length--)
 	{
-		m_stream.read(tmp, 1);
-		*buf += tmp[0];
+		m_stream.read(&tmp, 1);
+		*buf += tmp;
 	}
 }

@@ -23,9 +23,12 @@ namespace TWAT
 		CDataFileReader(const std::string &path);
 
 		bool Open(const std::string &path);
+		bool Open(const class CIOFile &ioFile);
 		void Close();
 
-		int Read(int from, int to, unsigned char *buf);
+		int Read(int from, int to, void *buf);
+		int Read(void *buf, int length);
+		void ResetPos();
 	};
 
 }

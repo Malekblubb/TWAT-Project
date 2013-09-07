@@ -246,10 +246,14 @@ ssize_t TWAT::System::UdpRecv(int sock, unsigned char *buf, size_t bufLen, int t
 }
 
 
-void TWAT::System::DbgLine(const char *fnc, const char *format)
+void TWAT::System::DbgLine(std::string fnc, const char *format)
 {
 	if((std::string)fnc != "")
+	{
+		int offset = fnc.find("TWAT");
+		fnc = fnc.substr(offset, fnc.find('(') - offset);
 		std::cout << "[" << fnc << "] " << format << std::endl;
+	}
 
 	else
 		std::cout << format;

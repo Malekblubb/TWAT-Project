@@ -29,7 +29,6 @@ void TWAT::TwTools::CMasterList::Clear()
 
 TWAT::TwTools::CMasterRequest::CMasterRequest()
 {
-	//	m_sock = System::UdpSock();
 	m_sock = System::UdpSock();
 }
 
@@ -53,7 +52,7 @@ int TWAT::TwTools::CMasterRequest::PullCount()
 {
 	int count = 0;
 	int gotLen = 0;
-	unsigned char *recData = (unsigned char *)std::malloc(1024);
+	unsigned char recData[1024];
 
 	for(std::vector<System::CIpAddr *>::iterator i = m_addrs.begin(); i != m_addrs.end(); ++i)
 	{
@@ -70,20 +69,19 @@ int TWAT::TwTools::CMasterRequest::PullCount()
 			if(tmpCount != -1)
 				count += tmpCount;
 			else
-				DBG("error while decode recved count data from: %", System::IpAddrToStr(*i));
+				DBG("error while decode recved count data from master (addr=%)", System::IpAddrToStr(*i));
 		}
 		else
-			DBG("error while connect to master: %", System::IpAddrToStr(*i));
+			DBG("error while connect to master (addr=%)", System::IpAddrToStr(*i));
 	}
 
-	std::free(recData);
 	return count;
 }
 
 bool TWAT::TwTools::CMasterRequest::PullList(CMasterList *lst)
 {
 	int gotLen = 0;
-	unsigned char *recData = (unsigned char *)std::malloc(2048); // moa space
+	unsigned char recData[2048]; // moa space
 
 
 	for(std::vector<System::CIpAddr *>::iterator i = m_addrs.begin(); i != m_addrs.end(); ++i)
@@ -101,6 +99,5 @@ bool TWAT::TwTools::CMasterRequest::PullList(CMasterList *lst)
 		}
 	}
 
-	std::free(recData);
 	return true;
 }

@@ -29,7 +29,6 @@ TWAT::TwTools::CServerSniffer::~CServerSniffer()
 	System::SockClose(m_sock);
 }
 
-
 bool TWAT::TwTools::CServerSniffer::Connect(const std::string &addr)
 {
 	m_addr->SetNewAddr(addr);
@@ -74,8 +73,6 @@ int TWAT::TwTools::CServerSniffer::TestLatency()
 
 bool TWAT::TwTools::CServerSniffer::SendReq()
 {
-	std::memset(m_recData, 0, 1024);
-
 	CNetworkPacket *sPk = new CNetworkPacket(m_addr, (void *)SERVERBROWSE_GETINFO, sizeof SERVERBROWSE_GETINFO);
 	sPk->MakeConnless();
 	sPk->AddData(&m_token, 1); // add token
@@ -93,6 +90,7 @@ bool TWAT::TwTools::CServerSniffer::SendReq()
 
 void TWAT::TwTools::CServerSniffer::RecvReq()
 {
+	std::memset(m_recData, 0, 1024);
 	m_recLen = CNetworkBase::RecvRaw(m_sock, m_recData, 1024, 900000);
 }
 

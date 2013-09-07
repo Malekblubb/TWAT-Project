@@ -25,7 +25,6 @@ configwindow::~configwindow()
 void configwindow::Show(TWAT::CComponentCore *core)
 {
 	this->show();
-//	m_conf = conf;
 	m_conf = core->RequestComponent<IConfig>();
 
 	this->SetupUiElements();

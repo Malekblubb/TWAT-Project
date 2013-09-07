@@ -119,6 +119,7 @@ class CUiTestServer : public QObject
 
 	QString m_ip;
 	QTimer *m_timer;
+	int m_timerTickSpeed;
 	bool m_wasRunning;
 	bool m_runs;
 	int m_currentPing;

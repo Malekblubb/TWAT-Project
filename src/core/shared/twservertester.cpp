@@ -35,8 +35,10 @@ int TWAT::CTwServerTester::Ping()
 	m_currentPkLost = false;
 
 	// latency
-	if((m_latency = m_srvSniffer->TestLatency()) == 999)
+	if((m_latency = m_srvSniffer->TestLatency()) >= 500)
 	{
+		// no lost, but unplayable
+
 		++m_lostPks;
 		m_currentPkLost = true;
 	}

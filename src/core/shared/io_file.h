@@ -13,19 +13,6 @@
 
 namespace TWAT
 {
-	enum Modes
-	{
-		// writemodes
-		APPEND = 0,
-		OVERWRITE,
-
-		// openmodes (text only, Exists() and Delete() also for non text-files)
-		READ = 0,
-		WRITE,
-		NEW
-	};
-
-
 	class CIOFile
 	{
 		std::string m_path;
@@ -40,6 +27,7 @@ namespace TWAT
 		void Open(const std::string &path, int mode);
 		void Close();
 
+		std::string Path() const {return m_path;}
 		bool Exists() const;
 		bool Delete() const;
 		void Create();
@@ -48,6 +36,19 @@ namespace TWAT
 		void Write(const std::string &buf, int mode);
 		bool ReadLine(std::string *buf);
 		void Read(int from, int to, std::string *buf);
+
+
+		enum Modes
+		{
+			// writemodes
+			APPEND = 0,
+			OVERWRITE,
+
+			// openmodes (text only, Exists() and Delete() also for non text-files)
+			READ = 0,
+			WRITE,
+			NEW
+		};
 	};
 }
 

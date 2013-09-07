@@ -4,6 +4,7 @@
  */
 
 #include "datafile.h"
+#include "io_file.h"
 
 
 TWAT::CDataFileReader::CDataFileReader(const std::string &path)
@@ -21,12 +22,17 @@ bool TWAT::CDataFileReader::Open(const std::string &path)
 	return true;
 }
 
+bool TWAT::CDataFileReader::Open(const CIOFile &ioFile)
+{
+	return this->Open(ioFile.Path());
+}
+
 void TWAT::CDataFileReader::Close()
 {
 	m_stream.close();
 }
 
-int TWAT::CDataFileReader::Read(int from, int to, unsigned char *buf)
+int TWAT::CDataFileReader::Read(int from, int to, void *buf)
 {
 	int length = to - from;
 
@@ -34,4 +40,18 @@ int TWAT::CDataFileReader::Read(int from, int to, unsigned char *buf)
 	m_stream.read(reinterpret_cast<char *>(buf), length);
 
 	return m_stream.tellg();
+}
+
+int TWAT::CDataFileReader::Read(void *buf, int length)
+{
+	long int startPos = m_stream.tellg();
+
+	m_stream.read(reinterpret_cast<char *>(buf), length);
+
+	return m_stream.tellg() - startPos; // return the length not the position
+}
+
+void TWAT::CDataFileReader::ResetPos()
+{
+	m_stream.seekg(0);
 }
