@@ -23,7 +23,8 @@ TWAT::TwTools::CTwMap::CTwMap(const std::string &path) : CTwMap() // call defaul
 
 TWAT::TwTools::CTwMap::~CTwMap()
 {
-
+	delete m_reader;
+	delete m_writer;
 }
 
 bool TWAT::TwTools::CTwMap::Load(const std::string &path)

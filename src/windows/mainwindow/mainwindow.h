@@ -48,6 +48,9 @@ private:
 	void ChangeUiElements();
 	void ResetVars();
 
+	// exit
+	void FreeAll();
+
 public:
 	void SetStatus(const QString &text);
 	void HideStatus();
@@ -71,7 +74,6 @@ private:
 public:
 	TWAT::CClient *Client() const {return m_client;}
 
-	std::thread *m_workerThread; // thread for async (ui/core) work
 };
 
 class CUiServerList : public QObject

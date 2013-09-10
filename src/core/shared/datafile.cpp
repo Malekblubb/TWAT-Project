@@ -35,11 +35,14 @@ void TWAT::CDataFileReader::Close()
 int TWAT::CDataFileReader::Read(int from, int to, void *buf)
 {
 	int length = to - from;
+	long int startPos = 0;
 
 	m_stream.seekg(from);
+	startPos = m_stream.tellg();
+
 	m_stream.read(reinterpret_cast<char *>(buf), length);
 
-	return m_stream.tellg();
+	return m_stream.tellg() - startPos;
 }
 
 int TWAT::CDataFileReader::Read(void *buf, int length)

@@ -13,6 +13,7 @@ QMAKE_CXXFLAGS += -std=c++0x
 OBJECTS_DIR = ./obj
 INCLUDEPATH +=  src \
                 ..
+LIBS += -lz #zlib
 
 
 client{
@@ -26,6 +27,3 @@ HEADERS +=  $$system("find ./src -name '*.h'") \
 FORMS   +=  $$system("find ./src -name '*.ui'")
 RESOURCES += data/ressources.qrc
 }
-
-HEADERS += \
-    src/core/tools/tw/datafiles/map.h

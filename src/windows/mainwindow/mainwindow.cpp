@@ -38,7 +38,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::Main
 
 MainWindow::~MainWindow()
 {
-	delete m_ui;
+	this->FreeAll();
 }
 
 void MainWindow::closeEvent(QCloseEvent *)
@@ -127,6 +127,14 @@ void MainWindow::ChangeUiElements()
 void MainWindow::ResetVars()
 {
 	m_numNeedsStatusIcon = 0;
+}
+
+void MainWindow::FreeAll()
+{
+	delete m_ui;
+	delete m_client;
+	delete m_uiServerList;
+	delete m_uiTestServer;
 }
 
 void MainWindow::SetStatus(const QString &text)

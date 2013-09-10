@@ -26,6 +26,8 @@ namespace TWAT
 		bool Open(const class CIOFile &ioFile);
 		void Close();
 
+		long int Pos() {return m_stream.tellg();}
+
 		int Read(int from, int to, void *buf);
 		int Read(void *buf, int length);
 		void ResetPos();
