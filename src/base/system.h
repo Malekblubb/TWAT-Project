@@ -68,7 +68,11 @@ namespace TWAT
 			if(tmp.find('\n') == std::string::npos)
 			{
 				int offset = fnc.find("TWAT");
-				fnc = fnc.substr(offset, fnc.find('(') - offset);
+				int br = fnc.find('(');
+
+				if((offset != std::string::npos) && (br != std::string::npos))
+					fnc = fnc.substr(offset, br - offset);
+
 				tmp.append("\n");
 				tmp = "[" + (std::string)fnc + "] " + tmp;
 				format = tmp.c_str();
@@ -85,7 +89,7 @@ namespace TWAT
 				std::cout << *format;
 			}
 		}
-		#define DBG(...)System::DbgLine(__PRETTY_FUNCTION__, __VA_ARGS__)
+#define DBG(...)System::DbgLine(__PRETTY_FUNCTION__, __VA_ARGS__)
 	}
 }
 

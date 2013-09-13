@@ -202,8 +202,22 @@ int TWAT::TwTools::CTwMapDataFileReader::NumItemsOfType(int type) const
 	return num;
 }
 
+int TWAT::TwTools::CTwMapDataFileReader::StartOfType(int type) const
+{
+	for(int i = 0; i < m_mapFile->m_header.m_numItemTypes; ++i)
+	{
+		if(m_mapFile->m_info.m_typesInfo[i].m_type == type)
+			return m_mapFile->m_info.m_typesInfo[i].m_start;
+	}
+
+	return -1;
+}
+
 int TWAT::TwTools::CTwMapDataFileReader::DataSizeAt(int index) const
 {
+	if(index < 0)
+		return 0;
+
 	if(index == m_mapFile->m_header.m_numRawData - 1)
 		return  m_mapFile->m_header.m_dataSize - m_mapFile->m_info.m_compressedDataOffsets[m_mapFile->m_header.m_numRawData - 1];
 
@@ -217,6 +231,9 @@ void *TWAT::TwTools::CTwMapDataFileReader::ItemAt(int index) const
 
 void *TWAT::TwTools::CTwMapDataFileReader::DataAt(int index)
 {
+	if(index < 0)
+		return 0;
+
 	if(!m_mapFile->m_uncompressedDatas[index])
 	{
 		// data wasnt uncompressed yet, uncompressed it

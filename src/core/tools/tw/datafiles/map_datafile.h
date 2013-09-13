@@ -96,6 +96,7 @@ namespace TWAT
 			int NumData() const;
 			int NumItems() const;
 			int NumItemsOfType(int type) const;
+			int StartOfType(int type) const;
 
 			int DataSizeAt(int index) const;
 
