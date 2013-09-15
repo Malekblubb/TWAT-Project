@@ -32,6 +32,7 @@ namespace TWAT
 
 	public:
 		CTwServerTester();
+		~CTwServerTester();
 
 		bool Reset(const std::string &addr);
 		int Ping();

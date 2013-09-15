@@ -34,6 +34,9 @@ TWAT::TwTools::CMasterRequest::CMasterRequest()
 
 TWAT::TwTools::CMasterRequest::~CMasterRequest()
 {
+	for(auto i = m_addrs.begin(); i != m_addrs.end(); ++i)
+		delete *i;
+
 	System::SockClose(m_sock);
 }
 
@@ -73,6 +76,8 @@ int TWAT::TwTools::CMasterRequest::PullCount()
 		}
 		else
 			DBG("error while connect to master (addr=%)", System::IpAddrToStr(*i));
+
+		delete pk;
 	}
 
 	return count;
@@ -82,7 +87,6 @@ bool TWAT::TwTools::CMasterRequest::PullList(CMasterList *lst)
 {
 	int gotLen = 0;
 	unsigned char recData[2048]; // moa space
-
 
 	for(std::vector<System::CIpAddr *>::iterator i = m_addrs.begin(); i != m_addrs.end(); ++i)
 	{
@@ -97,6 +101,8 @@ bool TWAT::TwTools::CMasterRequest::PullList(CMasterList *lst)
 			if(!CRawInfoDecoder::DecodeListInfo(recData, gotLen, lst))
 				DBG("error while decode recved list data from master (addr=%)", System::IpAddrToStr(*i));
 		}
+
+		delete pk;
 	}
 
 	return true;

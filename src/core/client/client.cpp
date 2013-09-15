@@ -9,10 +9,12 @@
 
 #include <core/component_core.h>
 #include <core/config.h>
+#include <core/twmapextract.h>
 #include <core/twserverbrowser.h>
 #include <core/twservertester.h>
 
 #include <core/shared/config.h>
+#include <core/shared/twmapextract.h>
 #include <core/shared/twserverbrowser.h>
 #include <core/shared/twservertester.h>
 
@@ -25,6 +27,11 @@
 TWAT::CClient::CClient()
 {
 
+}
+
+TWAT::CClient::~CClient()
+{
+	delete m_core;
 }
 
 void TWAT::CClient::Init()
@@ -51,11 +58,13 @@ void TWAT::CClient::SetupComponents()
 
 	// register components
 	Core()->RegisterComponent<CConfig>("config");
+	Core()->RegisterComponent<CTwMapExtract>("twmapextract");
 	Core()->RegisterComponent<CTwServerBrowser>("twserverbrowser");
 	Core()->RegisterComponent<CTwServerTester>("twservertester");
 
 	// request components
 	m_config = Core()->RequestComponent<IConfig>();
+	m_twMapExtract = Core()->RequestComponent<ITwMapExtract>();
 	m_twServerBrowser = Core()->RequestComponent<ITwServerBrowser>();
 	m_twServerTester = Core()->RequestComponent<ITwServerTester>();
 }

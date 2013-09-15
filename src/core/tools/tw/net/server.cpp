@@ -25,6 +25,7 @@ TWAT::TwTools::CServerSniffer::CServerSniffer()
 
 TWAT::TwTools::CServerSniffer::~CServerSniffer()
 {
+	delete m_addr;
 	std::free(m_recData);
 	System::SockClose(m_sock);
 }
@@ -79,7 +80,11 @@ bool TWAT::TwTools::CServerSniffer::SendReq()
 
 	// send
 	if((m_sentLen = CNetworkBase::Send(m_sock, sPk)) <= 0)
+	{
+		delete sPk;
 		return false;
+	}
+	delete sPk;
 
 	ServerInfo tmpInfo;
 	tmpInfo.m_sentTime = System::TimeStamp();

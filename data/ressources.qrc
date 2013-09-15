@@ -8,9 +8,6 @@
         <file>img/icons/bottom-menu/home.png</file>
         <file>img/icons/bottom-menu/info.png</file>
         <file>img/icons/bottom-menu/settings.png</file>
-        <file>img/icons/image-extract/all.png</file>
-        <file>img/icons/image-extract/camera.png</file>
-        <file>img/icons/image-extract/selected.png</file>
         <file>img/icons/file.png</file>
         <file>img/icons/search.png</file>
         <file>img/icons/setting1.png</file>
@@ -45,5 +42,8 @@
         <file>img/icons/bolt_active.png</file>
         <file>img/icons/down.png</file>
         <file>img/icons/up.png</file>
+        <file>img/icons/all.png</file>
+        <file>img/icons/camera.png</file>
+        <file>img/icons/selected.png</file>
     </qresource>
 </RCC>

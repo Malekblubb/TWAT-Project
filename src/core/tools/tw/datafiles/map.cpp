@@ -6,10 +6,11 @@
 #include <base/system.h>
 
 #include "map.h"
-
 #include "map_datafile.h"
 
 #include <core/tw_stripped/mapitems.h>
+
+#include <cstring>
 
 
 // ----- map info -----
@@ -52,9 +53,19 @@ TWAT::TwTools::CTwMapImage::CTwMapImage() :
 	m_height(0),
 	m_width(0),
 	m_external(false),
-	m_data(0)
+	m_data(0),
+	m_dataSize(0)
 {
 
+}
+
+TWAT::TwTools::CTwMapImage::~CTwMapImage()
+{
+	if(m_dataSize > 0)
+	{
+		DBG("free addr: %", &m_data);
+		std::free(m_data);
+	}
 }
 
 void TWAT::TwTools::CTwMapImage::SetName(const std::string &name)
@@ -68,11 +79,25 @@ void TWAT::TwTools::CTwMapImage::SetSize(int height, int width)
 	m_width = width;
 }
 
-void TWAT::TwTools::CTwMapImage::SetData(void *data)
+void TWAT::TwTools::CTwMapImage::LoadFromData(void *data)
 {
 	m_data = data;
 }
 
+bool TWAT::TwTools::CTwMapImage::LoadFromFile(const std::string &path)
+{
+
+}
+
+void TWAT::TwTools::CTwMapImage::Embed()
+{
+	m_external = false;
+}
+
+void TWAT::TwTools::CTwMapImage::MakeExternal()
+{
+	m_external = true;
+}
 
 // ----- map group -----
 TWAT::TwTools::CTwMapGroup::CTwMapGroup() :
@@ -83,6 +108,19 @@ TWAT::TwTools::CTwMapGroup::CTwMapGroup() :
 	m_numLayers(0)
 {
 
+}
+
+TWAT::TwTools::CTwMapGroup::~CTwMapGroup()
+{
+	// free the alloced layers
+	for(auto i = m_layers.begin(); i != m_layers.end(); ++i)
+	{
+		if(i->second->Type() == LAYERTYPE_TILES)
+			delete reinterpret_cast<CTwMapLayerTiles *>(i->second);
+
+		else if(i->second->Type() == LAYERTYPE_QUADS)
+			delete reinterpret_cast<CTwMapLayerQuads *>(i->second);
+	}
 }
 
 void TWAT::TwTools::CTwMapGroup::SetLayer(int index, CTwMapLayer *layer)
@@ -197,10 +235,14 @@ TWAT::TwTools::CTwMap::~CTwMap()
 bool TWAT::TwTools::CTwMap::Load(const std::string &path)
 {
 	m_path = path;
+	m_reader->Close(); // close to free the old data
 
 	// process the raw file
 	if(!m_reader->Open(m_path))
+	{
+		m_reader->Close();
 		return false;
+	}
 
 
 	// get num and start of items
@@ -215,8 +257,8 @@ bool TWAT::TwTools::CTwMap::Load(const std::string &path)
 
 
 	this->LoadInfo();
+	this->LoadImages();
 	this->LoadStructure();
-
 
 	m_validMap = true;
 	return true;
@@ -224,7 +266,7 @@ bool TWAT::TwTools::CTwMap::Load(const std::string &path)
 
 void TWAT::TwTools::CTwMap::Close()
 {
-
+	m_reader->Close();
 }
 
 void TWAT::TwTools::CTwMap::LoadInfo()
@@ -243,6 +285,34 @@ void TWAT::TwTools::CTwMap::LoadInfo()
 				tmpInf->m_Version < 0 ? "" : (char *)m_reader->DataAt(tmpInf->m_Version),
 				tmpInf->m_Credits < 0 ? "" : (char *)m_reader->DataAt(tmpInf->m_Credits),
 				tmpInf->m_License < 0 ? "" : (char *)m_reader->DataAt(tmpInf->m_License));
+}
+
+void TWAT::TwTools::CTwMap::LoadImages()
+{
+	m_images.clear();
+
+	for(int i = m_imagesStart; i < m_imagesStart + m_numImages; ++i)
+	{
+		CMapItemImage *imageItem = (CMapItemImage *)m_reader->ItemAt(i);
+		CTwMapImage image;
+
+
+		image.SetSize(imageItem->m_Height, imageItem->m_Width);
+		image.SetName((char *)m_reader->DataAt(imageItem->m_ImageName));
+
+		if(!imageItem->m_External)
+		{
+			image.LoadFromData(m_reader->DataAt(imageItem->m_ImageData));
+			image.Embed();
+		}
+		else
+		{
+			// TODO: load from teewordls dir
+			image.MakeExternal();
+		}
+
+		m_images.push_back(image);
+	}
 }
 
 void TWAT::TwTools::CTwMap::LoadStructure()
@@ -273,11 +343,14 @@ void TWAT::TwTools::CTwMap::LoadStructure()
 
 					image.SetSize(imageItem->m_Height, imageItem->m_Width);
 					image.SetName((char *)m_reader->DataAt(imageItem->m_ImageName));
-					image.SetData(m_reader->DataAt(imageItem->m_ImageData));
+					image.LoadFromData((unsigned char *)m_reader->DataAt(imageItem->m_ImageData));
 
 					// add the image to layer
 					tileLayer->SetImage(image);
 				}
+
+				//				CTile *tiles = (CTile*)m_reader->DataAt(tileLayerItem->m_Data);
+				//				DBG("%", (int)tiles[0].m_Index);
 
 
 				// add the layer with the info to map
@@ -298,7 +371,7 @@ void TWAT::TwTools::CTwMap::LoadStructure()
 
 					image.SetSize(imageItem->m_Height, imageItem->m_Width);
 					image.SetName((char *)m_reader->DataAt(imageItem->m_ImageName));
-					image.SetData(m_reader->DataAt(imageItem->m_ImageData));
+					image.LoadFromData((unsigned char *)m_reader->DataAt(imageItem->m_ImageData));
 
 					quadsLayer->SetImage(image);
 				}
@@ -319,8 +392,16 @@ void TWAT::TwTools::CTwMap::SetInfo(const std::string &author, const std::string
 
 TWAT::TwTools::CTwMapGroup *TWAT::TwTools::CTwMap::Group(int index)
 {
-	if(index >= 0)
+	if((index >= 0) && (index < (int)m_groups.size()))
 		return &m_groups[index];
 
-	return new CTwMapGroup();
+	return NULL;
+}
+
+TWAT::TwTools::CTwMapImage *TWAT::TwTools::CTwMap::Image(int index)
+{
+	if((index >= 0) && (index < (int)m_images.size()))
+		return &m_images[index];
+
+	return NULL;
 }

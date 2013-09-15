@@ -35,6 +35,7 @@ public: \
 		std::map<std::string, IComponent *> m_components;
 
 	public:
+		~CComponentCore();
 		static CComponentCore *CreateComponentCore() {return new CComponentCore();}
 
 		template<typename T> void RegisterComponent(const std::string &name)

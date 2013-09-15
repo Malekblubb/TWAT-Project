@@ -17,7 +17,9 @@
 using namespace TWAT;
 
 
-CUiServerList::CUiServerList(Ui::MainWindow *ui, MainWindow *window) : m_ui(ui), m_mainWindow(window)
+CUiServerList::CUiServerList(Ui::MainWindow *ui, MainWindow *window) :
+	m_ui(ui),
+	m_mainWindow(window)
 {
 	m_timer = new QTimer();
 

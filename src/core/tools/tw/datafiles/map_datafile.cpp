@@ -179,6 +179,28 @@ bool TWAT::TwTools::CTwMapDataFileReader::Open(const std::string &path)
 	return true;
 }
 
+void TWAT::TwTools::CTwMapDataFileReader::Close()
+{
+	std::memset(&m_mapFile->m_header, 0, sizeof(TwMapDataFileHeader));
+	std::memset(&m_mapFile->m_info, 0, sizeof(TwMapDataFileInfo));
+
+	m_mapFile->m_items.clear();
+
+	for(auto i = m_mapFile->m_compressedDatas.begin(); i != m_mapFile->m_compressedDatas.end(); ++i)
+	{
+		std::free(*i);
+		*i = 0;
+	}
+
+	for(auto i = m_mapFile->m_uncompressedDatas.begin(); i != m_mapFile->m_uncompressedDatas.end(); ++i)
+	{
+		std::free(i->second);
+		i->second = 0;
+	}
+
+	m_dfReader->Close();
+}
+
 int TWAT::TwTools::CTwMapDataFileReader::NumData() const
 {
 	return m_mapFile->m_header.m_numRawData;
@@ -224,6 +246,14 @@ int TWAT::TwTools::CTwMapDataFileReader::DataSizeAt(int index) const
 	return m_mapFile->m_info.m_compressedDataOffsets[index + 1] - m_mapFile->m_info.m_compressedDataOffsets[index];
 }
 
+int TWAT::TwTools::CTwMapDataFileReader::UncompressedDataSizeAt(int index) const
+{
+	if(index < 0)
+		return 0;
+
+	return m_mapFile->m_info.m_uncompressedDataSizes[index];
+}
+
 void *TWAT::TwTools::CTwMapDataFileReader::ItemAt(int index) const
 {
 	return m_mapFile->m_items[index].m_data;
@@ -253,6 +283,9 @@ bool TWAT::TwTools::CTwMapDataFileReader::UncompressData(int index)
 	int zError = uncompress((Bytef *)m_mapFile->m_uncompressedDatas[index], &uncompressedLen, (Bytef *)m_mapFile->m_compressedDatas[index], compressedLen);
 	if(zError != Z_OK)
 	{
+		std::free(m_mapFile->m_uncompressedDatas[index]);
+		m_mapFile->m_uncompressedDatas[index] = 0;
+
 		DBG("error while uncompress data (index=%, zlib_error=%, compressed_len=%, uncompressed_len=%)", index, zError, compressedLen, uncompressedLen);
 		return false;
 	}

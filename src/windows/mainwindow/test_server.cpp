@@ -20,7 +20,9 @@
 using namespace TWAT;
 
 
-CUiTestServer::CUiTestServer(Ui::MainWindow *ui, MainWindow *window) : m_ui(ui), m_mainWindow(window)
+CUiTestServer::CUiTestServer(Ui::MainWindow *ui, MainWindow *window) :
+	m_ui(ui),
+	m_mainWindow(window)
 {
 	m_timer = new QTimer();
 	m_runs = false;
@@ -66,7 +68,7 @@ void CUiTestServer::StartTest()
 		m_timer->start(m_timerTickSpeed);
 	}
 	else
-		QMessageBox::warning(m_mainWindow, "Error", "Can't connect to this server");
+		QMessageBox::critical(m_mainWindow, "Error", "Can't connect to this server");
 
 }
 

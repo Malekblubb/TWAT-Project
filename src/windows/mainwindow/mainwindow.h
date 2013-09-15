@@ -7,7 +7,6 @@
 #define WINDOWS_MAINWINDOW_MAINWINDOW_H
 
 
-#include <thread>
 #include <string>
 #include <QMainWindow>
 
@@ -68,13 +67,50 @@ private:
 
 	class configwindow *m_confWidow;
 
+	class CUiExtractImages *m_uiExtractImages;
 	class CUiServerList *m_uiServerList;
 	class CUiTestServer *m_uiTestServer;
 
 public:
 	TWAT::CClient *Client() const {return m_client;}
+};
 
-	std::thread *m_workerThread; // thread for async (ui/core) work
+class CUiExtractImages : public QObject
+{
+	Q_OBJECT
+
+	Ui::MainWindow *m_ui;
+	MainWindow *m_mainWindow;
+
+	QString m_mapPath;
+
+	enum SaveModes
+	{
+		ALL = 0,
+		SELECTED
+	};
+
+public:
+	CUiExtractImages(Ui::MainWindow *ui, MainWindow *window);
+
+
+signals:
+	void Load();
+	void Save(int mode);
+
+
+private slots:
+	void OnLoadClicked();
+	void OnBrowseClicked();
+	void OnListEntryClicked(const QModelIndex &index);
+	void OnSaveSelectedClicked();
+	void OnSaveAllClicked();
+
+	void OnLoad();
+	void OnSave(int mode);
+
+private:
+	void RefreshUiInfos();
 };
 
 class CUiServerList : public QObject

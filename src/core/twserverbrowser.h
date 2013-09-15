@@ -39,8 +39,6 @@ namespace TWAT
 		virtual int NumServers() const = 0;
 		virtual int RefreshTime() const = 0;
 		virtual int PercentageFinished() const = 0;
-
-
 	};
 
 }

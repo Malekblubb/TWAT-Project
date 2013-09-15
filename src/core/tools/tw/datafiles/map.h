@@ -50,14 +50,21 @@ namespace TWAT
 			int m_width;
 			bool m_external;
 			void *m_data;
+			int m_dataSize;
 
 		public:
 			CTwMapImage();
+			~CTwMapImage();
 
 			// setters
 			void SetName(const std::string &name);
 			void SetSize(int height, int width);
-			void SetData(void *data);
+
+			void LoadFromData(void *data);
+			bool LoadFromFile(const std::string &path);
+			void Embed();
+			void MakeExternal();
+
 
 			// getters
 			std::string Name() const {return m_name;}
@@ -65,6 +72,7 @@ namespace TWAT
 			int Width() const {return m_width;}
 			bool External() const {return m_external;}
 			void *Data() const {return m_data;}
+			int DataSize() const {return m_dataSize;}
 		};
 
 		class CTwMapLayer
@@ -140,6 +148,7 @@ namespace TWAT
 
 		public:
 			CTwMapGroup();
+			~CTwMapGroup();
 
 			// setters
 			void SetOffsetX(int offset);
@@ -165,7 +174,7 @@ namespace TWAT
 				if(index >= 0 && (m_layers.find(index) != m_layers.end()))
 					return reinterpret_cast<LayerType *>(m_layers[index]); // return the requested layer addr
 
-				return new LayerType(); // return a newly created obj with the default info
+				return NULL;
 			}
 		};
 
@@ -179,6 +188,7 @@ namespace TWAT
 			// map variables
 			CTwMapInfo m_mapInfo;
 			std::vector<CTwMapGroup> m_groups;
+			std::vector<CTwMapImage> m_images;
 
 			bool m_validMap;
 			std::string m_path;
@@ -191,9 +201,7 @@ namespace TWAT
 			int m_imagesStart;
 
 
-
-
-		public:
+		public:			
 			CTwMap();
 			CTwMap(const std::string &path);
 			~CTwMap();
@@ -215,7 +223,6 @@ namespace TWAT
 			std::string Path() const {return m_path;}
 
 
-
 			// interfaces
 			// info
 			void SetInfo(const std::string &author, const std::string &version, const std::string &credits, const std::string &license);
@@ -225,19 +232,24 @@ namespace TWAT
 			CTwMapGroup *Group(int index);
 			int NumGroups() const {return m_numGroups;}
 
+			// images (accessible also from a layer)
+			TWAT::TwTools::CTwMapImage *Image(int index);
+			int NumImages() const {return m_numImages;}
+
 
 		private:
 			// loads the info of the map (author, license...)
 			// is called from this->Load
 			void LoadInfo();
 
-			// builds the main map structure
+			// loads the images in an extra vector
+			// to have quick-access to all images
+			// is called from this->Load
+			void LoadImages();
+
+			// builds the main map structure (group->layer->image)
 			// is called from this->Load
 			void LoadStructure();
-
-		public:
-
-
 		};
 	}
 }

@@ -43,6 +43,7 @@ namespace TWAT
 
 	public:
 		CTwServerBrowser();
+		~CTwServerBrowser();
 
 		int Refresh();
 		void RefreshMasterList();

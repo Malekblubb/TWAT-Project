@@ -20,10 +20,15 @@ client{
 Q_CUSTOMPLOT_SRC += ../qcustomplot/qcustomplot.cpp
 Q_CUSTOMPLOT_HDR += ../qcustomplot/qcustomplot.h
 
+PNGLITE_SRC += ../pnglite/pnglite.c
+PNGLITE_HDR += ../pnglite/pnglite.h
+
 SOURCES +=  $$system("find ./src -name '*.cpp'") \
-            $$Q_CUSTOMPLOT_SRC
+            $$Q_CUSTOMPLOT_SRC \
+            $$PNGLITE_SRC
 HEADERS +=  $$system("find ./src -name '*.h'") \
-            $$Q_CUSTOMPLOT_HDR
+            $$Q_CUSTOMPLOT_HDR \
+            $$PNGLITE_HDR
 FORMS   +=  $$system("find ./src -name '*.ui'")
 RESOURCES += data/ressources.qrc
 }

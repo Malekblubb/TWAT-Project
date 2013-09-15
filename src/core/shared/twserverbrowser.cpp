@@ -5,21 +5,26 @@
 
 #include "twserverbrowser.h"
 
-#include <base/system.h>
-
 #include <core/tools/tw/net/master.h>
 #include <core/tools/tw/net/server.h>
 
 
-TWAT::CTwServerBrowser::CTwServerBrowser()
+TWAT::CTwServerBrowser::CTwServerBrowser() :
+	m_srvSniffer(new TwTools::CServerSniffer),
+	m_masterReq(new TwTools::CMasterRequest),
+	m_masterList(new TwTools::CMasterList),
+	m_numServers(0),
+	m_useDefaultMasters(false),
+	m_refreshing(false)
 {
-	m_srvSniffer = new TwTools::CServerSniffer();
-	m_masterReq = new TwTools::CMasterRequest();
-	m_masterList = new TwTools::CMasterList();
 
-	m_numServers = 0;
-	m_useDefaultMasters = false;
-	m_refreshing = false;
+}
+
+TWAT::CTwServerBrowser::~CTwServerBrowser()
+{
+	delete m_srvSniffer;
+	delete m_masterReq;
+	delete m_masterList;
 }
 
 void TWAT::CTwServerBrowser::AddMaster(const std::string &ip)

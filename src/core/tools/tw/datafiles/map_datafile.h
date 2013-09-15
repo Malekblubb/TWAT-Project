@@ -90,6 +90,7 @@ namespace TWAT
 			~CTwMapDataFileReader();
 
 			bool Open(const std::string &path);
+			void Reset();
 			void Close();
 
 
@@ -99,6 +100,7 @@ namespace TWAT
 			int StartOfType(int type) const;
 
 			int DataSizeAt(int index) const;
+			int UncompressedDataSizeAt(int index) const;
 
 			void *ItemAt(int index) const;
 			void *DataAt(int index);

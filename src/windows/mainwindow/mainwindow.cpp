@@ -73,12 +73,19 @@ void MainWindow::OnExit()
 
 void MainWindow::SetUpUiComponents()
 {
+	m_uiExtractImages = new CUiExtractImages(m_ui, this);
 	m_uiServerList = new CUiServerList(m_ui, this);
 	m_uiTestServer = new CUiTestServer(m_ui, this);
 }
 
 void MainWindow::ConnectUiAndComponents()
 {
+	connect(m_ui->m_pbExtImgLoad, SIGNAL(clicked()), m_uiExtractImages, SLOT(OnLoadClicked()));
+	connect(m_ui->m_pbExtImgBrowse, SIGNAL(clicked()), m_uiExtractImages, SLOT(OnBrowseClicked()));
+	connect(m_ui->m_lwExtImgImages, SIGNAL(clicked(QModelIndex)), m_uiExtractImages, SLOT(OnListEntryClicked(QModelIndex)));
+	connect(m_ui->m_pbExtImgSelected, SIGNAL(clicked()), m_uiExtractImages, SLOT(OnSaveSelectedClicked()));
+	connect(m_ui->m_pbExtImgAll, SIGNAL(clicked()), m_uiExtractImages, SLOT(OnSaveAllClicked()));
+
 	connect(m_ui->m_pbSrvListRefresh, SIGNAL(clicked()), m_uiServerList, SLOT(OnRefreshClicked()));
 	connect(m_ui->m_twSrvListList, SIGNAL(clicked(QModelIndex)), m_uiServerList, SLOT(OnTableEntryClicked(QModelIndex)));
 	connect(m_ui->m_leSrvListSearchBar, SIGNAL(textChanged(QString)), m_uiServerList, SLOT(Search(QString)));
@@ -129,9 +136,11 @@ void MainWindow::ResetVars()
 void MainWindow::FreeAll()
 {
 	delete m_ui;
-	delete m_client;
+
+	delete m_uiExtractImages;
 	delete m_uiServerList;
 	delete m_uiTestServer;
+	delete m_client;
 }
 
 void MainWindow::SetStatus(const QString &text)

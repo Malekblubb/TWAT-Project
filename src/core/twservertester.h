@@ -3,8 +3,8 @@
  * See LICENSE for more information.
  */
 
-#ifndef TWSERVERTESTER_H
-#define TWSERVERTESTER_H
+#ifndef CORE_TWSERVERTESTER_H
+#define CORE_TWSERVERTESTER_H
 
 
 #include "component_core.h"
@@ -22,6 +22,8 @@ namespace TWAT
 		DEF_COMPONENT("twservertester")
 
 	public:
+		virtual ~ITwServerTester() {}
+
 		virtual bool Reset(const std::string &addr) = 0;
 		virtual int Ping() = 0;
 
@@ -39,4 +41,4 @@ namespace TWAT
 }
 
 
-#endif // TWSERVERTESTER_H
+#endif // CORE_TWSERVERTESTER_H

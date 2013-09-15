@@ -6,13 +6,20 @@
 #include "twservertester.h"
 
 #include <core/tools/tw/net/server.h>
+#include <base/system.h>
 
 
-
-TWAT::CTwServerTester::CTwServerTester()
+TWAT::CTwServerTester::CTwServerTester() :
+	m_srvSniffer(new TwTools::CServerSniffer),
+	m_srvInfo(new TwTools::ServerInfo)
 {
-	m_srvSniffer = new TwTools::CServerSniffer();
-	m_srvInfo = new TwTools::ServerInfo();
+
+}
+
+TWAT::CTwServerTester::~CTwServerTester()
+{
+	delete m_srvSniffer;
+	delete m_srvInfo;
 }
 
 bool TWAT::CTwServerTester::Reset(const std::string &addr)
