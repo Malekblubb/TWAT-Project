@@ -92,11 +92,24 @@ void CUiExtractImages::OnSave(int mode)
 
 		if(!saveDirPath.isEmpty())
 		{
+			QString path;
+
+
 			if(mode == ALL)
 			{
 				for(int i = 0; i < m_ui->m_lwExtImgImages->count(); ++i)
 				{
-					QString path = saveDirPath + "/" + m_mainWindow->Client()->TwMapExtract()->ImageAt(i)->Name().c_str() + ".png";
+					path = saveDirPath + "/" + m_mainWindow->Client()->TwMapExtract()->ImageAt(i)->Name().c_str() + ".png";
+					QFile file(path);
+
+					if(file.exists())
+					{
+						if(QMessageBox::question(m_mainWindow, "File already exists",
+												 "A file with the name \"" + QString(m_mainWindow->Client()->TwMapExtract()->ImageAt(i)->Name().c_str()) + "\" already exists in this directory.\nDo you want to overwrite it?",
+												 QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
+							continue;
+					}
+
 					m_mainWindow->Client()->TwMapExtract()->Save(i, path.toStdString());
 				}
 			}
@@ -108,7 +121,17 @@ void CUiExtractImages::OnSave(int mode)
 					{
 						if(m_ui->m_lwExtImgImages->item(i)->isSelected())
 						{
-							QString path = saveDirPath + "/" + m_mainWindow->Client()->TwMapExtract()->ImageAt(i)->Name().c_str() + ".png";
+							path = saveDirPath + "/" + m_mainWindow->Client()->TwMapExtract()->ImageAt(i)->Name().c_str() + ".png";
+							QFile file(path);
+
+							if(file.exists())
+							{
+								if(QMessageBox::question(m_mainWindow, "File already exists",
+														 "A file with the name \"" + QString(m_mainWindow->Client()->TwMapExtract()->ImageAt(i)->Name().c_str()) + "\" already exists in this directory.\nDo you want to overwrite it?",
+														 QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
+									continue;
+							}
+
 							m_mainWindow->Client()->TwMapExtract()->Save(i, path.toStdString());
 						}
 					}
