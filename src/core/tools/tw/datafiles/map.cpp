@@ -282,7 +282,7 @@ void TWAT::TwTools::CTwMap::LoadInfo()
 	// check for unset info
 	this->SetInfo(
 				tmpInf->m_Author < 0 ? "" : (char *)m_reader->DataAt(tmpInf->m_Author),
-				tmpInf->m_Version < 0 ? "" : (char *)m_reader->DataAt(tmpInf->m_Version),
+				tmpInf->m_MapVersion < 0 ? "" : (char *)m_reader->DataAt(tmpInf->m_MapVersion),
 				tmpInf->m_Credits < 0 ? "" : (char *)m_reader->DataAt(tmpInf->m_Credits),
 				tmpInf->m_License < 0 ? "" : (char *)m_reader->DataAt(tmpInf->m_License));
 }
