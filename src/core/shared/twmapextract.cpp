@@ -9,7 +9,7 @@
 
 #include <core/tw_stripped/mapitems.h>
 
-#include <pnglite/pnglite.h>
+#include <core/shared/graphics.h>
 
 
 TWAT::CTwMapExtract::CTwMapExtract() :
@@ -39,17 +39,7 @@ bool TWAT::CTwMapExtract::Load(const std::string &path)
 
 bool TWAT::CTwMapExtract::Save(int index, const std::string &path)
 {
-	png_t png;
-
-	png_init(0, 0);
-
-	if(png_open_file_write(&png, path.c_str()) != PNG_NO_ERROR)
-		return false;
-
-	png_set_data(&png, m_images[index].Width(), m_images[index].Height(), 8, PNG_TRUECOLOR_ALPHA, (unsigned char *)m_images[index].Data());
-	png_close_file(&png);
-
-	return true;
+	return CPng::SaveTo(path, m_images[index].Height(), m_images[index].Width(), m_images[index].Data());
 }
 
 TWAT::TwTools::CTwMapImage *TWAT::CTwMapExtract::ImageAt(int index)

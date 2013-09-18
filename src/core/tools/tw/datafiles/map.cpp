@@ -9,10 +9,12 @@
 #include "map.h"
 #include "map_datafile.h"
 
+#include <core/shared/graphics.h>
+
 #include <core/tw_stripped/mapitems.h>
 
 #include <cstring>
-#include <pnglite/pnglite.h>
+//#include <pnglite/pnglite.h>
 
 
 // ----- map info -----
@@ -114,20 +116,8 @@ void TWAT::TwTools::CTwMapImage::LoadFromData(void *data, int size)
 
 bool TWAT::TwTools::CTwMapImage::LoadFromFile(const std::string &path)
 {
-	png_t png;
+	m_dataSize = CPng::RawDataFromFile(path, m_data);
 
-	png_init(0, 0);
-	if(png_open_file_read(&png, path.c_str()) != PNG_NO_ERROR)
-		return false;
-
-	// alloc mem
-	m_dataSize = png.width * png.height * png.bpp;
-	m_data = new unsigned char[m_dataSize];
-
-	if(png_get_data(&png, m_data) != PNG_NO_ERROR)
-		return false;
-
-	png_close_file(&png);
 	return true;
 }
 
