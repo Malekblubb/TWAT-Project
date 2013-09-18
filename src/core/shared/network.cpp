@@ -22,20 +22,20 @@ TWAT::CNetworkPacket::CNetworkPacket(System::CIpAddr *addr, void *data, int data
 	m_label.m_addr = addr;
 
 	// copy data
-	m_data = (unsigned char*)std::malloc(m_label.m_dataSize);
+	m_data = new unsigned char[m_label.m_dataSize];
 	std::memset(m_data, 0, m_label.m_dataSize);
 	std::memcpy(m_data, data, dataLen);
 }
 
 TWAT::CNetworkPacket::CNetworkPacket(int dataLen)
 {
-	m_data = (unsigned char *)std::malloc(dataLen);
+	m_data = new unsigned char[dataLen];
 	m_label.m_dataSize = dataLen;
 }
 
 TWAT::CNetworkPacket::~CNetworkPacket()
 {
-	std::free(m_data);
+	delete[] m_data;
 }
 
 void TWAT::CNetworkPacket::MakeConnless()

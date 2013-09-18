@@ -16,12 +16,12 @@ INCLUDEPATH +=  src \
 LIBS += -lz #zlib
 
 
+PNGLITE_SRC += ../pnglite/pnglite.c
+PNGLITE_HDR += ../pnglite/pnglite.h
+
 client{
 Q_CUSTOMPLOT_SRC += ../qcustomplot/qcustomplot.cpp
 Q_CUSTOMPLOT_HDR += ../qcustomplot/qcustomplot.h
-
-PNGLITE_SRC += ../pnglite/pnglite.c
-PNGLITE_HDR += ../pnglite/pnglite.h
 
 SOURCES +=  $$system("find ./src -name '*.cpp'") \
             $$Q_CUSTOMPLOT_SRC \
@@ -40,10 +40,12 @@ SOURCES +=  tests/map_access.cpp \
             src/core/shared/datafile.cpp \
             src/core/tools/tw/datafiles/map.cpp \
             src/core/tools/tw/datafiles/map_datafile.cpp \
+            $$PNGLITE_SRC
 
 HEADERS +=  src/base/system.h \
             src/core/shared/io_file.h \
             src/core/shared/datafile.h \
             src/core/tools/tw/datafiles/map.h \
             src/core/tools/tw/datafiles/map_datafile.h \
+            $$PNG_LITE_HDR
 }

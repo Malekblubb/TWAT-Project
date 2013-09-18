@@ -29,16 +29,7 @@ TWAT::TwTools::CTwMapDataFileReader::CTwMapDataFileReader() :
 
 TWAT::TwTools::CTwMapDataFileReader::~CTwMapDataFileReader()
 {
-	m_dfReader->Close();
-
-	for(unsigned int i = 0; i < m_mapFile->m_compressedDatas.size(); ++i)
-		std::free(m_mapFile->m_compressedDatas[i]);
-
-	for(unsigned int i = 0; i < m_mapFile->m_uncompressedDatas.size(); ++i)
-	{
-		if(m_mapFile->m_uncompressedDatas[i])
-			std::free(m_mapFile->m_uncompressedDatas[i]);
-	}
+	this->Close();
 
 	delete m_mapFile;
 	delete m_dfReader;
@@ -144,7 +135,7 @@ bool TWAT::TwTools::CTwMapDataFileReader::Open(const std::string &path)
 		tmpItemExt.m_size = tmpItem.m_size;
 		tmpItemExt.m_type = (tmpItem.m_typeAndId >> 16) & 0xff;
 		tmpItemExt.m_id = tmpItem.m_typeAndId & 0xff;
-		tmpItemExt.m_data = (char *)std::malloc(tmpItemExt.m_size);
+		tmpItemExt.m_data = new char[tmpItemExt.m_size]; // TODO: memleak here
 
 		// read item data
 		m_dfReader->Read(tmpItemExt.m_data, tmpItemExt.m_size);
@@ -162,7 +153,7 @@ bool TWAT::TwTools::CTwMapDataFileReader::Open(const std::string &path)
 		else
 			readLen = m_mapFile->m_info.m_compressedDataOffsets[i + 1] - m_mapFile->m_info.m_compressedDataOffsets[i];
 
-		m_mapFile->m_compressedDatas[i] = (char *)std::malloc(readLen);
+		m_mapFile->m_compressedDatas[i] = new char[readLen];
 		m_dfReader->Read(m_mapFile->m_compressedDatas[i], readLen);
 	}
 
@@ -188,13 +179,13 @@ void TWAT::TwTools::CTwMapDataFileReader::Close()
 
 	for(auto i = m_mapFile->m_compressedDatas.begin(); i != m_mapFile->m_compressedDatas.end(); ++i)
 	{
-		std::free(*i);
+		delete[] *i;
 		*i = 0;
 	}
 
 	for(auto i = m_mapFile->m_uncompressedDatas.begin(); i != m_mapFile->m_uncompressedDatas.end(); ++i)
 	{
-		std::free(i->second);
+		delete[] i->second;
 		i->second = 0;
 	}
 
@@ -275,20 +266,23 @@ void *TWAT::TwTools::CTwMapDataFileReader::DataAt(int index)
 
 bool TWAT::TwTools::CTwMapDataFileReader::UncompressData(int index)
 {
-	m_mapFile->m_uncompressedDatas[index] = (char *)std::malloc(m_mapFile->m_info.m_uncompressedDataSizes[index]);
-
 	unsigned long compressedLen = this->DataSizeAt(index);
 	unsigned long uncompressedLen = m_mapFile->m_info.m_uncompressedDataSizes[index];
+	m_mapFile->m_uncompressedDatas[index] = new char[uncompressedLen];
 
 	int zError = uncompress((Bytef *)m_mapFile->m_uncompressedDatas[index], &uncompressedLen, (Bytef *)m_mapFile->m_compressedDatas[index], compressedLen);
 	if(zError != Z_OK)
 	{
-		std::free(m_mapFile->m_uncompressedDatas[index]);
+		delete[] m_mapFile->m_uncompressedDatas[index];
 		m_mapFile->m_uncompressedDatas[index] = 0;
 
 		DBG("error while uncompress data (index=%, zlib_error=%, compressed_len=%, uncompressed_len=%)", index, zError, compressedLen, uncompressedLen);
 		return false;
 	}
+
+	// compressed data can be freed at this point
+	delete[] m_mapFile->m_compressedDatas[index];
+	m_mapFile->m_compressedDatas[index] = 0;
 
 	return true;
 }

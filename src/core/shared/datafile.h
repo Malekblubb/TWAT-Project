@@ -35,4 +35,4 @@ namespace TWAT
 	};
 
 }
-#endif // DATAFILE_H
+#endif // CORE_SHARED_DATAFILE_H

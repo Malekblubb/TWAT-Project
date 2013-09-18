@@ -29,6 +29,7 @@ namespace TWAT
 	private:
 		bool CreateConfig();
 		void ReadFull();
+		void RestoreNotSet();
 		void FillDefault();
 		void WriteDefault();
 

@@ -27,4 +27,4 @@ namespace TWAT
 	};
 }
 
-#endif // CONFIG_STORAGE_H
+#endif // CORE_SHARED_CONFIG_STORAGE_H

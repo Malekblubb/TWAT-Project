@@ -45,7 +45,7 @@ void CUiExtractImages::OnListEntryClicked(const QModelIndex &index)
 	{
 		QGraphicsScene *scene = new QGraphicsScene();
 
-		QImage img((uchar*)m_mainWindow->Client()->TwMapExtract()->ImageAt(index.row())->Data(),
+		QImage img(m_mainWindow->Client()->TwMapExtract()->ImageAt(index.row())->Data(),
 				   m_mainWindow->Client()->TwMapExtract()->ImageAt(index.row())->Width(),
 				   m_mainWindow->Client()->TwMapExtract()->ImageAt(index.row())->Height(),
 				   QImage::Format_ARGB32);

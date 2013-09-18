@@ -34,15 +34,12 @@ TWAT::TwTools::CMasterRequest::CMasterRequest()
 
 TWAT::TwTools::CMasterRequest::~CMasterRequest()
 {
-	for(auto i = m_addrs.begin(); i != m_addrs.end(); ++i)
-		delete *i;
-
 	System::SockClose(m_sock);
 }
 
 void TWAT::TwTools::CMasterRequest::AddServer(const std::string &addr)
 {
-	System::CIpAddr *tmpAddr = new System::CIpAddr(addr);
+	System::CIpAddr tmpAddr(addr);
 	m_addrs.push_back(tmpAddr);
 }
 
@@ -57,11 +54,11 @@ int TWAT::TwTools::CMasterRequest::PullCount()
 	int gotLen = 0;
 	unsigned char recData[1024];
 
-	for(std::vector<System::CIpAddr *>::iterator i = m_addrs.begin(); i != m_addrs.end(); ++i)
+	for(std::vector<System::CIpAddr>::iterator i = m_addrs.begin(); i != m_addrs.end(); ++i)
 	{
-		CNetworkPacket *pk = new CNetworkPacket(*i, (unsigned char *)SERVERBROWSE_GETCOUNT, 8);
-		pk->MakeConnless();
-		CNetworkBase::Send(m_sock, pk);
+		CNetworkPacket pk(&*i, (unsigned char *)SERVERBROWSE_GETCOUNT, 8);
+		pk.MakeConnless();
+		CNetworkBase::Send(m_sock, &pk);
 
 		if((gotLen = CNetworkBase::RecvRaw(m_sock, recData, 1024, 100000)) > 0)
 		{
@@ -72,12 +69,10 @@ int TWAT::TwTools::CMasterRequest::PullCount()
 			if(tmpCount != -1)
 				count += tmpCount;
 			else
-				DBG("error while decode recved count data from master (addr=%)", System::IpAddrToStr(*i));
+				DBG("error while decode recved count data from master (addr=%)", System::IpAddrToStr(&*i));
 		}
 		else
-			DBG("error while connect to master (addr=%)", System::IpAddrToStr(*i));
-
-		delete pk;
+			DBG("error while connect to master (addr=%)", System::IpAddrToStr(&*i));
 	}
 
 	return count;
@@ -88,21 +83,19 @@ bool TWAT::TwTools::CMasterRequest::PullList(CMasterList *lst)
 	int gotLen = 0;
 	unsigned char recData[2048]; // moa space
 
-	for(std::vector<System::CIpAddr *>::iterator i = m_addrs.begin(); i != m_addrs.end(); ++i)
+	for(std::vector<System::CIpAddr>::iterator i = m_addrs.begin(); i != m_addrs.end(); ++i)
 	{
-		DBG("requesting list from master (addr=%)", System::IpAddrToStr(*i));
+		DBG("requesting list from master (addr=%)", System::IpAddrToStr(&*i));
 
-		CNetworkPacket *pk = new CNetworkPacket(*i, (unsigned char *)SERVERBROWSE_GETLIST, 8);
-		pk->MakeConnless();
-		CNetworkBase::Send(m_sock, pk);
+		CNetworkPacket pk(&*i, (unsigned char *)SERVERBROWSE_GETLIST, 8);
+		pk.MakeConnless();
+		CNetworkBase::Send(m_sock, &pk);
 
 		while((gotLen = CNetworkBase::RecvRaw(m_sock, recData, 2048, 100000)) > 0) // get the info splittet in X pk's
 		{
 			if(!CRawInfoDecoder::DecodeListInfo(recData, gotLen, lst))
-				DBG("error while decode recved list data from master (addr=%)", System::IpAddrToStr(*i));
+				DBG("error while decode recved list data from master (addr=%)", System::IpAddrToStr(&*i));
 		}
-
-		delete pk;
 	}
 
 	return true;

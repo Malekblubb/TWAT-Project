@@ -19,14 +19,14 @@ TWAT::TwTools::CServerSniffer::CServerSniffer()
 {
 	m_addr = new System::CIpAddr("0.0.0.0:0");
 	m_sock = System::UdpSock(m_addr);
-	m_recData = (unsigned char *)std::malloc(1024);
+	m_recData = new unsigned char[1024];
 	m_token = 5; // random
 }
 
 TWAT::TwTools::CServerSniffer::~CServerSniffer()
 {
 	delete m_addr;
-	std::free(m_recData);
+	delete[] m_recData;
 	System::SockClose(m_sock);
 }
 
@@ -74,17 +74,13 @@ int TWAT::TwTools::CServerSniffer::TestLatency()
 
 bool TWAT::TwTools::CServerSniffer::SendReq()
 {
-	CNetworkPacket *sPk = new CNetworkPacket(m_addr, (void *)SERVERBROWSE_GETINFO, sizeof SERVERBROWSE_GETINFO);
-	sPk->MakeConnless();
-	sPk->AddData(&m_token, 1); // add token
+	CNetworkPacket sPk(m_addr, (void *)SERVERBROWSE_GETINFO, sizeof SERVERBROWSE_GETINFO);
+	sPk.MakeConnless();
+	sPk.AddData(&m_token, 1); // add token
 
 	// send
-	if((m_sentLen = CNetworkBase::Send(m_sock, sPk)) <= 0)
-	{
-		delete sPk;
+	if((m_sentLen = CNetworkBase::Send(m_sock, &sPk)) <= 0)
 		return false;
-	}
-	delete sPk;
 
 	ServerInfo tmpInfo;
 	tmpInfo.m_sentTime = System::TimeStamp();

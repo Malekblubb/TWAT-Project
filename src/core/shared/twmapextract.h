@@ -24,7 +24,7 @@ namespace TWAT
 	{
 		TwTools::CTwMap *m_map;
 
-		std::vector<TWAT::TwTools::CTwMapImage> m_images;
+		std::vector<TwTools::CTwMapImage> m_images;
 		int m_numImages;
 
 	public:

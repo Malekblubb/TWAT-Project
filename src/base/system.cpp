@@ -47,19 +47,31 @@ std::string TWAT::System::TimeStr()
 	return tmpTime;
 }
 
+std::string TWAT::System::SystemAppDir()
+{
+	std::string tmp = "";
+
+#if defined(OS_LINUX) || defined(OS_MAC)
+	tmp = std::getenv("HOME");
+#else
+	tmp = std::getenv("APPDATA");
+#endif
+
+	return tmp;
+}
+
 std::string TWAT::System::WorkDir()
 {
 	std::string tmp;
 
-#if defined(OS_LINUX) || defined(OS_MAC)
-	tmp = std::getenv("HOME");
-	tmp += "/.twat/";
-#else
-	tmp = std::getenv("APPDATA");
-	tmp += "\\.twat\\";
-#endif
+	return SystemAppDir() + "/.twat/";
+}
 
-	return tmp;
+std::string TWAT::System::TwDir()
+{
+	std::string tmp;
+
+	return SystemAppDir() + "/.teeworlds";
 }
 
 std::string TWAT::System::Locale()

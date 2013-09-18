@@ -19,7 +19,9 @@ namespace TWAT
 		long long TimeStamp();
 		std::string TimeStr(); // returns current timestamp as std::string
 
+		std::string SystemAppDir();
 		std::string WorkDir(); // returns the path of the main wotking-directory like /home/user/.twat
+		std::string TwDir();
 		std::string Locale(); // returns the locale like "de"
 
 

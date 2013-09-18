@@ -53,4 +53,4 @@ namespace TWAT
 }
 
 
-#endif // NETWORK_H
+#endif // CORE_SHARED_NETWORK_H

@@ -49,18 +49,20 @@ namespace TWAT
 			int m_height;
 			int m_width;
 			bool m_external;
-			void *m_data;
+			unsigned char *m_data;
 			int m_dataSize;
 
 		public:
 			CTwMapImage();
+			CTwMapImage(const CTwMapImage &other);
 			~CTwMapImage();
+			CTwMapImage &operator =(const CTwMapImage &other);
 
 			// setters
 			void SetName(const std::string &name);
 			void SetSize(int height, int width);
 
-			void LoadFromData(void *data);
+			void LoadFromData(void *data, int size);
 			bool LoadFromFile(const std::string &path);
 			void Embed();
 			void MakeExternal();
@@ -71,7 +73,7 @@ namespace TWAT
 			int Height() const {return m_height;}
 			int Width() const {return m_width;}
 			bool External() const {return m_external;}
-			void *Data() const {return m_data;}
+			unsigned char *Data() const {return m_data;}
 			int DataSize() const {return m_dataSize;}
 		};
 
@@ -233,7 +235,7 @@ namespace TWAT
 			int NumGroups() const {return m_numGroups;}
 
 			// images (accessible also from a layer)
-			TWAT::TwTools::CTwMapImage *Image(int index);
+			CTwMapImage *Image(int index);
 			int NumImages() const {return m_numImages;}
 
 

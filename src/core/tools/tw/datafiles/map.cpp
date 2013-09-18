@@ -3,6 +3,7 @@
  * See LICENSE for more information.
  */
 
+#include <base/app_info.h>
 #include <base/system.h>
 
 #include "map.h"
@@ -11,6 +12,7 @@
 #include <core/tw_stripped/mapitems.h>
 
 #include <cstring>
+#include <pnglite/pnglite.h>
 
 
 // ----- map info -----
@@ -59,13 +61,37 @@ TWAT::TwTools::CTwMapImage::CTwMapImage() :
 
 }
 
+TWAT::TwTools::CTwMapImage::CTwMapImage(const CTwMapImage &other) :
+	m_name(other.m_name),
+	m_height(other.m_height),
+	m_width(other.m_width),
+	m_external(other.m_external),
+	m_dataSize(other.m_dataSize)
+{
+	m_data = new unsigned char[m_dataSize];
+	std::memcpy(m_data, other.m_data, m_dataSize);
+}
+
 TWAT::TwTools::CTwMapImage::~CTwMapImage()
 {
-	if(m_dataSize > 0)
-	{
-		DBG("free addr: %", &m_data);
-		std::free(m_data);
-	}
+	delete[] m_data;
+}
+
+TWAT::TwTools::CTwMapImage &TWAT::TwTools::CTwMapImage::operator =(const CTwMapImage &other)
+{
+	m_name = other.m_name;
+	m_height = other.m_height;
+	m_width = other.m_width;
+	m_external = other.m_external;
+	m_dataSize = other.m_dataSize;
+
+	unsigned char *data = new unsigned char[m_dataSize];
+	std::memcpy(data, other.m_data, m_dataSize);
+
+	delete[] m_data;
+	m_data = data;
+
+	return *this;
 }
 
 void TWAT::TwTools::CTwMapImage::SetName(const std::string &name)
@@ -79,14 +105,30 @@ void TWAT::TwTools::CTwMapImage::SetSize(int height, int width)
 	m_width = width;
 }
 
-void TWAT::TwTools::CTwMapImage::LoadFromData(void *data)
+void TWAT::TwTools::CTwMapImage::LoadFromData(void *data, int size)
 {
-	m_data = data;
+	m_dataSize = size;
+	m_data = new unsigned char[m_dataSize];
+	std::memcpy(m_data, data, m_dataSize);
 }
 
 bool TWAT::TwTools::CTwMapImage::LoadFromFile(const std::string &path)
 {
+	png_t png;
 
+	png_init(0, 0);
+	if(png_open_file_read(&png, path.c_str()) != PNG_NO_ERROR)
+		return false;
+
+	// alloc mem
+	m_dataSize = png.width * png.height * png.bpp;
+	m_data = new unsigned char[m_dataSize];
+
+	if(png_get_data(&png, m_data) != PNG_NO_ERROR)
+		return false;
+
+	png_close_file(&png);
+	return true;
 }
 
 void TWAT::TwTools::CTwMapImage::Embed()
@@ -296,18 +338,17 @@ void TWAT::TwTools::CTwMap::LoadImages()
 		CMapItemImage *imageItem = (CMapItemImage *)m_reader->ItemAt(i);
 		CTwMapImage image;
 
-
 		image.SetSize(imageItem->m_Height, imageItem->m_Width);
 		image.SetName((char *)m_reader->DataAt(imageItem->m_ImageName));
 
 		if(!imageItem->m_External)
 		{
-			image.LoadFromData(m_reader->DataAt(imageItem->m_ImageData));
+			image.LoadFromData(m_reader->DataAt(imageItem->m_ImageData), m_reader->UncompressedDataSizeAt(imageItem->m_ImageData));
 			image.Embed();
 		}
 		else
 		{
-			// TODO: load from teewordls dir
+			image.LoadFromFile(APP_TW_DATA_PATH + std::string("mapres/") + image.Name() + ".png");
 			image.MakeExternal();
 		}
 
@@ -343,7 +384,7 @@ void TWAT::TwTools::CTwMap::LoadStructure()
 
 					image.SetSize(imageItem->m_Height, imageItem->m_Width);
 					image.SetName((char *)m_reader->DataAt(imageItem->m_ImageName));
-					image.LoadFromData((unsigned char *)m_reader->DataAt(imageItem->m_ImageData));
+					image.LoadFromData(m_reader->DataAt(imageItem->m_ImageData), m_reader->UncompressedDataSizeAt(imageItem->m_ImageData));
 
 					// add the image to layer
 					tileLayer->SetImage(image);
@@ -371,7 +412,7 @@ void TWAT::TwTools::CTwMap::LoadStructure()
 
 					image.SetSize(imageItem->m_Height, imageItem->m_Width);
 					image.SetName((char *)m_reader->DataAt(imageItem->m_ImageName));
-					image.LoadFromData((unsigned char *)m_reader->DataAt(imageItem->m_ImageData));
+					image.LoadFromData(m_reader->DataAt(imageItem->m_ImageData), m_reader->UncompressedDataSizeAt(imageItem->m_ImageData));
 
 					quadsLayer->SetImage(image);
 				}

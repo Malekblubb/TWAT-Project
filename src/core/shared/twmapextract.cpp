@@ -63,7 +63,7 @@ void TWAT::CTwMapExtract::LoadImages()
 
 	for(int i = 0; i < m_map->NumImages(); ++i)
 	{
-		if(!m_map->Image(i)->External())
+//		if(!m_map->Image(i)->External())
 		{
 			TwTools::CTwMapImage img = *m_map->Image(i);
 

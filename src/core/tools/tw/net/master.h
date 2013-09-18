@@ -41,7 +41,7 @@ namespace TWAT
 			};
 
 			int m_sock;
-			std::vector<System::CIpAddr *> m_addrs;
+			std::vector<System::CIpAddr> m_addrs;
 
 		public:
 			CMasterRequest();
