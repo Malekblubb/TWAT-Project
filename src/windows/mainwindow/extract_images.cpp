@@ -16,12 +16,17 @@
 #include <QMessageBox>
 
 
-CUiExtractImages::CUiExtractImages(Ui::MainWindow *ui, MainWindow *window) :
-	m_ui(ui),
-	m_mainWindow(window)
+CUiExtractImages::CUiExtractImages(MainWindow *window) :
+	m_mainWindow(window),
+	m_scene(new QGraphicsScene)
 {
 	connect(this, SIGNAL(Load()), this, SLOT(OnLoad()));
 	connect(this, SIGNAL(Save(int)), this, SLOT(OnSave(int)));
+}
+
+CUiExtractImages::~CUiExtractImages()
+{
+	delete m_scene;
 }
 
 void CUiExtractImages::OnLoadClicked()
@@ -31,7 +36,7 @@ void CUiExtractImages::OnLoadClicked()
 
 void CUiExtractImages::OnBrowseClicked()
 {
-	m_ui->m_leExtImgMapPath->setText(QFileDialog::getOpenFileName(
+	m_mainWindow->m_ui->m_leExtImgMapPath->setText(QFileDialog::getOpenFileName(
 										 m_mainWindow,
 										 "Open Map File",
 										 "/home",
@@ -41,17 +46,17 @@ void CUiExtractImages::OnBrowseClicked()
 
 void CUiExtractImages::OnListEntryClicked(const QModelIndex &index)
 {
-	if(m_ui->m_lwExtImgImages->item(index.row())->isSelected())
+	if(m_mainWindow->m_ui->m_lwExtImgImages->item(index.row())->isSelected())
 	{
-		QGraphicsScene *scene = new QGraphicsScene();
+		m_scene->clear();
 
 		QImage img(m_mainWindow->Client()->TwMapExtract()->ImageAt(index.row())->Data(),
 				   m_mainWindow->Client()->TwMapExtract()->ImageAt(index.row())->Width(),
 				   m_mainWindow->Client()->TwMapExtract()->ImageAt(index.row())->Height(),
 				   QImage::Format_ARGB32);
 
-		scene->addPixmap(QPixmap::fromImage(img.rgbSwapped()));
-		m_ui->m_gvExtImgPreview->setScene(scene);
+		m_scene->addPixmap(QPixmap::fromImage(img.rgbSwapped()));
+		m_mainWindow->m_ui->m_gvExtImgPreview->setScene(m_scene);
 	}
 }
 
@@ -67,7 +72,7 @@ void CUiExtractImages::OnSaveAllClicked()
 
 void CUiExtractImages::OnLoad()
 {
-	m_mapPath = m_ui->m_leExtImgMapPath->text();
+	m_mapPath = m_mainWindow->m_ui->m_leExtImgMapPath->text();
 
 	// load the map
 	if((!m_mapPath.isEmpty()) && (m_mapPath != ""))
@@ -79,7 +84,7 @@ void CUiExtractImages::OnLoad()
 
 void CUiExtractImages::OnSave(int mode)
 {
-	if(m_ui->m_lwExtImgImages->count() > 0)
+	if(m_mainWindow->m_ui->m_lwExtImgImages->count() > 0)
 	{
 		QFileDialog saveDialog;
 		QString saveDirPath;
@@ -97,7 +102,7 @@ void CUiExtractImages::OnSave(int mode)
 
 			if(mode == ALL)
 			{
-				for(int i = 0; i < m_ui->m_lwExtImgImages->count(); ++i)
+				for(int i = 0; i < m_mainWindow->m_ui->m_lwExtImgImages->count(); ++i)
 				{
 					path = saveDirPath + "/" + m_mainWindow->Client()->TwMapExtract()->ImageAt(i)->Name().c_str() + ".png";
 					QFile file(path);
@@ -115,11 +120,11 @@ void CUiExtractImages::OnSave(int mode)
 			}
 			if(mode == SELECTED)
 			{
-				if(m_ui->m_lwExtImgImages->selectedItems().size() > 0)
+				if(m_mainWindow->m_ui->m_lwExtImgImages->selectedItems().size() > 0)
 				{
-					for(int i = 0; i < m_ui->m_lwExtImgImages->count(); ++i)
+					for(int i = 0; i < m_mainWindow->m_ui->m_lwExtImgImages->count(); ++i)
 					{
-						if(m_ui->m_lwExtImgImages->item(i)->isSelected())
+						if(m_mainWindow->m_ui->m_lwExtImgImages->item(i)->isSelected())
 						{
 							path = saveDirPath + "/" + m_mainWindow->Client()->TwMapExtract()->ImageAt(i)->Name().c_str() + ".png";
 							QFile file(path);
@@ -147,9 +152,9 @@ void CUiExtractImages::OnSave(int mode)
 
 void CUiExtractImages::RefreshUiInfos()
 {
-	m_ui->m_lbExtImgNumImagesVar->setText(QString::number(m_mainWindow->Client()->TwMapExtract()->NumImages()));
+	m_mainWindow->m_ui->m_lbExtImgNumImagesVar->setText(QString::number(m_mainWindow->Client()->TwMapExtract()->NumImages()));
 
-	m_ui->m_lwExtImgImages->clear();
+	m_mainWindow->m_ui->m_lwExtImgImages->clear();
 	for(int i = 0; i < m_mainWindow->Client()->TwMapExtract()->NumImages(); ++i)
-		m_ui->m_lwExtImgImages->addItem(m_mainWindow->Client()->TwMapExtract()->ImageAt(i)->Name().c_str());
+		m_mainWindow->m_ui->m_lwExtImgImages->addItem(m_mainWindow->Client()->TwMapExtract()->ImageAt(i)->Name().c_str());
 }

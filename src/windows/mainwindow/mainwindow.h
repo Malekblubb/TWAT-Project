@@ -63,15 +63,18 @@ private:
 	int m_numNeedsStatusIcon;
 
 	Ui::MainWindow *m_ui;
-	TWAT::CClient *m_client;
-
 	class configwindow *m_confWidow;
 
+	// ui components
+	friend class CUiExtractImages;
+	friend class CUiServerList;
+	friend class CUiTestServer;
 	class CUiExtractImages *m_uiExtractImages;
 	class CUiServerList *m_uiServerList;
 	class CUiTestServer *m_uiTestServer;
 
-public:
+	// twat client
+	TWAT::CClient *m_client;
 	TWAT::CClient *Client() const {return m_client;}
 };
 
@@ -79,10 +82,10 @@ class CUiExtractImages : public QObject
 {
 	Q_OBJECT
 
-	Ui::MainWindow *m_ui;
 	MainWindow *m_mainWindow;
 
 	QString m_mapPath;
+	class QGraphicsScene *m_scene;
 
 	enum SaveModes
 	{
@@ -91,7 +94,8 @@ class CUiExtractImages : public QObject
 	};
 
 public:
-	CUiExtractImages(Ui::MainWindow *ui, MainWindow *window);
+	CUiExtractImages(MainWindow *window);
+	~CUiExtractImages();
 
 
 signals:
@@ -117,7 +121,6 @@ class CUiServerList : public QObject
 {
 	Q_OBJECT
 
-	Ui::MainWindow *m_ui;
 	MainWindow *m_mainWindow;
 
 	QTimer *m_timer;
@@ -125,7 +128,8 @@ class CUiServerList : public QObject
 	int m_currentGot;
 
 public:
-	CUiServerList(Ui::MainWindow *ui, MainWindow *window);
+	CUiServerList(MainWindow *window);
+	~CUiServerList();
 
 signals:
 	void RefreshStart();
@@ -153,7 +157,6 @@ class CUiTestServer : public QObject
 {
 	Q_OBJECT
 
-	Ui::MainWindow *m_ui;
 	MainWindow *m_mainWindow;
 
 	QString m_ip;
@@ -171,7 +174,7 @@ class CUiTestServer : public QObject
 	};
 
 public:
-	CUiTestServer(Ui::MainWindow *ui, MainWindow *window);
+	CUiTestServer(MainWindow *window);
 
 signals:
 	void TestStart();

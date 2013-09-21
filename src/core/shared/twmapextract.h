@@ -24,7 +24,7 @@ namespace TWAT
 	{
 		TwTools::CTwMap *m_map;
 
-		std::vector<TwTools::CTwMapImage> m_images;
+		std::vector<TwTools::CTwMapImage *> m_images;
 		int m_numImages;
 
 	public:
@@ -32,10 +32,9 @@ namespace TWAT
 		~CTwMapExtract();
 
 		bool Load(const std::string &path);
-
 		bool Save(int index, const std::string &path);
-		TwTools::CTwMapImage *ImageAt(int index);
 
+		TwTools::CTwMapImage *ImageAt(int index);
 		int NumImages() const {return m_numImages;}
 
 	private:

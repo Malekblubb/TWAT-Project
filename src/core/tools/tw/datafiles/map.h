@@ -7,6 +7,10 @@
 #define CORE_TOOLS_TW_DATAFILES_MAP_H
 
 
+#include <core/shared/graphics.h>
+
+#include <core/tw_stripped/mapitems.h>
+
 #include <string>
 #include <map>
 #include <vector>
@@ -90,7 +94,7 @@ namespace TWAT
 			// setters
 			void SetType(int type);
 			void SetName(const std::string &name);
-			void SetImage(CTwMapImage image);
+			void SetImage(const CTwMapImage &image);
 
 			// getters
 			int Type() const {return m_type;}
@@ -99,46 +103,52 @@ namespace TWAT
 			CTwMapImage *Image() {return &m_image;}
 		};
 
-		class CTwMapTile
-		{
-
-		};
-
 		class CTwMapLayerTiles : public CTwMapLayer
 		{
 			int m_width;
 			int m_height;
+			CTile *m_tiles;
+			CColor m_color;
 
 		public:
+			CTwMapLayerTiles();
+			CTwMapLayerTiles(const CTwMapLayerTiles &other);
+			~CTwMapLayerTiles();
+
+			// tiles interface
+			void SetTiles(void *data);
+			CTile *Tile(int index);
+
 			// setters
 			void SetSize(int height, int width);
+			void SetColor(const CColor &color);
 
 			// getters
 			int Height() const {return m_height;}
 			int Width() const {return m_width;}
+			CColor *Color() {return &m_color;}
 		};
 
-		class CTwMapQuad
-		{
-
-		};
 
 		class CTwMapLayerQuads : public CTwMapLayer
 		{
 			int m_numQuads;
 
-			std::map<int, CTwMapQuad> m_quads;
+			std::vector<CQuad> m_quads;
 
 		public:
 			CTwMapLayerQuads();
 
-			void SetQuad(int index, CTwMapQuad quad);
+			void AddQuad(const CQuad &quad);
+			CQuad *Quad(int index);
 
 			int NumQuads() const {return m_numQuads;}
 		};
 
 		class CTwMapGroup
 		{
+			std::string m_name;
+
 			int m_offsetX;
 			int m_offsetY;
 			int m_paraX;
@@ -153,12 +163,14 @@ namespace TWAT
 			~CTwMapGroup();
 
 			// setters
+			void SetName(const std::string &name);
 			void SetOffsetX(int offset);
 			void SetOffsetY(int offset);
 			void SetParaX(int para);
 			void SetParaY(int para);
 
 			// getters
+			std::string Name() const {return m_name;}
 			int OffsetX() const {return m_offsetX;}
 			int OffsetY() const {return m_offsetY;}
 			int ParaX() const {return m_paraX;}
@@ -231,6 +243,9 @@ namespace TWAT
 			CTwMapInfo Info() const {return m_mapInfo;}
 
 			// groups
+			void AddGroup(const CTwMapGroup &group);
+			void SetGroup(int index, const CTwMapGroup &group);
+			void DeleteGroup(int index);
 			CTwMapGroup *Group(int index);
 			int NumGroups() const {return m_numGroups;}
 

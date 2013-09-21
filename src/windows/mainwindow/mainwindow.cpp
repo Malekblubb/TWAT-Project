@@ -73,9 +73,9 @@ void MainWindow::OnExit()
 
 void MainWindow::SetUpUiComponents()
 {
-	m_uiExtractImages = new CUiExtractImages(m_ui, this);
-	m_uiServerList = new CUiServerList(m_ui, this);
-	m_uiTestServer = new CUiTestServer(m_ui, this);
+	m_uiExtractImages = new CUiExtractImages(this);
+	m_uiServerList = new CUiServerList(this);
+	m_uiTestServer = new CUiTestServer(this);
 }
 
 void MainWindow::ConnectUiAndComponents()

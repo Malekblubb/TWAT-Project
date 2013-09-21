@@ -39,12 +39,12 @@ bool TWAT::CTwMapExtract::Load(const std::string &path)
 
 bool TWAT::CTwMapExtract::Save(int index, const std::string &path)
 {
-	return CPng::SaveTo(path, m_images[index].Height(), m_images[index].Width(), m_images[index].Data());
+	return CPng::SaveTo(path, m_images[index]->Height(), m_images[index]->Width(), m_images[index]->Data());
 }
 
 TWAT::TwTools::CTwMapImage *TWAT::CTwMapExtract::ImageAt(int index)
 {
-	return &m_images[index];
+	return m_images[index];
 }
 
 void TWAT::CTwMapExtract::LoadImages()
@@ -53,9 +53,9 @@ void TWAT::CTwMapExtract::LoadImages()
 
 	for(int i = 0; i < m_map->NumImages(); ++i)
 	{
-//		if(!m_map->Image(i)->External())
+		if(!m_map->Image(i)->External())
 		{
-			TwTools::CTwMapImage img = *m_map->Image(i);
+			TwTools::CTwMapImage *img = m_map->Image(i);
 
 			++m_numImages;
 			m_images.push_back(img);

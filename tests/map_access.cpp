@@ -15,7 +15,7 @@ using namespace TWAT::TwTools;
 int main()
 {
 	CTwMap twMap;
-	twMap.Load("/home/hax/.teeworlds/maps/test.map");
+	twMap.Load("/home/hax/.teeworlds/maps/test2.map");
 
 
 	if(twMap.IsValid())
@@ -30,7 +30,7 @@ int main()
 		{
 			CTwMapGroup *tmpGroup = twMap.Group(g);
 
-			cout << "[Group " << g << "]" << endl;
+			cout << "[" << tmpGroup->Name() << " " << g << "]" << endl;
 
 			for(int l = 0; l < tmpGroup->NumLayers(); ++l)
 			{
@@ -40,7 +40,7 @@ int main()
 				{
 					CTwMapLayerTiles *tmpTilesLayer = tmpGroup->Layer<CTwMapLayerTiles>(l);
 
-					cout << "	[Tileslayer " << l << " (" << tmpTilesLayer->Height() << "x" << tmpTilesLayer->Width() << ")]" << endl;
+					cout << "	[" << tmpTilesLayer->Name() << " " << l << " (" << tmpTilesLayer->Height() << "x" << tmpTilesLayer->Width() << ")]" << endl;
 
 					if(tmpTilesLayer->HasImage())
 					{
@@ -54,7 +54,7 @@ int main()
 				{
 					CTwMapLayerQuads *tmpQuadsLayer = tmpGroup->Layer<CTwMapLayerQuads>(l);
 
-					cout << "	[Quadslayer " << l << "]" << endl;
+					cout << "	[" << tmpQuadsLayer->Name() << " " << l << "]" << endl;
 
 					if(tmpQuadsLayer->HasImage())
 					{

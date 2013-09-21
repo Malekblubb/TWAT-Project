@@ -5,8 +5,7 @@
 
 #include "graphics.h"
 
-
-#include <cstring>
+#include <sstream>
 #include <pnglite/pnglite.h>
 
 
@@ -42,4 +41,43 @@ bool TWAT::CPng::SaveTo(const std::string &path, int height, int width, unsigned
 	png_close_file(&png);
 
 	return true;
+}
+
+
+TWAT::CColor::CColor() :
+	m_r(0),
+	m_g(0),
+	m_b(0),
+	m_a(0)
+{
+
+}
+
+TWAT::CColor::CColor(int r, int g, int b, int a) :
+	m_r(r),
+	m_g(g),
+	m_b(b),
+	m_a(a)
+{
+
+}
+
+TWAT::CColor::CColor(const std::string &hexString) : CColor()
+{
+	if(!hexString.empty())
+	{
+		if(hexString.length() == 6)
+		{
+			std::stringstream stream;
+			int hexV;
+
+			stream << hexString;
+			stream >> std::hex >> hexV;
+
+			m_r = (hexV >> 16) & 0xff;
+			m_g = (hexV >> 8) & 0xff;
+			m_b = hexV & 0xff;
+			m_a = 255;
+		}
+	}
 }

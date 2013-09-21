@@ -56,7 +56,7 @@ public: \
 			if((!m_components.empty()) && (m_components.find(T::Name()) != m_components.end()))
 				return reinterpret_cast<T *>(m_components[T::Name()]);
 
-			return NULL;
+			return nullptr;
 		}
 	};
 }

@@ -11,10 +11,9 @@
 
 #include <core/shared/graphics.h>
 
-#include <core/tw_stripped/mapitems.h>
+#include <core/tw_stripped/stuff.h>
 
 #include <cstring>
-//#include <pnglite/pnglite.h>
 
 
 // ----- map info -----
@@ -155,6 +154,11 @@ TWAT::TwTools::CTwMapGroup::~CTwMapGroup()
 	}
 }
 
+void TWAT::TwTools::CTwMapGroup::SetName(const std::string &name)
+{
+	m_name = name;
+}
+
 void TWAT::TwTools::CTwMapGroup::SetLayer(int index, CTwMapLayer *layer)
 {
 	if((index >= 0) && (layer->Type()) != LAYERTYPE_INVALID)
@@ -214,7 +218,7 @@ void TWAT::TwTools::CTwMapLayer::SetName(const std::string &name)
 	m_name = name;
 }
 
-void TWAT::TwTools::CTwMapLayer::SetImage(CTwMapImage image)
+void TWAT::TwTools::CTwMapLayer::SetImage(const CTwMapImage &image)
 {
 	m_hasImage = true;
 	m_image = image;
@@ -222,10 +226,50 @@ void TWAT::TwTools::CTwMapLayer::SetImage(CTwMapImage image)
 
 
 // ----- map tilelayer -----
+TWAT::TwTools::CTwMapLayerTiles::CTwMapLayerTiles() :
+	m_width(0),
+	m_height(0),
+	m_tiles(0)
+{
+
+}
+
+TWAT::TwTools::CTwMapLayerTiles::CTwMapLayerTiles(const CTwMapLayerTiles &other) :
+	m_width(other.m_width),
+	m_height(other.m_height)
+{
+	m_tiles = new CTile[m_width * m_height];
+	std::memcpy(m_tiles, other.m_tiles, m_width * m_height);
+}
+
+TWAT::TwTools::CTwMapLayerTiles::~CTwMapLayerTiles()
+{
+	delete[] m_tiles;
+}
+
+void TWAT::TwTools::CTwMapLayerTiles::SetTiles(void *data)
+{
+	m_tiles = new CTile[m_width * m_height];
+	std::memcpy(m_tiles, data, m_width * m_height);
+}
+
+CTile *TWAT::TwTools::CTwMapLayerTiles::Tile(int index)
+{
+	if((index >= 0) && (index < m_width * m_height))
+		return &m_tiles[index];
+
+	return 0;
+}
+
 void TWAT::TwTools::CTwMapLayerTiles::SetSize(int height, int width)
 {
 	m_height = height;
 	m_width = width;
+}
+
+void TWAT::TwTools::CTwMapLayerTiles::SetColor(const CColor &color)
+{
+	m_color = color;
 }
 
 
@@ -234,6 +278,20 @@ TWAT::TwTools::CTwMapLayerQuads::CTwMapLayerQuads() :
 	m_numQuads(0)
 {
 
+}
+
+void TWAT::TwTools::CTwMapLayerQuads::AddQuad(const CQuad &quad)
+{
+	m_quads.push_back(quad);
+	++m_numQuads;
+}
+
+CQuad *TWAT::TwTools::CTwMapLayerQuads::Quad(int index)
+{
+	if((index >= 0) && (index < m_numQuads))
+		return &m_quads[index];
+
+	return 0;
 }
 
 
@@ -267,7 +325,7 @@ TWAT::TwTools::CTwMap::~CTwMap()
 bool TWAT::TwTools::CTwMap::Load(const std::string &path)
 {
 	m_path = path;
-	m_reader->Close(); // close to free the old data
+
 
 	// process the raw file
 	if(!m_reader->Open(m_path))
@@ -280,6 +338,7 @@ bool TWAT::TwTools::CTwMap::Load(const std::string &path)
 	// get num and start of items
 	m_numGroups = m_reader->NumItemsOfType(MAPITEMTYPE_GROUP);
 	m_groupsStart = m_reader->StartOfType(MAPITEMTYPE_GROUP);
+	m_groups.resize(m_numGroups); // resize vec
 
 	m_numLayers = m_reader->NumItemsOfType(MAPITEMTYPE_LAYER);
 	m_layersStart = m_reader->StartOfType(MAPITEMTYPE_LAYER);
@@ -292,7 +351,9 @@ bool TWAT::TwTools::CTwMap::Load(const std::string &path)
 	this->LoadImages();
 	this->LoadStructure();
 
+	m_reader->Close(); // close to free data
 	m_validMap = true;
+
 	return true;
 }
 
@@ -338,7 +399,7 @@ void TWAT::TwTools::CTwMap::LoadImages()
 		}
 		else
 		{
-			image.LoadFromFile(APP_TW_DATA_PATH + std::string("mapres/") + image.Name() + ".png");
+			image.LoadFromFile(std::string(APP_TW_DATA_PATH) + "mapres/" + image.Name() + ".png");
 			image.MakeExternal();
 		}
 
@@ -347,13 +408,14 @@ void TWAT::TwTools::CTwMap::LoadImages()
 }
 
 void TWAT::TwTools::CTwMap::LoadStructure()
-{	
-	// resize vec
-	m_groups.resize(m_numGroups);
-
+{
 	for(int i = m_groupsStart; i < m_groupsStart + m_numGroups; ++i)
 	{
 		CMapItemGroup *groupItem = (CMapItemGroup *)m_reader->ItemAt(i);
+
+		char tmp[12];
+		TwStuff::IntsToStr(groupItem->m_aName, 3, tmp);
+		m_groups[i - m_groupsStart].SetName(tmp);
 
 		for(int j = 0; j < groupItem->m_NumLayers; ++j)
 		{
@@ -366,6 +428,13 @@ void TWAT::TwTools::CTwMap::LoadStructure()
 
 				tileLayer->SetType(LAYERTYPE_TILES);
 				tileLayer->SetSize(tileLayerItem->m_Height, tileLayerItem->m_Width);
+				tileLayer->SetTiles(m_reader->DataAt(tileLayerItem->m_Data));
+				tileLayer->SetColor(CColor(tileLayerItem->m_Color.m_r, tileLayerItem->m_Color.m_g, tileLayerItem->m_Color.m_b, tileLayerItem->m_Color.m_a));
+
+				// get name
+				char tmp[12];
+				TwStuff::IntsToStr(tileLayerItem->m_aName, 3, tmp);
+				tileLayer->SetName(tmp);
 
 				if(tileLayerItem->m_Image != -1)
 				{
@@ -374,19 +443,24 @@ void TWAT::TwTools::CTwMap::LoadStructure()
 
 					image.SetSize(imageItem->m_Height, imageItem->m_Width);
 					image.SetName((char *)m_reader->DataAt(imageItem->m_ImageName));
-					image.LoadFromData(m_reader->DataAt(imageItem->m_ImageData), m_reader->UncompressedDataSizeAt(imageItem->m_ImageData));
+
+					if(!imageItem->m_External)
+					{
+						image.LoadFromData(m_reader->DataAt(imageItem->m_ImageData), m_reader->UncompressedDataSizeAt(imageItem->m_ImageData));
+						image.Embed();
+					}
+					else
+					{
+						image.LoadFromFile(std::string(APP_TW_DATA_PATH) + "mapres/" + image.Name() + ".png");
+						image.MakeExternal();
+					}
 
 					// add the image to layer
 					tileLayer->SetImage(image);
 				}
 
-				//				CTile *tiles = (CTile*)m_reader->DataAt(tileLayerItem->m_Data);
-				//				DBG("%", (int)tiles[0].m_Index);
-
-
 				// add the layer with the info to map
 				m_groups[i - m_groupsStart].SetLayer(j, tileLayer);
-
 			}
 			else if(layerItem->m_Type == LAYERTYPE_QUADS)
 			{
@@ -395,6 +469,16 @@ void TWAT::TwTools::CTwMap::LoadStructure()
 
 				quadsLayer->SetType(LAYERTYPE_QUADS);
 
+				char tmp[12];
+				TwStuff::IntsToStr(quadsLayerItem->m_aName, 3, tmp);
+				quadsLayer->SetName(tmp);
+
+				// set quads
+				CQuad *quads = (CQuad *)m_reader->DataAt(quadsLayerItem->m_Data);
+				for(int q = 0; q < quadsLayerItem->m_NumQuads; ++q)
+					quadsLayer->AddQuad(quads[q]);
+
+
 				if(quadsLayerItem->m_Image != -1)
 				{
 					CMapItemImage *imageItem = (CMapItemImage *)m_reader->ItemAt(m_imagesStart + quadsLayerItem->m_Image);
@@ -402,7 +486,17 @@ void TWAT::TwTools::CTwMap::LoadStructure()
 
 					image.SetSize(imageItem->m_Height, imageItem->m_Width);
 					image.SetName((char *)m_reader->DataAt(imageItem->m_ImageName));
-					image.LoadFromData(m_reader->DataAt(imageItem->m_ImageData), m_reader->UncompressedDataSizeAt(imageItem->m_ImageData));
+
+					if(!imageItem->m_External)
+					{
+						image.LoadFromData(m_reader->DataAt(imageItem->m_ImageData), m_reader->UncompressedDataSizeAt(imageItem->m_ImageData));
+						image.Embed();
+					}
+					else
+					{
+						image.LoadFromFile(std::string(APP_TW_DATA_PATH) + "mapres/" + image.Name() + ".png");
+						image.MakeExternal();
+					}
 
 					quadsLayer->SetImage(image);
 				}
@@ -419,6 +513,16 @@ void TWAT::TwTools::CTwMap::SetInfo(const std::string &author, const std::string
 	m_mapInfo.SetVersion(version);
 	m_mapInfo.SetCredits(credits);
 	m_mapInfo.SetLicense(license);
+}
+
+void TWAT::TwTools::CTwMap::AddGroup(const CTwMapGroup &group)
+{
+	m_groups.push_back(group);
+}
+
+void TWAT::TwTools::CTwMap::SetGroup(int index, const CTwMapGroup &group)
+{
+	m_groups[index] = group;
 }
 
 TWAT::TwTools::CTwMapGroup *TWAT::TwTools::CTwMap::Group(int index)

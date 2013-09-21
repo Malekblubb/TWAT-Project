@@ -60,34 +60,33 @@ enum
 
 struct CPoint
 {
-	int x, y; // 22.10 fixed point
+	int m_x, m_y; // 22.10 fixed point
 };
 
 struct CColor
 {
-	int r, g, b, a;
+	int m_r, m_g, m_b, m_a;
 };
 
 struct CQuad
 {
-	CPoint m_aPoints[5];
-	CColor m_aColors[4];
-	CPoint m_aTexcoords[4];
+	CPoint m_points[5];
+	CColor m_colors[4];
+	CPoint m_texcoords[4];
 
-	int m_PosEnv;
-	int m_PosEnvOffset;
+	int m_posEnv;
+	int m_posEnvOffset;
 
-	int m_ColorEnv;
-	int m_ColorEnvOffset;
+	int m_colorEnv;
+	int m_colorEnvOffset;
 };
 
-class CTile
+struct CTile
 {
-public:
-	unsigned char m_Index;
-	unsigned char m_Flags;
-	unsigned char m_Skip;
-	unsigned char m_Reserved;
+	unsigned char m_index;
+	unsigned char m_flags;
+	unsigned char m_skip;
+	unsigned char m_reserved;
 };
 
 struct CMapItemInfo

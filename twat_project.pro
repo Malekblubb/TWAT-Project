@@ -38,6 +38,8 @@ SOURCES +=  tests/map_access.cpp \
             src/base/system.cpp \
             src/core/shared/io_file.cpp \
             src/core/shared/datafile.cpp \
+            src/core/shared/graphics.cpp \
+            src/core/tw_stripped/stuff.cpp \
             src/core/tools/tw/datafiles/map.cpp \
             src/core/tools/tw/datafiles/map_datafile.cpp \
             $$PNGLITE_SRC
@@ -45,7 +47,12 @@ SOURCES +=  tests/map_access.cpp \
 HEADERS +=  src/base/system.h \
             src/core/shared/io_file.h \
             src/core/shared/datafile.h \
+            src/core/shared/graphics.h \
+            src/core/tw_stripped/stuff.h \
             src/core/tools/tw/datafiles/map.h \
             src/core/tools/tw/datafiles/map_datafile.h \
             $$PNG_LITE_HDR
 }
+
+HEADERS += \
+    src/core/tw_stripped/stuff.h
