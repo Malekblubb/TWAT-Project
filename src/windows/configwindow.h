@@ -9,7 +9,7 @@
 
 #include <QWidget>
 
-namespace TWAT
+namespace CAT
 {
 	class IConfig;
 	class CComponentCore;
@@ -24,14 +24,14 @@ class configwindow : public QWidget
 {
 	Q_OBJECT
 
-	TWAT::IConfig *m_conf;
-	TWAT::CComponentCore *m_twatCore;
+	CAT::IConfig *m_conf;
+	CAT::CComponentCore *m_CATCore;
 	
 public:
 	explicit configwindow(QWidget *parent = 0);
 	~configwindow();
 	
-	void Show(TWAT::CComponentCore *core);
+	void Show(CAT::CComponentCore *core);
 
 private:
 	void SetupUiElements();
